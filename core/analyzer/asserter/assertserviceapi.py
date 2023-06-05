@@ -11,8 +11,8 @@ class AsserterServiceAPI:
             body_content_1 = body_content_1.decode("utf-8", "replace")
         if type(body_content_2) is not str:
             body_content_2 = body_content_2.decode("utf-8", "replace")
-        wordlist_1 = parsed_to_wordlist(body_content_1, False)
-        wordlist_2 = parsed_to_wordlist(body_content_2, False)
+        wordlist_1 = parsed_to_wordlist(body_content_1)
+        wordlist_2 = parsed_to_wordlist(body_content_2)
 
         if wordlist_1 is None or wordlist_2 is None:
             return wordlist_1 == wordlist_2 == None
@@ -49,16 +49,21 @@ class AsserterServiceAPI:
         return code == status_code
 
     @classmethod
-    def contains_all(cls, target_wordlist: set[str], wordlist: set[str], IGNORE_CASE: bool = False) -> bool:
-        if target_wordlist is None or wordlist is None:
-            return False
-        return wordlist.intersection(target_wordlist) == wordlist
+    def contains_all(cls, response_body_content: bytes, wordlist: set[str]) -> bool:
+        if type(response_body_content) is bytes:
+            response_body_content = response_body_content.decode("utf-8", "replace")
+        body_content_wordlist: set[str] = parsed_to_wordlist(response_body_content)
+        return wordlist.intersection(body_content_wordlist) == wordlist
 
     @classmethod
-    def contains_any(cls, target_wordlist: set[str], wordlist: set[str], IGNORE_CASE: bool = False) -> bool:
-        if target_wordlist is None or wordlist is None:
-            return False
-        return len(wordlist.intersection(target_wordlist)) > 0
+    def contains_any(cls, response_body_content: bytes, wordlist: set[str]) -> bool:
+        if type(response_body_content) is bytes:
+            response_body_content = response_body_content.decode("utf-8", "replace")
+        if type(wordlist) is not set:
+            wordlist = set(wordlist)
+        
+        body_content_wordlist: set[str] = parsed_to_wordlist(response_body_content)
+        return len(body_content_wordlist.intersection(wordlist)) > 0
 
     @classmethod
     def search_any_regex(cls, content: str, patterns: set[str], IGNORE_CASE: bool = False) -> dict[str:list[Match[bytes]]] or None:

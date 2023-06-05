@@ -8,3 +8,4 @@ __pycache__
 Lib/
 .gitignore
 .vscode/
+*.db

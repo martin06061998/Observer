@@ -1,10 +1,6 @@
-
-
 from persistence.dao.flowdao import FlowDAO
 from persistence.dao.paramdao import ParameterDao
-
 from persistence.models.flow import ObHttpFlow
-
 from persistence.models.param import Parameter
 
 
@@ -14,10 +10,9 @@ class DataAccessLayer():
     def __init__(self):
         self.db_services = dict()
         self.db_services["flow"] = FlowDAO()
-
         self.db_services['parameter'] = ParameterDao()
 
-    # FLOW API
+    # FLOW DAL
     async def get_flow_by_id(self, id: str) -> ObHttpFlow:
         service = self.db_services["flow"]
         ret: ObHttpFlow = await service.get_flow_by_id(id)
@@ -25,7 +20,8 @@ class DataAccessLayer():
 
     async def insert_flow(self, flow: ObHttpFlow):
         service = self.db_services["flow"]
-        return await service.insert_flow(flow)
+        ret: ObHttpFlow = await service.insert_flow(flow)
+        return ret
 
     async def get_last_flow_by_parameter_id(self, parameter_id: str) -> ObHttpFlow:
         service = self.db_services["flow"]
@@ -33,14 +29,16 @@ class DataAccessLayer():
         return ret
     # END
 
-    # PARAMETER API
+    # PARAMETER DAL
     async def insert_parameter(self, new_parameter=None, param: str = None, flow: ObHttpFlow = None):
         service = self.db_services["parameter"]
-        return await service.insert_parameter(new_parameter=new_parameter, param=param, flow=flow)
+        ret: Parameter = await service.insert_parameter(new_parameter=new_parameter, param=param, flow=flow)
+        return ret
 
     async def get_parameter_by_id(self, id: str) -> Parameter:
         service = self.db_services["parameter"]
-        return await service.get_parameter_by_id(id)
+        ret: Parameter = await service.get_parameter_by_id(id)
+        return ret
 
     async def add_param_flow(self, parameter_id: str, flow_id: str):
         service = self.db_services["parameter"]
@@ -48,5 +46,6 @@ class DataAccessLayer():
 
     async def add_example_value(self, parameter_id: str, value: str):
         service = self.db_services["parameter"]
-        return await service.add_example_value(parameter_id, value)
+        ret = await service.add_example_value(parameter_id, value)
+        return ret
     # END

@@ -1,9 +1,6 @@
 import logging
-from multiprocessing import Process
 import os
 import subprocess
-
-
 import requests
 from persistence.models.param import Parameter
 from persistence.dal import DataAccessLayer
@@ -24,7 +21,7 @@ class BugAnalyzer():
             "flow_id": flow_id
         }
         r = requests.post(url=end_point, json=data)
-        logging.warning(r.elapsed.total_seconds())
+        #logging.warning(r.elapsed.total_seconds())
 
     async def analyze(self, flow: ObHttpFlow) -> None:
         for param in flow.all_parameters.keys():
@@ -58,8 +55,9 @@ class Observer:
         self.ANALYZER = BugAnalyzer(db_service)
         self.DAL = db_service
         self.services = []
-        nul=open(os.devnull,"w")
-        service = subprocess.Popen(["Scripts\python.exe", "services\intruder\server.py"], stdout=nul, stderr=nul)
+        nul = open(os.devnull, "w")
+        service = subprocess.Popen(
+            ["Scripts\python.exe", "services\intruder\server.py"], stdout=nul, stderr=nul)
         self.services.append(service)
 
     def clean(self):

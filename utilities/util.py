@@ -29,7 +29,7 @@ def is_valid_url(url: str) -> bool:
     return False
 
 
-def parsed_to_wordlist(content: str, IGNORE_CASE: bool) -> set[str]:
+def parsed_to_wordlist(content: str) -> set[str]:
     h = html2text.HTML2Text()
     h.ignore_links = True
     h.ignore_images = True
@@ -38,8 +38,6 @@ def parsed_to_wordlist(content: str, IGNORE_CASE: bool) -> set[str]:
     wordlist = set()
     tokens = text.split(" ")
     for token in tokens:
-        if IGNORE_CASE:
-            token = token.lower()
         wordlist.add(token)
     return wordlist if len(wordlist) >= 1 else None
 

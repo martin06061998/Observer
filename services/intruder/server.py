@@ -2,6 +2,7 @@ import asyncio
 import copy
 import glob
 import logging
+import random
 from quart import Quart, request
 import sys
 import os
@@ -53,15 +54,15 @@ app.url_map.converters['regex'] = RegexConverter
 
 
 async def try_exploit(content: dict[str, str]):
+    # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
+    await asyncio.sleep(0.4)
+
     current = os.path.dirname(os.path.realpath(__file__))
     sys.path.append(os.path.join(current, '../../'))
     from persistence.models.attackvector import AttackVector
     from persistence.models.attackvector import Exploit
     from persistence.models.flow import ObHttpFlow
     import aiofiles as aiof
-
-    # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
-    await asyncio.sleep(0.4)
 
     # PREPARE DATA BEFORE ASSESSMENT
     dal = get_data_access_layer_instance()
@@ -107,10 +108,14 @@ async def try_exploit(content: dict[str, str]):
                     continue
                 rendered_payload = payload.render(pattern)
                 params[saved_param.name] = rendered_payload
-                ret = requests.get(url=end_point, headers=headers,params=params, verify=False, timeout=14,proxies=proxies)
+                ret = requests.get(url=end_point, headers=headers,
+                                   params=params, verify=False, timeout=14, proxies=proxies)
                 new_flow = ObHttpFlow(request_scheme=saved_flow.request_scheme, request_host=saved_flow.request_host, request_path=saved_flow.request_path, http_method=saved_flow.http_method, url=saved_flow.url,
                                       status_code=ret.status_code, timestamp=ret.elapsed.total_seconds(), request_headers=headers, response_headers=ret.headers, response_body_content=ret.content, query=params)
                 flow_sequence.append(new_flow)
+
+                # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
+                await asyncio.sleep(random.uniform(0.1, 0.5))
         # END
         else:
             # HANDLE POST (I.E PARAMETERS THAT ARE IN THE REQUEST BODY)
@@ -128,10 +133,12 @@ async def try_exploit(content: dict[str, str]):
                 rendered_payload = payload.render(pattern)
                 body_parameters[saved_param.name] = rendered_payload
                 ret = requests.post(
-                    url=end_point, headers=headers, data=body_parameters, verify=False, timeout=14,proxies=proxies)
+                    url=end_point, headers=headers, data=body_parameters, verify=False, timeout=14, proxies=proxies)
                 new_flow = ObHttpFlow(request_scheme=saved_flow.request_scheme, request_host=saved_flow.request_host, request_path=saved_flow.request_path, http_method=saved_flow.http_method, url=saved_flow.url,
                                       status_code=ret.status_code, timestamp=ret.elapsed.total_seconds(), request_headers=headers, response_headers=ret.headers, response_body_content=ret.content, request_body_parameters=body_parameters)
                 flow_sequence.append(new_flow)
+                # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
+                await asyncio.sleep(random.uniform(0.1, 0.5))
             # END
 
         # VULNERABILITY ASSESSMENT
@@ -154,6 +161,7 @@ async def try_exploit(content: dict[str, str]):
                 await f.write(f"="*125+"\n\n")
                 await f.flush()
         # END
+        await asyncio.sleep(1.5)
 
 
 @app.route("/exploit", methods=['POST'])
@@ -166,7 +174,6 @@ async def exploit():
 @app.route("/result/<regex('[a-fA-F0-9]{32}'):param>/")
 async def result(param):
     return {"msg": "OK"}
-
 
 
 if __name__ == "__main__":
