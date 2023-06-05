@@ -101,7 +101,7 @@ flows:
         position: "replace"
         tag: "linux"
 
-      - value: "../../../etc/passwd .png"
+      - value: "../../../etc/passwd\0.png"
         position: "replace"
         tag: "linux"
     verify:

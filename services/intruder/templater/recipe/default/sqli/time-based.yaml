@@ -44,7 +44,7 @@ flows:
       - value: "'||(select 1 from pg_sleep(10))||'"
         position: "inject"
         tag: "postgresql"
-      
+              
       - value: "'+BENCHMARK(70000000,SHA1(1337))+'"
         position: "inject"
         tag: "mysql, mariadb"

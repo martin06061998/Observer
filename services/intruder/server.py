@@ -7,7 +7,6 @@ from quart import Quart, request
 import sys
 import os
 from werkzeug.routing import BaseConverter
-
 import requests
 
 
@@ -55,7 +54,7 @@ app.url_map.converters['regex'] = RegexConverter
 
 async def try_exploit(content: dict[str, str]):
     # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
-    await asyncio.sleep(0.4)
+    await asyncio.sleep(0.3)
 
     current = os.path.dirname(os.path.realpath(__file__))
     sys.path.append(os.path.join(current, '../../'))
@@ -63,6 +62,7 @@ async def try_exploit(content: dict[str, str]):
     from persistence.models.attackvector import Exploit
     from persistence.models.flow import ObHttpFlow
     import aiofiles as aiof
+    import httpx
 
     # PREPARE DATA BEFORE ASSESSMENT
     dal = get_data_access_layer_instance()
@@ -87,11 +87,15 @@ async def try_exploit(content: dict[str, str]):
         # Mitmproxy does not forward the request but stuck
         # I think this bug is caused by Mitmproxy
         proxies = {
-            "http": "http://127.0.0.1:8080",
-            "https": "http://127.0.0.1:8080"
+            "http://": "http://127.0.0.1:8080",
+            "https://": "http://127.0.0.1:8080"
         }
-        headers = saved_flow._request_headers
+        headers: dict = saved_flow._request_headers
         headers["tag"] = vector.bug_type
+        if "content-length" in headers:
+            headers.pop("content-length")
+        if "Content-Length" in headers:
+            headers.pop("Content-Length")
         flow_sequence = [saved_flow]
         pattern = None
 
@@ -108,14 +112,16 @@ async def try_exploit(content: dict[str, str]):
                     continue
                 rendered_payload = payload.render(pattern)
                 params[saved_param.name] = rendered_payload
-                ret = requests.get(url=end_point, headers=headers,
-                                   params=params, verify=False, timeout=14, proxies=proxies)
+                async with httpx.AsyncClient(verify=False, proxies=proxies) as client:
+                    ret = await client.get(url=end_point, timeout=14, params=params, headers=headers)
+
+                # ret = requests.get(url=end_point, headers=headers,params=params, verify=False, timeout=14, proxies=proxies)
                 new_flow = ObHttpFlow(request_scheme=saved_flow.request_scheme, request_host=saved_flow.request_host, request_path=saved_flow.request_path, http_method=saved_flow.http_method, url=saved_flow.url,
                                       status_code=ret.status_code, timestamp=ret.elapsed.total_seconds(), request_headers=headers, response_headers=ret.headers, response_body_content=ret.content, query=params)
                 flow_sequence.append(new_flow)
 
                 # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
-                await asyncio.sleep(random.uniform(0.1, 0.5))
+                await asyncio.sleep(random.uniform(0.1, 0.3))
         # END
         else:
             # HANDLE POST (I.E PARAMETERS THAT ARE IN THE REQUEST BODY)
@@ -132,13 +138,15 @@ async def try_exploit(content: dict[str, str]):
                     continue
                 rendered_payload = payload.render(pattern)
                 body_parameters[saved_param.name] = rendered_payload
-                ret = requests.post(
-                    url=end_point, headers=headers, data=body_parameters, verify=False, timeout=14, proxies=proxies)
+                # ret = requests.post(
+                #    url=end_point, headers=headers, data=body_parameters, verify=False, timeout=14, proxies=proxies)
+                async with httpx.AsyncClient(verify=False, proxies=proxies) as client:
+                    ret = await client.post(url=end_point, headers=headers, data=body_parameters, timeout=14)
                 new_flow = ObHttpFlow(request_scheme=saved_flow.request_scheme, request_host=saved_flow.request_host, request_path=saved_flow.request_path, http_method=saved_flow.http_method, url=saved_flow.url,
                                       status_code=ret.status_code, timestamp=ret.elapsed.total_seconds(), request_headers=headers, response_headers=ret.headers, response_body_content=ret.content, request_body_parameters=body_parameters)
                 flow_sequence.append(new_flow)
                 # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
-                await asyncio.sleep(random.uniform(0.1, 0.5))
+                await asyncio.sleep(random.uniform(0.1, 0.3))
             # END
 
         # VULNERABILITY ASSESSMENT
@@ -161,7 +169,7 @@ async def try_exploit(content: dict[str, str]):
                 await f.write(f"="*125+"\n\n")
                 await f.flush()
         # END
-        await asyncio.sleep(1.5)
+        await asyncio.sleep(0.4)
 
 
 @app.route("/exploit", methods=['POST'])
@@ -177,4 +185,4 @@ async def result(param):
 
 
 if __name__ == "__main__":
-    app.run(port=5555)
+    app.run(port=5555, debug=True)
