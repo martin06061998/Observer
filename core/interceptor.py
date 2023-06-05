@@ -5,6 +5,7 @@ from core.serviceapi import ObserverServiceAPI
 from mitmproxy import ctx
 from definitions import LOOP
 
+
 class FlowInterceptor:
     def __init__(self):
         self.service_api = ObserverServiceAPI()
@@ -27,11 +28,8 @@ class FlowInterceptor:
     async def request(self, flow: http.HTTPFlow) -> None:
         """This function is called when a client request has been received. We do the injection here."""
         # Handle DOM Report
-        asyncio.ensure_future(self.service_api.handle_request(flow),loop=LOOP)
-
-
+        await self.service_api.handle_request(flow)
 
     async def response(self, flow: http.HTTPFlow) -> None:
         """This function is called when a server response has been received. We do the analysis here."""
-        asyncio.ensure_future(self.service_api.handle_response(flow),loop=LOOP)
-
+        await self.service_api.handle_response(flow)

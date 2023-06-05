@@ -53,15 +53,11 @@ class Exploit():
             for tag in tag_fragments:
                 self.tag_set.add(tag.lower().strip())
 
-    def verify(self) -> bool:
-        return True
-
-
 class ParameterMatcher():
     def __init__(self, type: str, part: str, target: str, words: list[str] = None, regexes: list[str] = None) -> None:
-        self._type = type
-        self._part = part
-        self._target = target
+        self.type = type
+        self.part = part
+        self.target = target
         self.words = None
         self.regexes = None
         if words:
@@ -70,8 +66,10 @@ class ParameterMatcher():
             self.regexes = set(regexes)
 
     def match(self, p: Parameter) -> bool:
+        if self.part != p.part and self.part != "all":
+            return False
         target = None
-        if self._target == "name":
+        if self.target == "name":
             target = p.name
         else:
             target = p.example_values[-1]
@@ -122,7 +120,8 @@ class AttackVector():
             index = int(index)
             attribute = matches.group("attribute")
             if index >= len(flow_sequence) or index < 0:
-                logging.error(f"{index} is out of range, {self.path}")
+                logging.error(
+                    f"index {index} is out of range in the required flow sequence for verification, {self.path}")
                 return value
             flow: ObHttpFlow = flow_sequence[index]
             mapped_attribute = ATTRIBUTE_TABLE[attribute]
@@ -130,8 +129,6 @@ class AttackVector():
                 return flow.__dict__[mapped_attribute]
             return value
 
-        # trace: ParameterTrace = self.trace_table[flow.trace_id]
-        # attack_vector: AttackVector = self.vector_table[trace.vector_id]
         for index, exploit in enumerate(self.exploit_sequence):
             if exploit is None:
                 continue
@@ -166,7 +163,7 @@ class AttackVector():
                         mapped_attr = ATTRIBUTE_TABLE[name]
                         if index >= len(flow_sequence):
                             logging.error(
-                                f"{index} is out of range, template {self.path}\n")
+                                f"index {index} is out of range in the required flow sequence for verification, template {self.path}\n")
                             return False
                         if mapped_attr not in flow_sequence[index].__dict__:
                             logging.error(
@@ -186,7 +183,6 @@ class AttackVector():
                 # FILL ALL REQUIRED PARAMETERS
                 for name, value in func.arguments.items():
                     filled_func.arguments[name] = fill_value(value)
-
                 # END
 
                 passed = verify(

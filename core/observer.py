@@ -1,13 +1,13 @@
-import asyncio
 import logging
+from multiprocessing import Process
 import os
 import subprocess
+
 
 import requests
 from persistence.models.param import Parameter
 from persistence.dal import DataAccessLayer
 from persistence.models.flow import ObHttpFlow
-from definitions import LOOP
 
 
 class BugAnalyzer():
@@ -23,9 +23,8 @@ class BugAnalyzer():
             "parameter_id": parameter_id,
             "flow_id": flow_id
         }
-        requests.post(url=end_point, json=data)
-        # ret = r.json()
-        # logging.warning(ret['msg'])
+        r = requests.post(url=end_point, json=data)
+        logging.warning(r.elapsed.total_seconds())
 
     async def analyze(self, flow: ObHttpFlow) -> None:
         for param in flow.all_parameters.keys():
@@ -58,11 +57,9 @@ class Observer:
         db_service = DataAccessLayer()
         self.ANALYZER = BugAnalyzer(db_service)
         self.DAL = db_service
-        nul = open(os.devnull, "w", encoding='utf-8')
-        service = subprocess.Popen(
-            ["Scripts\python.exe", "services\intruder\server.py"], stdout=nul, stderr=nul)
-
         self.services = []
+        nul=open(os.devnull,"w")
+        service = subprocess.Popen(["Scripts\python.exe", "services\intruder\server.py"], stdout=nul, stderr=nul)
         self.services.append(service)
 
     def clean(self):
