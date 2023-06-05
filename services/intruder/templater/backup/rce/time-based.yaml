@@ -40,6 +40,8 @@ target-arguments:
      - "payload"
      - "run"
      - "print"
+     - "storeId"
+     - "productId"
 flows:
   flow_1:
     payloads:

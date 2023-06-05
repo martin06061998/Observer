@@ -22,12 +22,30 @@ class AsserterServiceAPI:
         return float(2*len(intersec)/(len(wordlist_1)+len(wordlist_2))*100) > rate
 
     @classmethod
+    def has_response_body_size_greater_than(cls, response_body_size: int, lower_limit: int):
+        if response_body_size is None or lower_limit is None:
+            return False
+        return response_body_size > lower_limit
+
+    @classmethod
+    def has_response_body_size_equal_to(cls, response_body_size: int, value: int):
+        if response_body_size is None or value is None:
+            return False
+        return response_body_size == value
+
+    @classmethod
+    def has_response_body_size_less_than(cls, response_body_size: int, upper_limit: int):
+        if response_body_size is None or upper_limit is None:
+            return False
+        return response_body_size > upper_limit
+
+    @classmethod
     def is_delayed_for(cls, timestamp: float, duration: float):
         return timestamp >= duration
 
     @classmethod
     def has_status_code(cls, code: int, status_code: int) -> bool:
-        logging.warning(code)
+        # logging.warning(code)
         return code == status_code
 
     @classmethod

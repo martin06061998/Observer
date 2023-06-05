@@ -1,8 +1,8 @@
 
-from sqlalchemy import exc
-from persistence.database import Database
-from persistence.models.file import PickleFile
+from sqlalchemy import desc, exc, select
+from persistence.database import db_session
 from persistence.models.flow import ObHttpFlow
+from persistence.models.param import ParamFlowMap
 
 
 class FlowDAO():
@@ -11,46 +11,33 @@ class FlowDAO():
     def __init__(self) -> None:
         pass
 
+    async def get_flow_by_id(self, id: str) -> ObHttpFlow:
+        async_session = await db_session()
+        async with async_session() as session:
+            async with session.begin():
+                stmt = select(ObHttpFlow).where(ObHttpFlow.id == id)
+                result = await session.execute(stmt)
+                saved_flow = result.scalars().one()
+        return saved_flow
 
-    def get_flow_by_id(self, id: str) -> ObHttpFlow:
-        session = Database.get_session()
-        flow = session.query(ObHttpFlow).get({"id": id})
-        session.close()
-        return flow
+    async def insert_flow(self, flow: ObHttpFlow):
+        async_session = await db_session()
+        async with async_session() as session:
+            async with session.begin():
+                session.add(flow)
+            await session.commit()
 
-    def insert_flow(self, flow: ObHttpFlow):
-        if flow.response_body_content is None:
-            return
-        session = Database.get_session()
-        try:
-            session.add(flow)
-            session.commit()
-            session.refresh(flow)
-        except exc.IntegrityError:
-            session.rollback()
-        finally:
-            session.close()
-
-    def insert_pickle_file(self, path: str, data, last_modified: float):
-        session = Database.get_session()
-        newFile = PickleFile(path, data, last_modified)
-        session.add(newFile)
-        session.commit()
-        session.close()
-        return newFile
-
-    def update_pickle_file(self, path: str, data, last_modified: float):
-        session = Database.get_session()
-        file = session.query(PickleFile).filter(
-            PickleFile.path == path).first()
-        file.data = data
-        file.last_modified = last_modified
-        session.commit()
-        session.close()
-        return file
-
-    def get_pickle_file_by_path(self, path) -> PickleFile:
-        session = Database.get_session()
-        ret = session.query(PickleFile).filter(PickleFile.path == path).first()
-        session.close()
-        return ret
+    async def get_last_flow_by_parameter_id(self, parameter_id: str):
+        async_session = await db_session()
+        saved_flow = None
+        async with async_session() as session:
+            async with session.begin():
+                stmt = select(ParamFlowMap.flow_id).where(
+                    ParamFlowMap.parameter_id == parameter_id).order_by(desc(ParamFlowMap.id)).limit(1)
+                result = await session.execute(stmt)
+                flow_id = result.scalars().one()
+                if flow_id:
+                    stmt = select(ObHttpFlow).where(ObHttpFlow.id == flow_id)
+                    result = await session.execute(stmt)
+                    saved_flow = result.scalars().one()
+        return saved_flow

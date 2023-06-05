@@ -11,14 +11,17 @@ class ObserverServiceAPI:
         # Collect all attack templates
         self.observer = Observer()
 
-    def handle_request(self, flow: http.HTTPFlow) -> None:
-        f = ObHttpFlow(flow)
+    def clean(self):
+        self.observer.clean()
+    
+    async def handle_request(self, flow: http.HTTPFlow) -> None:
+        f = ObHttpFlow(flow=flow)
         if f.all_parameters is None:
             return
-        self.observer.handle_request(f)
+        await self.observer.handle_request(f)
 
-    def handle_response(self,  flow: http.HTTPFlow) -> None:
-        f = ObHttpFlow(flow)
+    async def handle_response(self,  flow: http.HTTPFlow) -> None:
+        f = ObHttpFlow(flow=flow)
         if f.all_parameters is None:
             return
-        self.observer.handle_response(f)
+        await self.observer.handle_response(f)

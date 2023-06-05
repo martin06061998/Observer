@@ -1,19 +1,10 @@
-import hashlib
+
 import itertools
 import logging
-from jinja2 import Template as jtemplate
 from persistence.models.attackvector import Exploit, Template, ParameterMatcher
-
 import yaml
-
 from persistence.models.attackvector import AttackVector, Payload, VerifyFunction
-HELP_FUNTIONS = {"md5"}
-
-
-def md5(value: str) -> str:
-    if value is None or type(value) is not str:
-        return
-    return hashlib.md5(value.encode()).hexdigest()
+from utilities.util import md5
 
 
 def render_payload(origin_value: str, payload_value: str, position: str) -> str:
@@ -35,7 +26,7 @@ def render_payload(origin_value: str, payload_value: str, position: str) -> str:
 def parse_template(path: str) -> Template:
     try:
         with open(path, 'r') as f:
-            # Start parse template
+            # START PARSING TEMPLATE
             yml_template = yaml.safe_load(f)
             yml_bug_type = yml_template['bug-type']
             yml_number_of_flow = yml_template['number-of-flow']
@@ -62,11 +53,12 @@ def parse_template(path: str) -> Template:
             exploit_list: list[set[Exploit]] = [None] * yml_number_of_flow
             tagged_exploit_dict: dict[str:set[Exploit]] = dict()
 
-            # Start parsing flows
+        # START PARSING FLOWS
             for i in range(yml_number_of_flow):
                 yml_flow_name = f"flow_{i}"
                 if yml_flow_name not in yml_flows:
                     if i == 0:
+
                         continue
                     else:
                         return
@@ -90,8 +82,7 @@ def parse_template(path: str) -> Template:
                     new_verify_functions.append(new_verify_function)
                 # End parsing verify functions
 
-                # Start parsing payloads
-
+            # START PARSING PAYLOADS
                 if 'payloads' in yml_flow:
                     yml_payloads = yml_flow['payloads']
                     for yml_payload in yml_payloads:
@@ -112,12 +103,13 @@ def parse_template(path: str) -> Template:
                         else:
                             exploit_list[i].add(new_exploit)
                 else:
-                    new_exploit = Exploit(verify_functions=new_verify_functions)
+                    new_exploit = Exploit(
+                        verify_functions=new_verify_functions)
                     exploit_list[i] = {new_exploit}
                     tagged_exploit_dict[yml_bug_type] = {new_exploit}
-                # End parsing payloads
+            # END PARSING PAYLOADS
 
-            # End parsing flows
+        # END PARSING FLOWS
             i = 0
             for _, tagged_exploit_set in tagged_exploit_dict.items():
                 list_of_intersection = []
@@ -127,15 +119,15 @@ def parse_template(path: str) -> Template:
                     list_of_intersection.append(exploit_set.intersection(
                         tagged_exploit_set))
                 for element in itertools.product(*list_of_intersection):
-                    new_attack_vector = AttackVector(
-                        id=md5(new_template.id+str(i)), machers=new_matchers, bug_type=yml_bug_type)
+                    new_attack_vector = AttackVector(id=md5(
+                        new_template.id+str(i)), exploit_sequence=None, path=path, matchers=new_matchers, bug_type=yml_bug_type)
                     if exploit_list[0] is not None:
-                        new_attack_vector.vector = element
+                        new_attack_vector.exploit_sequence = element
                     else:
-                        new_attack_vector.vector = ((None,)+element)
+                        new_attack_vector.exploit_sequence = ((None,)+element)
                     new_template.vectors.append(new_attack_vector)
                     i = i + 1
-            # End parsing template
+    # END PARSING TEMPLATE
     except Exception as e:
         logging.warning("An error has occur when create template: " + path)
         logging.warning("Message: " + str(e))

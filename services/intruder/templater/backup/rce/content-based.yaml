@@ -1,0 +1,73 @@
+description: ""
+bug-type: "rce"
+bug-name: "Remote Code Execution"
+number-of-flow: 2
+target-arguments:
+  - type: "word"
+    part: "all"
+    target: "name"
+    words:
+     - "daemon"
+     - "upload"
+     - "dir"
+     - "download"
+     - "log"
+     - "ip"
+     - "cli"
+     - "cmd"
+     - "exec"
+     - "command"
+     - "execute"
+     - "ping"
+     - "query"
+     - "jump"
+     - "code"
+     - "reg"
+     - "do"
+     - "func"
+     - "arg"
+     - "option"
+     - "load"
+     - "process"
+     - "step"
+     - "read"
+     - "email"
+     - "function"
+     - "req"
+     - "feature"
+     - "exe"
+     - "module"
+     - "payload"
+     - "run"
+     - "print"
+     - "productId"
+     - "storeId"
+flows:
+  flow_1:
+    payloads:
+      - value: ";set a=2"
+        position: "append"
+        tag: "window"
+      
+      - value: ";`set a=2"
+        position: "append"
+        tag: "window"
+      
+      - value: ";export a=2"
+        position: "append"
+        tag: "linux"
+      
+      - value: " 2>$nul"
+        position: "append"
+        tag: "window"
+      
+      - value: " 2>/dev/null"
+        position: "append"
+        tag: "linux"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!1}}"
+          rate: 93
+        expected-value: True

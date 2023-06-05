@@ -3,5 +3,8 @@
 pyvenv.cfg
 Scripts/
 include/
+__pycache__
 *.pyc
 Lib/
+.gitignore
+.vscode/

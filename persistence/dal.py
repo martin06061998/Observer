@@ -1,12 +1,11 @@
 
-import logging
-from persistence.dao.flowdao import FlowDAO
-from persistence.dao.inputdao import InputDao
-from persistence.dao.tracedao import TraceDAO
-from persistence.models.flow import ObHttpFlow
-from persistence.models.file import PickleFile
 
-from persistence.models.trace import InputTrace
+from persistence.dao.flowdao import FlowDAO
+from persistence.dao.paramdao import ParameterDao
+
+from persistence.models.flow import ObHttpFlow
+
+from persistence.models.param import Parameter
 
 
 class DataAccessLayer():
@@ -15,58 +14,39 @@ class DataAccessLayer():
     def __init__(self):
         self.db_services = dict()
         self.db_services["flow"] = FlowDAO()
-        self.db_services["trace"] = TraceDAO()
-        self.db_services['input'] = InputDao()
 
-    def clean(self):
-        for service in self.db_services.values():
-            service.clean()
+        self.db_services['parameter'] = ParameterDao()
 
-    def get_flow_by_id(self, id: str) -> ObHttpFlow:
+    # FLOW API
+    async def get_flow_by_id(self, id: str) -> ObHttpFlow:
         service = self.db_services["flow"]
-        return service.get_flow_by_id(id)
+        ret: ObHttpFlow = await service.get_flow_by_id(id)
+        return ret
 
-    def insert_flow(self, flow: ObHttpFlow):
+    async def insert_flow(self, flow: ObHttpFlow):
         service = self.db_services["flow"]
-        return service.insert_flow(flow)
+        return await service.insert_flow(flow)
 
-    def insert_pickle_file(self, path: str, data, last_modified: float):
+    async def get_last_flow_by_parameter_id(self, parameter_id: str) -> ObHttpFlow:
         service = self.db_services["flow"]
-        return service.insert_pickle_file(path, data, last_modified)
+        ret: ObHttpFlow = await service.get_last_flow_by_parameter_id(parameter_id)
+        return ret
+    # END
 
-    def update_pickle_file(self, path: str, data, last_modified: float):
-        service = self.db_services["flow"]
-        return service.update_pickle_file(path, data, last_modified)
+    # PARAMETER API
+    async def insert_parameter(self, new_parameter=None, param: str = None, flow: ObHttpFlow = None):
+        service = self.db_services["parameter"]
+        return await service.insert_parameter(new_parameter=new_parameter, param=param, flow=flow)
 
-    def get_pickle_file_by_path(self, path) -> PickleFile:
-        service = self.db_services["flow"]
-        return service.get_pickle_file_by_path(path)
+    async def get_parameter_by_id(self, id: str) -> Parameter:
+        service = self.db_services["parameter"]
+        return await service.get_parameter_by_id(id)
 
-    def insert_input(self, new_input=None, param: str = None, example_values: list[str] = None, flow: ObHttpFlow = None):
-        service = self.db_services["input"]
-        return service.insert_input(new_input=new_input, param=param, example_values=example_values, flow=flow)
+    async def add_param_flow(self, parameter_id: str, flow_id: str):
+        service = self.db_services["parameter"]
+        return await service.add_param_flow(parameter_id, flow_id)
 
-    def get_input_by_id(self, id: str):
-        service = self.db_services["input"]
-        return service.get_input_by_id(id)
-
-    def insert_trace(self, new_trace: InputTrace):
-        service = self.db_services["trace"]
-        return service.insert_trace(new_trace)
-
-    def insert_flow_id_to_trace(self, trace_id: str, flow_id: str):
-        service = self.db_services["trace"]
-        return service.insert_flow_id_to_trace(trace_id, flow_id)
-
-    def get_flow_by_trace_id(self, trace_id: str, index: int):
-        service = self.db_services["trace"]
-        return service.get_flow_by_trace_id(trace_id, index)
-
-    def get_trace_by_id(self, id: int):
-        service = self.db_services["trace"]
-        return service.get_trace_by_id(id)
-    
-    
-    def add_example_value(self,id:str,value:str):
-        service = self.db_services["input"]
-        return service.add_example_value(id,value)
+    async def add_example_value(self, parameter_id: str, value: str):
+        service = self.db_services["parameter"]
+        return await service.add_example_value(parameter_id, value)
+    # END

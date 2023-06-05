@@ -1,160 +1,60 @@
 
+import copy
+import inspect
+import logging
 import re
 from utilities.util import md5
-from persistence.models.input import Input as i
+from persistence.models.param import Parameter
+from persistence.models.flow import ObHttpFlow
+from definitions import ATTRIBUTE_TABLE
+from core.analyzer.asserter.assertserviceapi import AsserterServiceAPI
 
 
 class Payload:
-    @classmethod
-    def is_valid_position(cls, value: str) -> bool:
-        if value is None or type(value) is not str:
-            return False
-        ACCEPT_VALUE = {"append", "prepend", "inject", "wrap"}
-        return value in ACCEPT_VALUE
-
-    @classmethod
-    def is_valid_tag(cls, tag: str) -> bool:
-        return type(tag) is str
-
-    @classmethod
-    def is_valid_value(cls, value: str) -> bool:
-        return value is not None and type(value) is str
-
     def __init__(self, value: str, tag: str = "None", position: str = "None"):
-        if not Payload.is_valid_position(position):
-            raise ValueError('position value is not valid')
-        if not Payload.is_valid_tag(tag):
-            raise ValueError('tag value is not valid')
-        if not Payload.is_valid_value(value):
-            raise ValueError('payload value is not valid')
-        self._value = value.lower()
-        self._tag = tag.lower()
-        self._position = position.lower()
-        self._id = md5(value+tag+position)
+        self.value = value.lower()
+        self.tag = tag.lower()
+        self.position = position.lower()
+        self.id = md5(value+tag+position)
 
-    @property
-    def id(self):
-        self._id
-
-    @property
-    def position(self):
-        return self._position
-
-    @position.setter
-    def position(self, position: str):
-        if not Payload.is_valid_position(position):
-            raise ValueError('position value is not valid')
-        self._position = position
-
-    @property
-    def tag(self):
-        return self._tag
-
-    @tag.setter
-    def tag(self, tag: str):
-        if not Payload.is_valid_tag(tag):
-            raise ValueError('tag value is not valid')
-        self._tag = tag.lower()
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value: str):
-        if not Payload.is_valid_value(value):
-            raise ValueError('payload value is not valid')
-        self._value = value.lower()
+    def render(self, pattern: str) -> str:
+        position = self.position
+        payload_value = self.value
+        ret = None
+        if position == "inject":
+            ret = pattern[:int(
+                len(pattern)/2)] + payload_value + pattern[int(len(pattern)/2):]
+        elif position == "prepend":
+            ret = payload_value + pattern
+        elif position == "append":
+            ret = pattern + payload_value
+        elif position == "wrap":
+            ret = payload_value.replace(r"{{x}}", pattern)
+        else:
+            ret = payload_value
+        return ret
 
 
 class VerifyFunction:
-    @classmethod
-    def is_valid_function(cls, function_name: str) -> bool:
-        if function_name is None or type(function_name) is not str:
-            return False
-        return True
-
-    @classmethod
-    def is_valid_args(cls, arguments: dict) -> bool:
-        return arguments is None or type(arguments) is dict
-
     def __init__(self, function_name: str, arguments: dict, expected_value: bool) -> None:
-        if not VerifyFunction.is_valid_function(function_name):
-            raise ValueError('function value is not valid')
-        if not VerifyFunction.is_valid_args(arguments):
-            raise ValueError('arguments values are not valid')
-        self._function_name = function_name.lower()
-        self._arguments = arguments
-        self._expected_value = expected_value
-
-    @property
-    def function_name(self):
-        return self._function_name
-
-    @function_name.setter
-    def function_name(self, function_name: str):
-        if not VerifyFunction.is_valid_function(function_name):
-            raise ValueError('function name is not valid')
-        self._function_name = function_name.lower()
-
-    @property
-    def arguments(self):
-        return self._arguments
-
-    @arguments.setter
-    def arguments(self, arguments: dict):
-        if not VerifyFunction.is_valid_args(arguments):
-            raise ValueError('arguments values are not valid')
-        self._arguments = arguments
-
-    @property
-    def expected_value(self):
-        return self._expected_value
+        self.function_name = function_name.lower()
+        self.arguments = arguments
+        self.expected_value = expected_value
 
 
 class Exploit():
-    @classmethod
-    def is_valid_match_condition(cls, condition: str) -> str:
-        if condition is None or type(condition) is not str:
-            return False
-        ACCEPT_VALUE = {"all", "any"}
-        return condition in ACCEPT_VALUE
-
     def __init__(self, verify_functions: list[VerifyFunction], payload: Payload = None, match_condition: str = "all") -> None:
-        if match_condition and not Exploit.is_valid_match_condition(match_condition):
-            raise ValueError('match condition is not valid')
-        self._verify_functions = verify_functions
-        self._match_condition = match_condition
-        self._tag_set = set()
-        self._payload = payload
+        self.verify_functions = verify_functions
+        self.match_condition = match_condition
+        self.tag_set = set()
+        self.payload = payload
         if payload:
             tag_fragments = payload.tag.split(",")
             for tag in tag_fragments:
-                self._tag_set.add(tag.lower().strip())
+                self.tag_set.add(tag.lower().strip())
 
-    @property
-    def payload(self):
-        return self._payload
-
-    @payload.setter
-    def payload(self, payload: Payload):
-        self._payload = payload
-
-    @property
-    def verify_functions(self):
-        return self._verify_functions
-
-    @verify_functions.setter
-    def verify_functions(self, verify_functions: list[VerifyFunction]):
-        self._verify_functions = verify_functions
-
-    @property
-    def match_condition(self):
-        return self._match_condition
-
-    @property
-    def tag_set(self) -> set[str]:
-        return self._tag_set
+    def verify(self) -> bool:
+        return True
 
 
 class ParameterMatcher():
@@ -169,14 +69,12 @@ class ParameterMatcher():
         elif regexes:
             self.regexes = set(regexes)
 
-    def match(self, p: i) -> bool:
+    def match(self, p: Parameter) -> bool:
         target = None
         if self._target == "name":
             target = p.name
         else:
             target = p.example_values[-1]
-        if target is None:
-            target = ""
         if self.words:
             return target in self.words
         elif self.regexes:
@@ -184,107 +82,127 @@ class ParameterMatcher():
                 try:
                     if re.match(regex, target, re.IGNORECASE):
                         return True
-                except:
-                    pass
+                except Exception as e:
+                    logging.warning(f"{regex} {str(e)}")
         return False
 
 
 class AttackVector():
 
-    def __init__(self, id: str, machers: list[ParameterMatcher], vector: list[Exploit] = None, bug_type="") -> None:
-        self._vector = vector
-        self._bug_type = bug_type
-        self._id = id
-        self._matchers = machers
+    def __init__(self, id: str, path: str, matchers: list[ParameterMatcher], exploit_sequence: list[Exploit], bug_type: str) -> None:
+        self.exploit_sequence = exploit_sequence
+        self.bug_type = bug_type
+        self.id = id
+        self.matchers = matchers
+        self.tried_parameters = set()
+        self.path = path
 
-    def match(self, p: i):
-        for matcher in self._matchers:
-            if (matcher._part == p.part or matcher._part == "all") and matcher.match(p):
+    def match(self, p: Parameter):
+        for matcher in self.matchers:
+            if matcher.match(p):
                 return True
         return False
 
-    @property
-    def vector(self):
-        return self._vector
+    def verify(self, flow_sequence: list[ObHttpFlow]) -> bool:
+        """ Verify if this flow pass all defined conditions in the yaml file
 
-    @vector.setter
-    def vector(self, vector: list[Exploit]):
-        self._vector = vector
+        Args:
+            flow (ObHttpFlow): the flow target
 
-    @property
-    def number_of_flow(self):
-        return len(self._vector)
+        Returns:
+            bool: True if passed
+        """
 
-    @property
-    def bug_type(self):
-        return self._bug_type
+        def fill_value(value: str):
+            regex = r"{{(?P<attribute>[a-z0-9_]+)!(?P<index>\d+)}}"
+            matches = re.search(regex, str(value))
+            if not matches:
+                return value
+            index = matches.group("index")
+            index = int(index)
+            attribute = matches.group("attribute")
+            if index >= len(flow_sequence) or index < 0:
+                logging.error(f"{index} is out of range, {self.path}")
+                return value
+            flow: ObHttpFlow = flow_sequence[index]
+            mapped_attribute = ATTRIBUTE_TABLE[attribute]
+            if mapped_attribute in flow.__dict__:
+                return flow.__dict__[mapped_attribute]
+            return value
 
-    @bug_type.setter
-    def bug_type(self, bug_type: str):
-        self._bug_type = bug_type
+        # trace: ParameterTrace = self.trace_table[flow.trace_id]
+        # attack_vector: AttackVector = self.vector_table[trace.vector_id]
+        for index, exploit in enumerate(self.exploit_sequence):
+            if exploit is None:
+                continue
 
-    @property
-    def id(self):
-        return self._id
+            verify_functions = exploit.verify_functions
+
+            if verify_functions is None or len(verify_functions) < 1:
+                return True
+
+            for func in verify_functions:
+                # This object will store all needed information to run
+                filled_func = copy.deepcopy(func)
+
+                verify = getattr(AsserterServiceAPI, func.function_name, None)
+
+                # START FUNCTION NAME CHECKING
+                if not callable(verify):
+                    logging.error(
+                        f"Verify function with name {func.function_name} is NOT valid, template {self.path}")
+                    return False
+                # END
+
+                # START PARAMETER CHECKING
+                # Check if all required parameters exist and have valid values
+                required_parameters = inspect.signature(verify).parameters
+                for name, value in required_parameters.items():
+                    if name not in func.arguments.keys() and value.default == inspect._empty:
+                        if name not in ATTRIBUTE_TABLE:
+                            logging.error(
+                                f"param {name} is required, template {self.path}\n")
+                            return False
+                        mapped_attr = ATTRIBUTE_TABLE[name]
+                        if index >= len(flow_sequence):
+                            logging.error(
+                                f"{index} is out of range, template {self.path}\n")
+                            return False
+                        if mapped_attr not in flow_sequence[index].__dict__:
+                            logging.error(
+                                f"attribute {name} is not valid, template {self.path}\n")
+                            return False
+                        filled_func.arguments[name] = flow_sequence[index].__dict__[
+                            mapped_attr]
+
+                # Check if parameters are malformed
+                for name, value in func.arguments.items():
+                    if name not in required_parameters.keys():
+                        logging.error(
+                            f"param {name} is malformed, template {self.path}")
+                        return False
+                # END
+
+                # FILL ALL REQUIRED PARAMETERS
+                for name, value in func.arguments.items():
+                    filled_func.arguments[name] = fill_value(value)
+
+                # END
+
+                passed = verify(
+                    **filled_func.arguments) == filled_func.expected_value
+                if not passed:
+                    return False
+        return True
 
 
 class Template():
-    @classmethod
-    def is_valid_bug_type(cls, bug_type: str) -> bool:
-        if bug_type is None or type(bug_type) is not str:
-            return False
-        ACCEPT_VALUE = {"sqli", "xss", "rce", "open_redirect"}
-        return bug_type in ACCEPT_VALUE
-
-    @classmethod
-    def is_valid_bug_name(cls, bug_name: str) -> bool:
-        return bug_name is None or type(bug_name) is str
 
     def __init__(self, path: str, bug_type: str, vectors: list[AttackVector] = None, bug_name: str = "") -> None:
-        if not Template.is_valid_bug_type(bug_type):
-            raise ValueError('bug type is not valid')
-        if not Template.is_valid_bug_name(bug_name):
-            raise ValueError('bug name is not valid')
-        self._bug_type = bug_type.lower()
-        self._vectors = []
+        self.bug_type = bug_type.lower()
+        self.vectors = []
         if vectors is not None:
             self._vectors = vectors
-        self._bug_name = bug_name.lower()
-        self._path = path
-        self._id = md5(path)
-
-    @property
-    def bug_name(self):
-        return self._bug_name
-
-    @bug_name.setter
-    def bug_name(self, bug_name: str):
-        if not Template.is_valid_bug_type(bug_name):
-            raise ValueError('bug name is not valid')
-        self._bug_name = bug_name.lower()
-
-    @property
-    def bug_type(self):
-        return self._bug_type
-
-    @bug_type.setter
-    def bug_type(self, bug_type: str):
-        if not Template.is_valid_bug_type:
-            raise ValueError('bug type is not valid')
-        self._bug_type = bug_type
-
-    @property
-    def vectors(self):
-        return self._vectors
-
-    @vectors.setter
-    def vectors(self, vectors: list[AttackVector]):
-        self._vectors = vectors
-
-    @property
-    def path(self):
-        return self._path
-
-    @property
-    def id(self):
-        return self._id
+        self.bug_name = bug_name.lower()
+        self.path = path
+        self.id = md5(path)
