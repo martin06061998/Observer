@@ -49,3 +49,6 @@ class DataAccessLayer():
         ret = await service.add_example_value(parameter_id, value)
         return ret
     # END
+
+def get_data_access_layer_instance():
+    return DataAccessLayer()

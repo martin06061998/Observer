@@ -29,15 +29,13 @@ class ObHttpFlow(Base):
     _request_body_parameters = Column(JSON)
     _query = Column(JSON)
 
-    def __init__(self, flow: http.HTTPFlow = None, request_scheme: str = None, request_host: str = None, request_path: str = None, http_method: str = None, url: str = None, status_code: int = None, timestamp: float = None, request_headers: dict[str:str] = None, response_headers: dict[str:str] = None, response_body_content: bytes = None, request_body_parameters: dict[str:str] = None, query: dict[str:str] = None):
+    def __init__(self, flow: http.HTTPFlow = None, request_scheme: str = None, request_host: str = None, request_path: str = None, http_method: str = None, url: str = None, status_code: int = None, timestamp: float = None, request_headers: dict[str:str] = None, response_headers: dict[str:str] = None, response_body_content: bytes = None, request_body_parameters: dict[str:str] = None, query: dict[str:str] = None,group=None):
         if flow:
             # General Info
             self.id = md5(flow.id)
-            self.flow = flow
+            flow.request.headers["flow-id"] = self.id
             self.is_clone = flow.is_replay == "request"
-            self.trace_id = None
-            self.target_parameters = None
-
+            self.group = group
             # Parsing Request
             self.request_body_content = flow.request.content
             if self.request_body_content:
@@ -52,7 +50,7 @@ class ObHttpFlow(Base):
             elif flow.request.urlencoded_form:
                 self.request_body_parameters = flow.request.urlencoded_form
                 self.request_body_type = "application/x-www-form-urlencoded"
-            elif "content-type" in flow.request.headers and flow.request.headers["content-type"] == "application/json":
+            elif flow.request.raw_content and "content-type" in flow.request.headers and flow.request.headers["content-type"] == "application/json":
                 self.request_body_parameters = flow.request.json()
                 self.request_body_type = "application/json"
             else:
@@ -82,7 +80,6 @@ class ObHttpFlow(Base):
             self._request_headers = dict()
             for key, value in self.request_headers.items():
                 self._request_headers[key] = value
-
             # End
 
             # Start Parsing Response
@@ -106,6 +103,7 @@ class ObHttpFlow(Base):
                 self.status_code = None
             # END
         else:
+            self.group = group
             self.request_scheme = request_scheme
             self.request_host = request_host
             self.request_path = request_path
@@ -122,6 +120,7 @@ class ObHttpFlow(Base):
                 self.response_body_size = len(self.response_body_content)
             self._request_body_parameters = request_body_parameters
             self._query = query
+        
 
     def in_trace(self):
         return "tag" in self.request_headers

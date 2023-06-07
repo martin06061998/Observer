@@ -1,40 +1,18 @@
 import asyncio
 import copy
-import glob
 import logging
-import random
+from utilities.util import dict_to_url_encoded
 from quart import Quart, request
-import sys
-import os
 from werkzeug.routing import BaseConverter
-import requests
+from services.intruder.templater.template import build_vector_table
+from persistence.dal import get_data_access_layer_instance
+from services.intruder.render import render_html
+import aiofiles as aiof
+from persistence.models.attackvector import Exploit,AttackVector
+from persistence.models.flow import ObHttpFlow
 
 
-def init_vector_table():
-    current = os.path.dirname(os.path.realpath(__file__))
-    sys.path.append(os.path.join(current, '../../'))
-    from persistence.models.attackvector import AttackVector
-    from services.intruder.templater.template import parse_template
-    from definitions import ROOT_DIR
-    vector_table: dict[str:AttackVector]
-    vector_table = dict()
-    for path in glob.glob(pathname=os.path.join(ROOT_DIR, 'services', 'intruder',  'templater', 'recipe', '**', '*.yaml'), recursive=True):
-        newTemplate = parse_template(path)
-        if newTemplate is None:
-            continue
-        for vector in newTemplate.vectors:
-            vector_table[vector.id] = vector
-    return vector_table
-
-
-def get_data_access_layer_instance():
-    current = os.path.dirname(os.path.realpath(__file__))
-    sys.path.append(os.path.join(current, '../../'))
-    from persistence.dal import DataAccessLayer
-    return DataAccessLayer()
-
-
-vector_table = init_vector_table()
+vector_table =  dict()
 app = Quart(__name__)
 logging.basicConfig(filename="error.log",
                     filemode='a',
@@ -56,14 +34,6 @@ async def try_exploit(content: dict[str, str]):
     # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
     await asyncio.sleep(0.3)
 
-    current = os.path.dirname(os.path.realpath(__file__))
-    sys.path.append(os.path.join(current, '../../'))
-    from persistence.models.attackvector import AttackVector
-    from persistence.models.attackvector import Exploit
-    from persistence.models.flow import ObHttpFlow
-    import aiofiles as aiof
-    import httpx
-
     # PREPARE DATA BEFORE ASSESSMENT
     dal = get_data_access_layer_instance()
     flow_id = content["flow_id"]
@@ -75,78 +45,59 @@ async def try_exploit(content: dict[str, str]):
     if saved_flow is None:
         return
     # END
-
+    
     vector: AttackVector
     for vector in vector_table.values():
         if not vector.match(saved_param):
             continue
-        end_point = saved_flow.request_scheme+"://" + \
-            saved_flow.request_host+saved_flow.request_path
+        base_url = saved_flow.request_scheme+"://" + saved_flow.request_host
+        end_point = base_url+saved_flow.request_path
 
-        # BUG: The proxy option CANNOT be used here.
-        # Mitmproxy does not forward the request but stuck
-        # I think this bug is caused by Mitmproxy
-        proxies = {
-            "http://": "http://127.0.0.1:8080",
-            "https://": "http://127.0.0.1:8080"
-        }
+        #proxies = {
+        #    "http://": "http://127.0.0.1:8080",
+        #    "https://": "http://127.0.0.1:8080"
+        #}
+        
         headers: dict = saved_flow._request_headers
         headers["tag"] = vector.bug_type
-        if "content-length" in headers:
-            headers.pop("content-length")
-        if "Content-Length" in headers:
-            headers.pop("Content-Length")
+        headers.pop("content-length",None)
         flow_sequence = [saved_flow]
+        method = saved_param.http_method
+        params = None
+        data=None
         pattern = None
-
+        encoded_params = None
+        encoded_data = None
+        
         # HANDLE GET REQUEST(I.E HANDLE URL PARAMETERS)
-        if saved_flow.http_method.lower() == "get":
+        if saved_param.part == "query":
             params = copy.deepcopy(saved_flow._query)
             pattern = copy.deepcopy(params[saved_param.name])
-            exploit: Exploit
-            for exploit in vector.exploit_sequence:
-                if exploit is None:
-                    continue
-                payload = exploit.payload
-                if payload is None:
-                    continue
-                rendered_payload = payload.render(pattern)
-                params[saved_param.name] = rendered_payload
-                async with httpx.AsyncClient(verify=False, proxies=proxies) as client:
-                    ret = await client.get(url=end_point, timeout=14, params=params, headers=headers)
-
-                # ret = requests.get(url=end_point, headers=headers,params=params, verify=False, timeout=14, proxies=proxies)
-                new_flow = ObHttpFlow(request_scheme=saved_flow.request_scheme, request_host=saved_flow.request_host, request_path=saved_flow.request_path, http_method=saved_flow.http_method, url=saved_flow.url,
-                                      status_code=ret.status_code, timestamp=ret.elapsed.total_seconds(), request_headers=headers, response_headers=ret.headers, response_body_content=ret.content, query=params)
-                flow_sequence.append(new_flow)
-
-                # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
-                await asyncio.sleep(random.uniform(0.1, 0.3))
-        # END
         else:
-            # HANDLE POST (I.E PARAMETERS THAT ARE IN THE REQUEST BODY)
-            end_point = saved_flow.url
-            body_parameters = copy.deepcopy(
-                saved_flow._request_body_parameters)
-            pattern = copy.deepcopy(body_parameters[saved_param.name])
-            exploit: Exploit
-            for exploit in vector.exploit_sequence:
-                if exploit is None:
-                    continue
-                payload = exploit.payload
-                if payload is None:
-                    continue
-                rendered_payload = payload.render(pattern)
-                body_parameters[saved_param.name] = rendered_payload
-                # ret = requests.post(
-                #    url=end_point, headers=headers, data=body_parameters, verify=False, timeout=14, proxies=proxies)
-                async with httpx.AsyncClient(verify=False, proxies=proxies) as client:
-                    ret = await client.post(url=end_point, headers=headers, data=body_parameters, timeout=14)
-                new_flow = ObHttpFlow(request_scheme=saved_flow.request_scheme, request_host=saved_flow.request_host, request_path=saved_flow.request_path, http_method=saved_flow.http_method, url=saved_flow.url,
-                                      status_code=ret.status_code, timestamp=ret.elapsed.total_seconds(), request_headers=headers, response_headers=ret.headers, response_body_content=ret.content, request_body_parameters=body_parameters)
-                flow_sequence.append(new_flow)
-                # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
-                await asyncio.sleep(random.uniform(0.1, 0.3))
+            data = copy.deepcopy(saved_flow._request_body_parameters)
+            pattern = copy.deepcopy(data[saved_param.name])
+
+        
+        exploit: Exploit
+        for exploit in vector.exploit_sequence:
+            if exploit is None:
+                continue
+            payload = exploit.payload
+            if payload is None:
+                continue
+            rendered_payload = payload.render(pattern)
+            if params:
+                params[saved_param.name] = rendered_payload
+                encoded_params = dict_to_url_encoded(params)
+            if data:
+                data[saved_param.name] = rendered_payload
+                encoded_data = dict_to_url_encoded(data=data)
+            
+            r = await render_html(method=method,base_url=end_point,headers=headers,params=encoded_params,data=encoded_data)
+      
+            new_flow = ObHttpFlow(request_scheme=saved_flow.request_scheme, request_host=saved_flow.request_host, request_path=saved_flow.request_path, http_method=saved_flow.http_method, url=saved_flow.url,
+                                      status_code=r.get("status_code"), timestamp=r.get("elapsed"), request_headers=headers, response_headers=r.get("headers"), response_body_content=r.get("content"), query=params)
+            flow_sequence.append(new_flow)
             # END
 
         # VULNERABILITY ASSESSMENT
@@ -159,6 +110,7 @@ async def try_exploit(content: dict[str, str]):
                 await f.write(f"Bug type: {vector.bug_type}\n")
                 await f.write(f"Template Path: {vector.path}\n")
                 await f.write(f"Parameter: {saved_param.name}\n")
+                await f.write(f"Flow id: {saved_flow.id}\n")
                 for i, exploit in enumerate(vector.exploit_sequence):
                     if exploit is None:
                         continue
@@ -185,4 +137,6 @@ async def result(param):
 
 
 if __name__ == "__main__":
-    app.run(port=5555, debug=True)
+    loop = asyncio.get_event_loop()
+    loop.create_task(build_vector_table(vector_table=vector_table))
+    app.run(port=5555, loop=loop,debug=True)

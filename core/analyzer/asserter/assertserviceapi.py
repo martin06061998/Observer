@@ -66,17 +66,19 @@ class AsserterServiceAPI:
         return len(body_content_wordlist.intersection(wordlist)) > 0
 
     @classmethod
-    def search_any_regex(cls, content: str, patterns: set[str], IGNORE_CASE: bool = False) -> dict[str:list[Match[bytes]]] or None:
+    def contain_any_patterns(cls, response_body_content: bytes, patterns: set[str], IGNORE_CASE: bool = True) -> dict[str:list[Match[bytes]]] or None:
         """Search for a list of regex. Return the first match"""
-        if content is None or type(content) is not str:
-            return
+        if response_body_content is bytes:
+            response_body_content =response_body_content.decode("utf-8","ignore")
         for _pattern in patterns:
+            p = _pattern.encode("utf-8","ignore")
             if IGNORE_CASE:
-                match = search(_pattern, content, IGNORECASE)
+                match = search(p, response_body_content, IGNORECASE)
             else:
-                match = search(_pattern, content)
+                match = search(p, response_body_content)
             if match:
-                return {_pattern: match}
+                return True
+        return False
 
     @classmethod
     def search_all_regex(cls, content, patterns: set[str], IGNORE_CASE: bool = False) -> dict[str:list[Match[bytes]]] or None:

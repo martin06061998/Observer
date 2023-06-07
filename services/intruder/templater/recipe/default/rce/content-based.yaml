@@ -1,5 +1,5 @@
-description: ""
 bug-type: "rce"
+description: "detect RCE based on response body content"
 bug-name: "Remote Code Execution"
 number-of-flow: 2
 target-arguments:
@@ -43,6 +43,7 @@ target-arguments:
      - "productId"
      - "storeId"
      - "email"
+     - "action"
 flows:
   flow_1:
     payloads:

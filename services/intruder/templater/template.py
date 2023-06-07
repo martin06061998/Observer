@@ -5,29 +5,17 @@ from persistence.models.attackvector import Exploit, Template, ParameterMatcher
 import yaml
 from persistence.models.attackvector import AttackVector, Payload, VerifyFunction
 from utilities.util import md5
+import glob
+from aiofile import async_open
+import os
+import asyncio
+from definitions import ROOT_DIR
 
-
-def render_payload(origin_value: str, payload_value: str, position: str) -> str:
-    ret = None
-    if position == "insert":
-        ret = origin_value[:int(
-            len(origin_value)/2)] + payload_value + origin_value[int(len(origin_value)/2):]
-    elif position == "prepend":
-        ret = payload_value + origin_value
-    elif position == "append":
-        ret = origin_value + payload_value
-    elif position == "wrap":
-        ret = payload_value.replace(r"{{x}}", origin_value)
-    else:
-        ret = payload_value
-    return ret
-
-
-def parse_template(path: str) -> Template:
+async def parse_template(path: str) -> Template:
     try:
-        with open(path, 'r') as f:
+        async with async_open(path, 'r') as f:
             # START PARSING TEMPLATE
-            yml_template = yaml.safe_load(f)
+            yml_template = yaml.safe_load(await f.read())
             yml_bug_type = yml_template['bug-type']
             yml_number_of_flow = yml_template['number-of-flow']
             yml_flows = yml_template['flows']
@@ -58,7 +46,6 @@ def parse_template(path: str) -> Template:
                 yml_flow_name = f"flow_{i}"
                 if yml_flow_name not in yml_flows:
                     if i == 0:
-
                         continue
                     else:
                         return
@@ -133,3 +120,15 @@ def parse_template(path: str) -> Template:
         logging.warning("Message: " + str(e))
         return
     return new_template
+
+async def build_vector_table(vector_table:dict):
+    while True:
+        vector_table:dict[str:AttackVector]
+        for path in glob.glob(pathname=os.path.join(ROOT_DIR, 'services', 'intruder',  'templater', 'recipe', '**', '*.yaml'), recursive=True):
+            newTemplate = await parse_template(path)
+            if newTemplate is None:
+                continue
+            vector:AttackVector
+            for vector in newTemplate.vectors:
+                vector_table[vector.id] = vector
+        await asyncio.sleep(120)

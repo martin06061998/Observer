@@ -1,0 +1,71 @@
+bug-type: "xss"
+description: "detect reflected xss"
+bug-name: "Reflected|Dom XSS"
+number-of-flow: 2
+target-arguments:
+  - type: "word"
+    part: "all"
+    target: "name"
+    words:
+      - "q"
+      - "s"
+      - "search"
+      - "lang"
+      - "keyword"
+      - "query"
+      - "page"
+      - "keywords"
+      - "year"
+      - "view"
+      - "email"
+      - "type"
+      - "name"
+      - "p"
+      - "callback"
+      - "jsonp"
+      - "api_key"
+      - "api"
+      - "password"
+      - "email"
+      - "emailto"
+      - "token"
+      - "username"
+      - "csrf_token"
+      - "unsubscribe_token"
+      - "id"
+      - "item"
+      - "page_id"
+      - "month"
+      - "immagine"
+      - "list_type"
+      - "url"
+      - "terms"
+      - "categoryid"
+      - "key"
+      - "l"
+      - "begindate"
+      - "enddate"
+      - "v"
+flows:
+  flow_1:
+    payloads:
+      - value: "{{7125*852}}"
+        position: "replace"
+        tag: "xss"
+      
+      - value: "<m4rt1n81m4rt1n>"
+        position: "replace"
+        tag: "xss"
+      
+      - value: "\"><svg onload=alert(1)>"
+        position: "replace"
+        tag: "xss"
+
+    verify:
+      - function: "contain_any_patterns"
+        args:
+          patterns:
+            - <m4rt1n81m4rt1n>
+            - '6070500'
+            - <svg onload=alert(1)>
+        expected-value: True

@@ -1,5 +1,5 @@
-description: ""
 bug-type: "rce"
+description: "detect RCE based on time delay"
 bug-name: "Remote Code Execution"
 number-of-flow: 2
 target-arguments:
@@ -43,6 +43,7 @@ target-arguments:
      - "storeId"
      - "productId"
      - "email"
+     - "action"
 flows:
   flow_1:
     payloads:

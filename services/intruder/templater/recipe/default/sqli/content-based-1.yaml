@@ -1,4 +1,5 @@
 bug-name: "SQL Injection"
+description: "detect SQLi based on the response body content"
 bug-type: "sqli"
 target-arguments:
   - type: "word"
@@ -30,6 +31,7 @@ target-arguments:
       - "string"
       - "number"
       - "filter"
+      - "v"
 
   - type: "regex"
     target: "name"
@@ -44,12 +46,15 @@ flows:
       - value: "'+'"
         position: "inject"
         tag: "mssql"
+      
       - value: "'||'"
         position: "inject"
         tag: "postgresql"
+      
       - value: "' '"
         position: "inject"
-        tag: "mysql, mariadb"
+        tag: "mysql|mariadb"
+
     endpoint: "{{base_url}}"
     verify:
       - function: "has_similar_content_wordlist"
