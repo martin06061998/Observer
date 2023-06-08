@@ -30,8 +30,7 @@ class BugAnalyzer():
 
             # SKIP IF THE PARAMETER HAS BEEN EXPLOITED
             if parameter_id in self.parameter_table:
-                pass
-                # continue
+                continue
 
             # SAVING THE PARAMETER
             saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)

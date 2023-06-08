@@ -32,6 +32,8 @@ target-arguments:
       - "number"
       - "filter"
       - "v"
+      - "w"
+      - "q"
 
   - type: "regex"
     target: "name"

@@ -53,6 +53,10 @@ flows:
         position: "replace"
         tag: "xss"
       
+      - value: "${7125*852}"
+        position: "replace"
+        tag: "xss"
+      
       - value: "<m4rt1n81m4rt1n>"
         position: "replace"
         tag: "xss"

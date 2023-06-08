@@ -12,6 +12,8 @@ target-arguments:
      - "dir"
      - "download"
      - "log"
+     - "w"
+     - "q"
      - "ip"
      - "cli"
      - "cmd"

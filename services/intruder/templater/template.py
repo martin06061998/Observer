@@ -121,14 +121,12 @@ async def parse_template(path: str) -> Template:
         return
     return new_template
 
-async def build_vector_table(vector_table:dict):
+async def build_vector_table(vector_list:list[AttackVector]):
     while True:
-        vector_table:dict[str:AttackVector]
+        vector_list.clear()
         for path in glob.glob(pathname=os.path.join(ROOT_DIR, 'services', 'intruder',  'templater', 'recipe', '**', '*.yaml'), recursive=True):
             newTemplate = await parse_template(path)
             if newTemplate is None:
                 continue
-            vector:AttackVector
-            for vector in newTemplate.vectors:
-                vector_table[vector.id] = vector
-        await asyncio.sleep(120)
+            vector_list.extend(newTemplate.vectors)
+        await asyncio.sleep(180)
