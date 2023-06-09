@@ -1,5 +1,5 @@
 bug-name: "SQL Injection"
-description: "detect SQLi based on the response body content"
+description: "detect Mysql SQLi based on the response body content"
 bug-type: "sqli"
 target-arguments:
   - type: "word"
@@ -40,15 +40,15 @@ target-arguments:
     part: "all"
     regexes: 
       - "^.*(id|col|item|category|select|sort|row).*$"
-number-of-flow: 2
+number-of-flow: 3
 flows:
   match-condition: "all"
   flow_1:
     payloads:
-      - value: "+6-2*3"
-        position: "append"
-        tag: "all"
-            
+      - value: "'+'"
+        position: "inject"
+        tag: "mssql"
+
     endpoint: "{{base_url}}"
     verify:
       - function: "has_similar_content_wordlist"
@@ -57,3 +57,18 @@ flows:
           body_content_2: "{{response_body_content!1}}"
           rate: 93
         expected-value: True
+  
+  flow_2:
+    payloads:
+      - value: "' '"
+        position: "inject"
+        tag: "mssql"
+
+    endpoint: "{{base_url}}"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!2}}"
+          rate: 93
+        expected-value: False

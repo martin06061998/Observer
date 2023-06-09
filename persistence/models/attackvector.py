@@ -46,12 +46,10 @@ class Exploit():
     def __init__(self, verify_functions: list[VerifyFunction], payload: Payload = None, match_condition: str = "all") -> None:
         self.verify_functions = verify_functions
         self.match_condition = match_condition
-        self.tag_set = set()
+        self.tag = None
         self.payload = payload
         if payload:
-            tag_fragments = payload.tag.split(",")
-            for tag in tag_fragments:
-                self.tag_set.add(tag.lower().strip())
+            self.tag = payload.tag.lower().strip()
 
 class ParameterMatcher():
     def __init__(self, type: str, part: str, target: str, words: list[str] = None, regexes: list[str] = None) -> None:
