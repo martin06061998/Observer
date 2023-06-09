@@ -52,10 +52,13 @@ def dict_to_multipart_form(data:dict[bytes:bytes])->bytes:
     return text
 
 
-def base64_encode(value: str) -> str:
-    return base64.b64encode(value.encode('utf-8', 'ignore')).decode('utf-8', 'ignore')
+def base64_encode(value) -> str:
+    if type(value) is str:
+        value=value.encode('utf-8', 'ignore')
+        
+    return base64.b64encode(value).decode('utf-8', 'ignore')
 
 
 def base64_decode(value: str) -> str:
-    return base64.b64decode(value.encode('utf-8', 'ignore')).decode('utf-8', 'ignore')
+    return base64.b64decode(value.encode('utf-8', 'ignore'))
 

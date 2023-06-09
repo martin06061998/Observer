@@ -32,9 +32,7 @@ class Parameter(Base):
         self.path = path
         self.data_type = data_type
         self.id = Parameter.calculate_id(name, http_method, scheme, host, path)
-        self.example_values = []
-        if example_values:
-            self.example_values = [*set(example_values)]
+        self.example_values = [example_values]
         self.part = part
 
     @classmethod

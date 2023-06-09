@@ -16,4 +16,3 @@ with open(os.path.join(ROOT_DIR, 'gadget', 'nativeJSHook.js')) as f:
 LOOP = asyncio.get_event_loop()
 
 
-    

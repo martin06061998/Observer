@@ -122,7 +122,7 @@ async def build_vector_table(vector_list:list[AttackVector]):
     while True:
         vector_list.clear()
         for path in glob.glob(pathname=os.path.join(ROOT_DIR, 'services', 'intruder',  'templater', 'recipe', '**', '*.yaml'), recursive=True):
-            vectors =  await  parse_template(path)
+            vectors =  await parse_template(path)
             if vectors is None:
                 continue
             vector_list.extend(vectors)

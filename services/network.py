@@ -3,9 +3,9 @@ import logging
 import time
 from playwright.async_api import async_playwright,Route
 from utilities.util import dict_to_url_encoded
+import asyncio
 
-
-async def browserless_request(method:str,end_point:str,headers:dict[str:str]=None,data:str=None,timeout:float=None) -> dict:
+async def browserless_request(method:str,end_point:str,headers:dict[str:str]=None,data:str=None,timeout:float=None,proxy:str="http://127.0.0.1:8080") -> dict:
     async def handler(route: Route):
         # Fetch original response.
         if "tag" in route.request.headers:
@@ -23,7 +23,7 @@ async def browserless_request(method:str,end_point:str,headers:dict[str:str]=Non
         )
 
     proxy = {
-      "server":"http://127.0.0.1:8080"  
+      "server":proxy 
     }
     
 
@@ -36,12 +36,13 @@ async def browserless_request(method:str,end_point:str,headers:dict[str:str]=Non
             page = await context.new_page()
             start = time.time() 
             await page.route(end_point,handler)
+            #timeout=timeout*1000 if timeout else None
             response = await page.goto(url=end_point,wait_until="domcontentloaded",timeout=timeout)
             end=time.time()
             content = await page.content()
             content = content.encode("utf-8","ignore")
             status_code =  response.status
-            headers = response.headers
+            response_headers = response.headers
             elapsed=end-start
             await browser.close()
         except Exception as e:
@@ -49,33 +50,32 @@ async def browserless_request(method:str,end_point:str,headers:dict[str:str]=Non
             status_code = None
             elapsed=None
             end=None
-            headers = None
+            response_headers = None
             logging.warning(str(e))
     return {
         "content":content,
         "status_code":status_code,
         "elapsed":elapsed,
-        "response_headers":headers
+        "response_headers":response_headers
     }
 
-async def httpx_request(method:str,end_point:str,headers:str,params:dict[str:str]=None,data:dict[str:str]=None,timeout:float=None):
-    async with httpx.AsyncClient(verify=False,proxies={"https://":"http://127.0.0.1:8080"}) as client:
-        r : httpx.Response = await client.request(url= end_point,method=method,params=params,headers=headers,data=data,timeout=timeout)
+async def httpx_request(method:str,end_point:str,headers:str,params:dict[str:str]=None,data:dict[str:str]=None,json:dict[str:str]=None,timeout:float=None,proxy:str="http://127.0.0.1:8080"):
+    async with httpx.AsyncClient(verify=False,proxies={"https://":proxy,"http://":proxy}) as client:
+        r : httpx.Response = await client.request(url= end_point,method=method,params=params,headers=headers,json=json,data=data,timeout=timeout)
         content = r.content
         response_headers = r.headers
         status_code = r.status_code
         elapsed = r.elapsed.total_seconds()
-
-    return {
-        "content":content,
-        "response_headers": response_headers,
-        "status_code":status_code,
-        "elapsed":elapsed
-    }
+        return {
+            "content":content,
+            "response_headers": {**response_headers},
+            "status_code":status_code,
+            "elapsed":elapsed
+        }
     
 
 
-async def request(method:str,end_point:str,headers:str,params:dict[str:str]=None,data:dict[str:str]=None,timeout:float=None,body_type:str="application/x-www-form-urlencoded",browser:bool=False):
+async def request(method:str,end_point:str,headers:str=None,params:dict[str:str]=None,data:dict[str:str]=None,timeout:float=None,body_type:str="application/x-www-form-urlencoded",browser:bool=False,json=None,proxy:str="http://127.0.0.1:8080"):
     r=None
     if browser:
         encoded_params = None
@@ -86,9 +86,9 @@ async def request(method:str,end_point:str,headers:str,params:dict[str:str]=None
         if params:
             encoded_params=dict_to_url_encoded(params)
             end_point=f"{end_point}?{encoded_params}"
-        r : dict = await browserless_request(end_point= end_point,method=method,headers=headers,data=encoded_data)
+        r : dict = await browserless_request(end_point= end_point,method=method,headers=headers,data=encoded_data,proxy=proxy)
     else:
-        r = await httpx_request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=timeout)
+        r = await httpx_request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=timeout,json=json,proxy=proxy)
     
     if r.get("elapsed",None) and r.get("content",None) and r.get("response_headers",None) and r.get("status_code",None):
         return r

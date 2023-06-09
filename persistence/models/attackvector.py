@@ -8,7 +8,10 @@ from persistence.models.param import Parameter
 from persistence.models.flow import ObHttpFlow
 from definitions import ATTRIBUTE_TABLE
 from core.analyzer.asserter.assertserviceapi import AsserterServiceAPI
-
+import asyncio
+import aiofiles as aiof
+import httpx
+from utilities.util import base64_decode
 
 class Payload:
     def __init__(self, value: str, tag: str = "None", position: str = "None"):
@@ -76,10 +79,10 @@ class ParameterMatcher():
         elif self.regexes:
             for regex in self.regexes:
                 try:
-                    if re.match(regex, target, re.IGNORECASE):
+                    if (type(target) is bytes or type(target) is str) and re.match(regex, target, re.IGNORECASE):
                         return True
                 except Exception as e:
-                    logging.warning(f"{regex} {str(e)}")
+                    logging.warning(f"error when handle {regex} {str(e)}")
         return False
 
 
@@ -188,6 +191,94 @@ class AttackVector():
                 if not passed:
                     return False
         return True
+    
+    async def exploit(self,flow:ObHttpFlow,parameter:Parameter):
+        async def report_bug():
+            async with aiof.open("bug.log", "a+") as f:
+                await f.write(f"Bug type: {self.bug_type}\n")
+                await f.write(f"Template Path: {self.path}\n")
+                await f.write(f"Parameter: {parameter.name}\n")
+                await f.write(f"Flow id: {flow.id}\n")
+                for i, exploit in enumerate(self.exploit_sequence):
+                    if exploit is None:
+                        continue
+                    payload = exploit.payload
+                    if payload is None:
+                        continue
+                    await f.write(f"Payload {i}: {payload.render(pattern)}\n")
+                await f.write(f"="*125+"\n\n")
+                await f.flush()
+    
+    
+        #START
+        await asyncio.sleep(0.2)
+
+        if not self.match(parameter):
+            return
+        end_point = f"{flow.request_scheme}://{flow.request_host}{flow.request_path}"
+        headers: dict = flow._request_headers
+        headers["tag"] = self.bug_type
+        headers.pop("content-length",None)
+        headers.pop("Content-Length",None)
+        flow_sequence = [flow]
+        method = parameter.http_method
+        params = None
+        data=None
+        pattern = None
+
+        if parameter.part == "query":
+            params = copy.deepcopy(flow._query)
+            pattern = copy.deepcopy(params[parameter.name])
+        else:
+            data = copy.deepcopy(flow._request_body_parameters)
+            pattern = copy.deepcopy(data[parameter.name])
+
+        exploit:Exploit
+        for exploit in self.exploit_sequence:
+            if exploit is None:
+                continue
+            payload:Payload = exploit.payload
+
+            if payload is None:
+                continue
+            rendered_payload = payload.render(pattern)
+
+            if params:
+                params[parameter.name] = rendered_payload
+            if data:
+                data[parameter.name] = rendered_payload
+            
+            ret:dict=None
+            browser = True if self.bug_type == "xss" else False
+            
+            async with httpx.AsyncClient() as client:
+                r : httpx.Response = await client.post(url="http://127.0.0.1:5554/request",json={
+                "method":method,
+                "end_point":end_point,
+                "headers":headers,
+                "data":data,
+                "params":params,
+                "browser":browser
+            },timeout=120)
+
+            ret = r.json()
+
+            if ret.get("msg",None) != "ok":
+                continue 
+            ret["content"] =  base64_decode(ret["content"])
+            new_flow = ObHttpFlow(request_scheme=flow.request_scheme, request_host=flow.request_host, request_path=flow.request_path, http_method=flow.http_method, url=flow.url,
+                                        status_code=ret.get("status_code"), timestamp=ret.get("elapsed"), request_headers=headers, response_headers=ret.get("response_headers"), response_body_content=ret.get("content"), query=params)
+            flow_sequence.append(new_flow)
+
+
+        # VULNERABILITY ASSESSMENT
+        isVulnerable = self.verify(flow_sequence=flow_sequence)
+
+        # REPORT BUG
+        if isVulnerable:
+            await report_bug()
+            
+        # END
 
 
 class Template():

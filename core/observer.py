@@ -30,7 +30,7 @@ class BugAnalyzer():
 
             # SKIP IF THE PARAMETER HAS BEEN EXPLOITED
             if parameter_id in self.parameter_table:
-                continue
+                pass
 
             # SAVING THE PARAMETER
             saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)
@@ -41,8 +41,8 @@ class BugAnalyzer():
                 self.parameter_table[parameter_id] = new_parameter
             else:
                 self.parameter_table[parameter_id] = saved_parameter
-            await self.DAL.add_param_flow(parameter_id=parameter_id, flow_id=flow.id)
 
+            await self.DAL.add_param_flow(parameter_id=parameter_id, flow_id=flow.id)
             # START EXPLOITING
             await self.try_exploit(parameter_id=parameter_id, flow_id=flow.id)
 
@@ -55,9 +55,12 @@ class Observer:
         self.DAL = db_service
         self.services = []
         nul = open(os.devnull, "w")
-        service = subprocess.Popen(
+        intruder = subprocess.Popen(
             ["Scripts\python.exe", "services\intruder\server.py"], stdout=nul, stderr=nul)
-        self.services.append(service)
+        crawler = subprocess.Popen(
+            ["Scripts\python.exe", "services\crawler\server.py"], stdout=nul, stderr=nul)
+        self.services.append(intruder)
+        self.services.append(crawler)
 
     def clean(self):
         for s in self.services:
