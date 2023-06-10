@@ -1,5 +1,5 @@
 # Observer
-A dynamical input penetration testing system based on Mitmproxy. This project strongly focuses on the detecting phase.
+A dynamic input validation vulnerability detection system based on Mitmproxy. This project strongly focuses on the detecting phase.
 
 ## Features:
  - Capture the attack surface (i.e save all endpoints that accept input)
