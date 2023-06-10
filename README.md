@@ -22,10 +22,15 @@ playwright install chromium
 ```
 
 ## Usage
+1.Start the proxy
 ```bash
-Scripsts\mitmproxy -s main.py --allow-hosts https://example.com
+mitmproxy -s main.py --allow-hosts https://example.com
 ```
 
+2.Now, we can explore the attack surface manually or use a crawler to filter and forward traffic to the proxy 
+```python
+python xnLinkFinder.py -sp https://example.com -d 4 -i https://example.com -rp http://127.0.0.1:8080 -sf example.com -p 20 -u desktop
+```
 ## Attack Vector Template Example
 
 **Example 1**
