@@ -1,0 +1,5 @@
+mitmproxy==9.0.1
+SQLAlchemy==2.0.15 
+quart==0.18.4
+pytest-playwright==0.3.3
+PyYAML==6.0.0
