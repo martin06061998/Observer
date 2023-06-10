@@ -2,7 +2,9 @@
 A dynamical input penetration testing system based on Mitmproxy. This project strongly focuses on the detecting phase.
 
 ## Features:
- - Generate and execute test cases based on yaml files
+ - Capture the attack surface (i.e save all endpoints that accept input)
+ - Pick input for testing based on wordlist and pattern matching
+ - Automatically run a suite of test cases based on yaml files
  - Detect , verify, and report security bugs
 
 ## Install
