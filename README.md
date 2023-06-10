@@ -1,7 +1,21 @@
 # Observer
 A dynamical input penetration testing system based on Mitmproxy. This project strongly focuses on the detecting phase.
 
-## Usuage
+## Install
+1.Clone the repo
+```
+git clone https://github.com/martin06061998/Observer.git
+```
+2.Install dependencies
+```python
+pip install -r requirements.txt
+```
+3. Install headless broswer to scrape dynamic websites
+```python
+playwright install chromium
+```
+
+## Usage
 ```bash
 Scripsts\mitmproxy -s main.py --allow-hosts https://example.com
 ```
