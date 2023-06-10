@@ -1,11 +1,16 @@
 # Observer
-A dynamical input penetration testing system based on Mitmproxy. This project stongly focuses on detecting phase.
+A dynamical input penetration testing system based on Mitmproxy. This project strongly focuses on the detecting phase.
+
+## Usuage
+```bash
+Scripsts\mitmproxy -s main.py --allow-hosts https://example.com
+```
 
 ## Features:
  - Generate and execute test cases based on yaml files
- - Detect ,verify and report security bugs
+ - Detect , verify, and report security bugs
 
-## Example Attack Vector Template
+## Attack Vector Template Example
 
 **Example 1**
 
@@ -189,5 +194,4 @@ Report:
 ![report](images/xss.png)
 
 ## TO DO:
- - Redesign core classes
- - Refactoring all methods into Clean(er) Code
+ - Add automatic input-detecting functionality to the crawling service
