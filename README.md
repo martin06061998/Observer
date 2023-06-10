@@ -1,5 +1,5 @@
 # Observer
-A dynamical input penetration testing system based on Mitmproxy
+A dynamical input penetration testing system based on Mitmproxy. This project focus on detecting phase only
 
 ## Features:
  - Generate and execute test cases based on yaml files
@@ -8,6 +8,7 @@ A dynamical input penetration testing system based on Mitmproxy
 ## Example Attack Vector Template
 
 Example 1
+
 Yaml file to detect PostgreSQL Injection based on response body content differences
 
 
@@ -88,7 +89,10 @@ flows:
         expected-value: False
 ```
 Results:
+
+Mitmproxy:
 ![Mitmproxy Result](images/sqli_time.png)
+Report
 ![Postgresql SQLi](images/sqli.png)
 
 
