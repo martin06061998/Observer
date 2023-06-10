@@ -8,6 +8,7 @@ Features:
 Example Attack Vector Template
 Yaml file to detect PostgreSQL Injection based on response body content differences
 
+```YAML
 bug-name: "SQL Injection"
 description: "detect Postgresql SQLi based on the response body content"
 bug-type: "sqli"
@@ -68,7 +69,7 @@ flows:
           rate: 93
         expected-value: True
   
-  flow_2: # To remove false positive 
+  flow_2: # To avoid false positives 
     payloads:
       - value: "'+'"
         position: "inject"
@@ -82,7 +83,7 @@ flows:
           body_content_2: "{{response_body_content!2}}"
           rate: 93
         expected-value: False
-
+```
 
 TO DO:
  - Redesign core classes
