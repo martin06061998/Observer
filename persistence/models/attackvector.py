@@ -83,18 +83,20 @@ class ParameterMatcher():
                         return True
                 except Exception as e:
                     logging.warning(f"error when handle {regex} {str(e)}")
+        #logging.warning(f"{p.name} failed")
         return False
 
 
 class AttackVector():
 
-    def __init__(self, id: str, path: str, matchers: list[ParameterMatcher], exploit_sequence: list[Exploit], bug_type: str) -> None:
+    def __init__(self, id: str, path: str, matchers: list[ParameterMatcher], exploit_sequence: list[Exploit], bug_type: str,description:str=None) -> None:
         self.exploit_sequence = exploit_sequence
         self.bug_type = bug_type
         self.id = id
         self.matchers = matchers
         self.tried_parameters = set()
         self.path = path
+        self.description = description
 
     def match(self, p: Parameter):
         for matcher in self.matchers:
@@ -196,16 +198,15 @@ class AttackVector():
         async def report_bug():
             async with aiof.open("bug.log", "a+") as f:
                 await f.write(f"Bug type: {self.bug_type}\n")
+                await f.write(f"Description: {self.description}\n")
                 await f.write(f"Template Path: {self.path}\n")
                 await f.write(f"Parameter: {parameter.name}\n")
                 await f.write(f"Flow id: {flow.id}\n")
-                for i, exploit in enumerate(self.exploit_sequence):
-                    if exploit is None:
-                        continue
-                    payload = exploit.payload
-                    if payload is None:
-                        continue
-                    await f.write(f"Payload {i}: {payload.render(pattern)}\n")
+                exploit = self.exploit_sequence[0] if self.exploit_sequence[0] else self.exploit_sequence[1] 
+                payload = exploit.payload if exploit.payload  else None
+                if payload:
+                    await f.write(f"Payload: {payload.render(pattern)}\n")
+                    await f.write(f"Tag: {payload.tag}\n")
                 await f.write(f"="*125+"\n\n")
                 await f.flush()
     

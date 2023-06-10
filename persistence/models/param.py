@@ -2,7 +2,7 @@ from sqlalchemy import JSON, Column, ForeignKey, Integer, String
 from utilities.util import md5
 from persistence.database import Base
 from persistence.models.flow import ObHttpFlow
-
+import logging
 
 class Parameter(Base):
     """A taint trace represents a trace of a taint to a specific vulnerability."""
@@ -32,7 +32,7 @@ class Parameter(Base):
         self.path = path
         self.data_type = data_type
         self.id = Parameter.calculate_id(name, http_method, scheme, host, path)
-        self.example_values = [example_values]
+        self.example_values = example_values
         self.part = part
 
     @classmethod

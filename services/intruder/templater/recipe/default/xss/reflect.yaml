@@ -1,5 +1,5 @@
 bug-type: "xss"
-description: "detect reflected xss"
+description: "detect reflected or DOM xss"
 bug-name: "Reflected|Dom XSS"
 number-of-flow: 2
 target-arguments:

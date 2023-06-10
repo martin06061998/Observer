@@ -1,5 +1,5 @@
 bug-name: "SQL Injection"
-description: "detect Mysql SQLi based on the response body content"
+description: "detect MSSQL SQLi based on the response body content"
 bug-type: "sqli"
 target-arguments:
   - type: "word"
