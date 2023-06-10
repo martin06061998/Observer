@@ -88,8 +88,8 @@ flows:
         expected-value: False
 ```
 Results:
-[Mitmproxy Result](https://github.com/martin06061998/Observer/blob/main/images/sqli_time.png?raw=True)
-[Postgresql SQLi](https://github.com/martin06061998/Observer/blob/main/images/sqli.png?raw=True)
+![Mitmproxy Result](images/sqli_time.png)
+![Postgresql SQLi](images/sqli.png)
 
 
 ## TO DO:
