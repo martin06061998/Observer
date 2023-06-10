@@ -1,7 +1,7 @@
 bug-type: "rce"
 description: "detect RCE based on response body content"
 bug-name: "Remote Code Execution"
-number-of-flow: 2
+number-of-flow: 3
 target-arguments:
   - type: "word"
     part: "all"
@@ -57,17 +57,9 @@ flows:
         position: "append"
         tag: "window"
       
-      - value: ";export a=2"
-        position: "append"
-        tag: "linux"
-      
       - value: " 2>$nul"
         position: "append"
         tag: "window"
-      
-      - value: " 2>/dev/null"
-        position: "append"
-        tag: "linux"
     verify:
       - function: "has_similar_content_wordlist"
         args:
@@ -75,3 +67,15 @@ flows:
           body_content_2: "{{response_body_content!1}}"
           rate: 93
         expected-value: True
+  flow_2:
+    payloads:
+      - value: " 2>/dev/null"
+        position: "append"
+        tag: "linux"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!2}}"
+          rate: 93
+        expected-value: False

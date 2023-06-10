@@ -28,7 +28,7 @@ class Parameter(Base):
         self.http_method = http_method
         self.scheme = scheme
         self.host = host
-        path = path
+        path = path.split("?")[0]
         self.path = path
         self.data_type = data_type
         self.id = Parameter.calculate_id(name, http_method, scheme, host, path)

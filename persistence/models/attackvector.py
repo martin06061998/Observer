@@ -83,7 +83,6 @@ class ParameterMatcher():
                         return True
                 except Exception as e:
                     logging.warning(f"error when handle {regex} {str(e)}")
-        #logging.warning(f"{p.name} failed")
         return False
 
 

@@ -18,10 +18,10 @@ class ObserverServiceAPI:
         f = ObHttpFlow(flow=flow)
         if f.all_parameters is None:
             return
-        await self.observer.handle_request(f)
+        #await self.observer.handle_request(f)
 
     async def handle_response(self,  flow: http.HTTPFlow) -> None:
         f = ObHttpFlow(flow=flow)
         if f.all_parameters is None:
             return
-        await self.observer.handle_response(f)
+        #await self.observer.handle_response(f)

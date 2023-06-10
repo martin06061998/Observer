@@ -17,8 +17,7 @@ class ParameterDao:
         if new_parameter is None:
             if param is None or flow is None:
                 return
-            new_parameter = Parameter.new_parameter(
-                param, flow)
+            new_parameter = Parameter.new_parameter(param, flow)
         async_session = await db_session()
         async with async_session() as session:
             async with session.begin():

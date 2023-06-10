@@ -5,6 +5,7 @@ from werkzeug.routing import BaseConverter
 from services.intruder.templater.template import build_vector_table
 from persistence.dal import get_data_access_layer_instance
 from persistence.models.attackvector import AttackVector
+import requests
 
 vector_list : list[AttackVector]=  []
 loop = None
@@ -42,18 +43,30 @@ async def try_exploit(content: dict[str, str]):
     
     pool = []
     
-    for vector in vector_list:
-        try:
+    try:
+        for vector in vector_list:
             if len(pool) < LIMIT:
+                counter = 0
+                while True:
+                    error = False
+                    try:
+                        ret = requests.get("http://127.0.0.1:5554/busy",timeout=0.05)
+                        json_data = ret.json()
+                        is_blocked = json_data.get("busy")
+                    except:
+                        error=True
+                    if not is_blocked and not error:
+                        break
+                    counter=counter+1
+                    await asyncio.sleep(counter*5)
                 t = loop.create_task(vector.exploit(flow=saved_flow,parameter=saved_param))
                 pool.append(t)
-                #await asyncio.sleep(0.2)
             else:
                 await asyncio.gather(*pool,return_exceptions=True)
-        except Exception as e:
+                pool.clear()
+    except Exception as e:
             logging.error(str(e))
-        finally:
-            pool.clear()
+      
 
 
 

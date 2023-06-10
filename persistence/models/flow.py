@@ -1,12 +1,11 @@
-import json
+
 import random
 import time
 from sqlalchemy import Column, Float, Integer, String, LargeBinary, Boolean, JSON
 from persistence.database import Base
 from mitmproxy import http
-from mitmproxy import ctx
 from utilities.util import md5
-
+from url_normalize import url_normalize
 
 class ObHttpFlow(Base):
     __tablename__ = 'flows'
@@ -110,7 +109,7 @@ class ObHttpFlow(Base):
             self.http_method = http_method
             self.url = url
             # assign id
-            self.id = md5(f"{time.time()}{url}{random.randrange(10000)}")
+            self.id = md5(f"{time.time()}{self.url}{random.randrange(10000)}")
             self.timestamp = timestamp
             self.status_code = status_code
             self._request_headers = request_headers

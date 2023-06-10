@@ -1,0 +1,78 @@
+bug-type: "rce"
+description: "detect RCE based on response body content"
+bug-name: "Remote Code Execution"
+number-of-flow: 3
+target-arguments:
+  - type: "word"
+    part: "all"
+    target: "name"
+    words:
+     - "daemon"
+     - "upload"
+     - "dir"
+     - "download"
+     - "log"
+     - "ip"
+     - "cli"
+     - "cmd"
+     - "exec"
+     - "command"
+     - "execute"
+     - "ping"
+     - "query"
+     - "jump"
+     - "code"
+     - "reg"
+     - "do"
+     - "func"
+     - "arg"
+     - "option"
+     - "load"
+     - "process"
+     - "step"
+     - "read"
+     - "email"
+     - "function"
+     - "req"
+     - "w"
+     - "q"
+     - "feature"
+     - "exe"
+     - "module"
+     - "payload"
+     - "run"
+     - "print"
+     - "productId"
+     - "storeId"
+     - "email"
+     - "action"
+flows:
+  flow_1:
+    payloads:
+      - value: ";export a=2"
+        position: "append"
+        tag: "linux"
+      
+      - value: " 2>/dev/null"
+        position: "append"
+        tag: "linux"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!1}}"
+          rate: 93
+        expected-value: True
+  
+  flow_2: #To remove false positives
+    payloads:
+      - value: " 2>$nul"
+        position: "append"
+        tag: "window"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!2}}"
+          rate: 93
+        expected-value: False

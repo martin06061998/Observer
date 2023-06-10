@@ -14,6 +14,9 @@ logging.basicConfig(filename="log\crawler.log",
                     datefmt='%H:%M:%S',
                     level=logging.WARNING)
 
+@app.route("/busy")
+async def is_blocked():
+    return {"busy":semaphore.locked()}
 
 
 @app.route("/request",methods=['POST'])

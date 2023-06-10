@@ -6,7 +6,7 @@ target-arguments:
     target: "value"
     part: "all"
     regexes: 
-      - ^.*\.(js|json|yaml|lock|yml|md|jpg|jsp|jsf|xhtml|xml|class|java|jar|seam|faces|shtml|ifaces|do|action|jspf|properties|bak|sql|zip|xml|old|inc|js|json|conf|cfg|log|yml|yaml|txt|sql|rar|bak)$
+      - ^.*\.(js|json|yaml|lock|yml|md|jpg|jsp|jsf|xhtml|xml|class|java|jar|seam|faces|shtml|ifaces|do|action|jspf|properties|bak|sql|zip|xml|old|inc|js|json|conf|cfg|log|yml|yaml|txt|sql|rar|bak|mp[34])$
 number-of-flow: 2
 flows:
   match-condition: "all"
@@ -37,15 +37,10 @@ flows:
         position: "replace"
         tag: "linux"
     verify:
-      - function: "contains_any"
+      - function: "contain_any_patterns"
         args:
-          wordlist:
-            - "daemon,,,:/var/run/avahi-daemon:/usr/sbin/nologin"
-            - "colord:x:114:122:colord"
-            - "System"
-            - "Resolver,,,:/run/systemd:/usr/sbin/nologin"
-            - "mysql:x:106:107:MySQL"
-            - "root:x:0:0:root:/root:/bin/bash"
-            - "daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin"
-            - "bin:x:2:2:bin:/bin:/usr/sbin/nologin"
+          patterns:
+            - bin/bash
+            - bin/sh
+            - root:x
         expected-value: True

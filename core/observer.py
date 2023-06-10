@@ -1,4 +1,4 @@
-import logging
+
 import os
 import subprocess
 import requests
@@ -21,7 +21,7 @@ class BugAnalyzer():
             "flow_id": flow_id
         }
         r = requests.post(url=end_point, json=data)
-        #logging.warning(r.elapsed.total_seconds())
+
 
     async def analyze(self, flow: ObHttpFlow) -> None:
         for param in flow.all_parameters.keys():
@@ -30,7 +30,7 @@ class BugAnalyzer():
 
             # SKIP IF THE PARAMETER HAS BEEN EXPLOITED
             if parameter_id in self.parameter_table:
-                pass
+                continue
 
             # SAVING THE PARAMETER
             saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)
