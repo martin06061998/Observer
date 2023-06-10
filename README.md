@@ -1,5 +1,5 @@
 # Observer
-A dynamical input penetration testing system based on Mitmproxy. This project focus on detecting phase only
+A dynamical input penetration testing system based on Mitmproxy. This project stongly focuses on detecting phase.
 
 ## Features:
  - Generate and execute test cases based on yaml files
@@ -7,7 +7,7 @@ A dynamical input penetration testing system based on Mitmproxy. This project fo
 
 ## Example Attack Vector Template
 
-Example 1
+**Example 1**
 
 Yaml file to detect PostgreSQL Injection based on response body content differences
 
@@ -91,10 +91,102 @@ flows:
 Results:
 
 Mitmproxy:
-![Mitmproxy Result](images/sqli_time.png)
-Report
-![Postgresql SQLi](images/sqli.png)
 
+![sqli](images/sqli_time.png)
+
+Report
+
+![report](images/sqli.png)
+
+**Example 2**
+
+```YAML
+bug-type: "xss"
+description: "detect reflected or DOM xss"
+bug-name: "Reflected|Dom XSS"
+number-of-flow: 2
+target-arguments:
+  - type: "word"
+    part: "all"
+    target: "name"
+    words:
+      - "q"
+      - "s"
+      - "search"
+      - "lang"
+      - "keyword"
+      - "query"
+      - "page"
+      - "keywords"
+      - "year"
+      - "view"
+      - "email"
+      - "type"
+      - "name"
+      - "p"
+      - "callback"
+      - "jsonp"
+      - "api_key"
+      - "api"
+      - "password"
+      - "email"
+      - "emailto"
+      - "token"
+      - "username"
+      - "csrf_token"
+      - "unsubscribe_token"
+      - "id"
+      - "item"
+      - "page_id"
+      - "month"
+      - "immagine"
+      - "list_type"
+      - "url"
+      - "terms"
+      - "categoryid"
+      - "key"
+      - "l"
+      - "begindate"
+      - "enddate"
+      - "v"
+flows:
+  flow_1:
+    payloads:
+      - value: "{{7125*852}}"
+        position: "replace"
+        tag: "xss"
+      
+      - value: "${7125*852}"
+        position: "replace"
+        tag: "xss"
+      
+      - value: "<m4rt1n81m4rt1n>"
+        position: "replace"
+        tag: "xss"
+      
+      - value: "\"><svg onload=alert(1)>"
+        position: "replace"
+        tag: "xss"
+
+    verify:
+      - function: "contain_any_patterns"
+        args:
+          patterns:
+            - <m4rt1n81m4rt1n>
+            - '6070500'
+            - <svg onload=alert(1)>
+        expected-value: True
+```
+
+Result:
+
+Mitmproxy:
+
+![xss](images/xss_mitm.png)
+
+Report:
+
+![report](images/xss.png)
 
 ## TO DO:
  - Redesign core classes
