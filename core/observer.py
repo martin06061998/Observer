@@ -25,24 +25,21 @@ class BugAnalyzer():
 
     async def analyze(self, flow: ObHttpFlow) -> None:
         for param in flow.all_parameters.keys():
-            parameter_id = Parameter.calculate_id(
-                param, flow.http_method, flow.request_scheme, flow.request_host, flow.request_path)
-
-            # SKIP IF THE PARAMETER HAS BEEN EXPLOITED
+            parameter = Parameter.new_parameter(
+                    param=param, flow=flow)
+            
+            parameter_id = parameter.id
             if parameter_id in self.parameter_table:
                 continue
-
+            
             # SAVING THE PARAMETER
             saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)
             if saved_parameter is None:
-                new_parameter = Parameter.new_parameter(
-                    param=param, flow=flow)
-                await self.DAL.insert_parameter(new_parameter)
-                self.parameter_table[parameter_id] = new_parameter
-            else:
-                self.parameter_table[parameter_id] = saved_parameter
+                await self.DAL.insert_parameter(parameter)
 
+            self.parameter_table[parameter_id] = parameter
             await self.DAL.add_param_flow(parameter_id=parameter_id, flow_id=flow.id)
+            
             # START EXPLOITING
             await self.try_exploit(parameter_id=parameter_id, flow_id=flow.id)
 

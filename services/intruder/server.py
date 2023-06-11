@@ -9,7 +9,7 @@ import requests
 
 vector_list : list[AttackVector]=  []
 loop = None
-LIMIT = 20
+LIMIT = 5
 app = Quart(__name__)
 logging.basicConfig(filename="log\error.log",
                     filemode='a',
@@ -50,7 +50,7 @@ async def try_exploit(content: dict[str, str]):
                 while True:
                     error = False
                     try:
-                        ret = requests.get("http://127.0.0.1:5554/busy",timeout=0.05)
+                        ret = requests.get("http://127.0.0.1:5554/busy",timeout=0.008)
                         json_data = ret.json()
                         is_blocked = json_data.get("busy")
                     except:

@@ -86,7 +86,7 @@ async def request(method:str,end_point:str,headers:str=None,params:dict[str:str]
         if params:
             encoded_params=dict_to_url_encoded(params)
             end_point=f"{end_point}?{encoded_params}"
-        r : dict = await browserless_request(end_point= end_point,method=method,headers=headers,data=encoded_data,proxy=proxy)
+        r : dict = await browserless_request(end_point= end_point,method=method,headers=headers,data=encoded_data,proxy=proxy,timeout=timeout)
     else:
         r = await httpx_request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=timeout,json=json,proxy=proxy)
     
