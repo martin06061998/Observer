@@ -5,6 +5,7 @@ import requests
 from persistence.models.param import Parameter
 from persistence.dal import DataAccessLayer
 from persistence.models.flow import ObHttpFlow
+from definitions import INTRUDER_SERVICE
 
 
 class BugAnalyzer():
@@ -15,23 +16,22 @@ class BugAnalyzer():
         self.DAL = db_service
 
     async def try_exploit(self, parameter_id: str, flow_id: str):
-        end_point = f"http://127.0.0.1:5555/exploit"
+        end_point = INTRUDER_SERVICE + "/exploit"
         data = {
             "parameter_id": parameter_id,
             "flow_id": flow_id
         }
         r = requests.post(url=end_point, json=data)
 
-
     async def analyze(self, flow: ObHttpFlow) -> None:
         for param in flow.all_parameters.keys():
             parameter = Parameter.new_parameter(
-                    param=param, flow=flow)
-            
+                param=param, flow=flow)
+
             parameter_id = parameter.id
             if parameter_id in self.parameter_table:
                 continue
-            
+
             # SAVING THE PARAMETER
             saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)
             if saved_parameter is None:
@@ -39,7 +39,7 @@ class BugAnalyzer():
 
             self.parameter_table[parameter_id] = parameter
             await self.DAL.add_param_flow(parameter_id=parameter_id, flow_id=flow.id)
-            
+
             # START EXPLOITING
             await self.try_exploit(parameter_id=parameter_id, flow_id=flow.id)
 

@@ -36,7 +36,7 @@ async def browserless_request(method:str,end_point:str,headers:dict[str:str]=Non
             page = await context.new_page()
             start = time.time() 
             await page.route(end_point,handler)
-            #timeout=timeout*1000 if timeout else None
+            timeout=timeout*1000 if timeout else 60000
             response = await page.goto(url=end_point,wait_until="domcontentloaded",timeout=timeout)
             end=time.time()
             content = await page.content()

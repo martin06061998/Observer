@@ -1,0 +1,39 @@
+bug-name: "Path Traversal"
+description: "Detect path traversal"
+bug-type: "lfi"
+target-arguments:
+  - type: "regex"
+    target: "value"
+    part: "all"
+    regexes: 
+      - ^.*\.(js|json|html|htm|yaml|lock|yml|md|jpg|jsp|jsf|xhtml|xml|class|java|jar|seam|faces|shtml|ifaces|do|action|jspf|properties|bak|sql|zip|xml|old|inc|js|json|conf|cfg|log|yml|yaml|txt|sql|rar|bak|mp[34])$
+
+number-of-flow: 2
+flows:
+  match-condition: "all"
+  flow_1:
+    endpoint: "{{base_url}}"
+    payloads:
+      - value: '""'
+        position: "append"
+        tag: "window"
+      
+      - value: 'comefromvoid369\..\'
+        position: "prepend"
+        tag: "window"
+      
+      - value: '.\.\.\'
+        position: "prepend"
+        tag: "window"
+      
+      - value: " "
+        position: "append"
+        tag: "window"
+
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!1}}"
+          rate: 93
+        expected-value: False

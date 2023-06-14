@@ -6,6 +6,7 @@ from services.intruder.templater.template import build_vector_table
 from persistence.dal import get_data_access_layer_instance
 from persistence.models.attackvector import AttackVector
 import requests
+from definitions import CRAWLER_SERVICE,INTRUDER_PORT
 
 vector_list : list[AttackVector]=  []
 loop = None
@@ -50,7 +51,7 @@ async def try_exploit(content: dict[str, str]):
                 while True:
                     error = False
                     try:
-                        ret = requests.get("http://127.0.0.1:5554/busy",timeout=0.008)
+                        ret = requests.get(CRAWLER_SERVICE+"/busy",timeout=0.008)
                         json_data = ret.json()
                         is_blocked = json_data.get("busy")
                     except:
@@ -64,6 +65,7 @@ async def try_exploit(content: dict[str, str]):
             else:
                 await asyncio.gather(*pool,return_exceptions=True)
                 pool.clear()
+            
     except Exception as e:
             logging.error(str(e))
       
@@ -80,4 +82,4 @@ async def exploit():
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.create_task(build_vector_table(vector_list=vector_list))
-    app.run(port=5555, loop=loop)
+    app.run(port=INTRUDER_PORT, loop=loop)

@@ -1,0 +1,31 @@
+bug-name: "Server-Side Template Injection"
+description: "Detect Server-Side Template Injection"
+bug-type: "ssti"
+target-arguments:
+  - type: "word"
+    target: "name"
+    part: "all"
+    words:
+      - "message"
+
+number-of-flow: 2
+flows:
+  match-condition: "all"
+  flow_1:
+    endpoint: "{{base_url}}"
+    payloads:
+      - value: '<%= 115947*765 %>'
+        position: "replace"
+        tag: "ERB"
+      
+      - value: '<%= "6"*7 %>'
+        position: "replace"
+        tag: "ERB"
+      
+    verify:
+      - function: "contain_any_patterns"
+        args:
+          patterns:
+            - "88699455"
+            - "6666666"
+        expected-value: True

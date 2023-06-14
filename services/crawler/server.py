@@ -3,6 +3,7 @@ import logging
 from quart import Quart, request 
 from services.network import request as r
 from utilities.util import base64_encode
+from definitions import CRAWLER_PORT
 
 loop = None
 semaphore = None
@@ -50,4 +51,4 @@ async def send_request():
 if __name__ == "__main__":
     semaphore = asyncio.Semaphore(LIMIT)
     loop = asyncio.get_event_loop()
-    app.run(port=5554, loop=loop)
+    app.run(port=CRAWLER_PORT, loop=loop)
