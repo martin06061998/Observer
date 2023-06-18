@@ -5,7 +5,7 @@ import requests
 from persistence.models.param import Parameter
 from persistence.dal import DataAccessLayer
 from persistence.models.flow import ObHttpFlow
-from definitions import INTRUDER_SERVICE
+from definitions import INTRUDER_SERVICE,ROOT_DIR
 
 
 class BugAnalyzer():
@@ -53,9 +53,9 @@ class Observer:
         self.services = []
         nul = open(os.devnull, "w")
         intruder = subprocess.Popen(
-            ["Scripts\python.exe", "services\intruder\server.py"], stdout=nul, stderr=nul)
+            ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\intruder\server.py")])
         crawler = subprocess.Popen(
-            ["Scripts\python.exe", "services\crawler\server.py"], stdout=nul, stderr=nul)
+            ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\crawler\server.py")])
         self.services.append(intruder)
         self.services.append(crawler)
 
