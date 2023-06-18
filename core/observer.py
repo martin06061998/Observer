@@ -53,9 +53,9 @@ class Observer:
         self.services = []
         nul = open(os.devnull, "w")
         intruder = subprocess.Popen(
-            ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\intruder\server.py")])
+            ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\intruder\server.py")],stdout=nul,stderr=nul)
         crawler = subprocess.Popen(
-            ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\crawler\server.py")])
+            ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\crawler\server.py")],stdout=nul,stderr=nul)
         self.services.append(intruder)
         self.services.append(crawler)
 

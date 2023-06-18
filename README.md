@@ -118,11 +118,11 @@ Results:
 
 Mitmproxy:
 
-![sqli](images/sqli_time.png)
+![sqli](resource/images/sqli_time.png)
 
 Report
 
-![report](images/sqli.png)
+![report](resource/images/sqli.png)
 
 **Example 2**
 
@@ -208,11 +208,11 @@ Result:
 
 Mitmproxy:
 
-![xss](images/xss_mitm.png)
+![xss](resource/images/xss_mitm.png)
 
 Report:
 
-![report](images/xss.png)
+![report](resource/images/xss.png)
 
 ## TO DO:
  - Add automatic input-detecting functionality to the crawling service
