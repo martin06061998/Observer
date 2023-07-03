@@ -64,7 +64,7 @@ flows:
       - value: "'+'"
         position: "inject"
         tag: "mysql"
-
+      
     endpoint: "{{base_url}}"
     verify:
       - function: "has_similar_content_wordlist"

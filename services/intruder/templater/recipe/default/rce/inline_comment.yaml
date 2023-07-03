@@ -1,0 +1,60 @@
+bug-type: "rce"
+description: "detect Code Injection on response body content"
+bug-name: "Code Injection"
+target-arguments:
+  - type: "word"
+    part: "all"
+    target: "name"
+    words:
+      - "url"
+      - "report"
+      - "role"
+      - "update"
+      - "query"
+      - "user"
+      - "name"
+      - "where"
+      - "search"
+      - "params"
+      - "process"
+      - "view"
+      - "table"
+      - "from"
+      - "sel"
+      - "results"
+      - "sleep"
+      - "fetch"
+      - "order"
+      - "keyword"
+      - "field"
+      - "delete"
+      - "string"
+      - "number"
+      - "page"
+      - "filter"
+      - "v"
+      - "w"
+      - "q"
+
+  - type: "regex"
+    target: "name"
+    part: "all"
+    regexes: 
+      - "^.*(id|col|item|category|select|sort|row).*$"
+number-of-flow: 2
+flows:
+  match-condition: "all"
+  flow_1:
+    payloads:
+      - value: "//"
+        position: "append"
+        tag: "php"
+
+    endpoint: "{{base_url}}"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!1}}"
+          rate: 93
+        expected-value: True

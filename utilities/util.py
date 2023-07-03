@@ -77,11 +77,6 @@ def form2dict(html:bytes):
         form_dict["action"] = tag.get("action")
         form_dict["enctype"] = tag.get("enctype","application/x-www-form-urlencoded")
 
-        if form_dict["enctype"] == "multipart/form-data":
-            is_binary = True
-        else:
-           is_binary = False
-
         parameters = dict()
         input_tags = tag.find_all(name="input")
         for t in input_tags:
@@ -92,20 +87,22 @@ def form2dict(html:bytes):
                 parameters[tag_name] = tag_value
             else:
                 if tag_type == "email":
-                    parameters[tag_name] = b"example@gmail.com" if is_binary else "example@gmail.com"
+                    parameters[tag_name] = "example@gmail.com"
                 elif tag_type == "checkbox":
-                    parameters[tag_name] = b"on" if is_binary else "on"
+                   parameters[tag_name] = ""
                 elif tag_type == "file":
-                    parameters[tag_name] = b"" if is_binary else ""
+                    parameters[tag_name] = ""
                 elif tag_type != "submit":
-                    parameters[tag_name] = b"" if is_binary else ""
+                    parameters[tag_name] = ""
         selection_tags = tag.find_all(name="select")
         for t in selection_tags:
             tag_name = t.get("name")
             options_tag = t.find_all(name="option")
             value = options_tag[0].get("value") if len(options_tag) > 0 else None
             if value:
-                parameters[tag_name] = value.encode() if is_binary else value
+                parameters[tag_name] = value
+
+       
         form_dict["parameters"] = parameters
         ret.append(form_dict)
     return ret if len(ret) > 0 else None

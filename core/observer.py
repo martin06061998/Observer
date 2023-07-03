@@ -76,6 +76,7 @@ class Observer:
             for form_dict in all_forms:
                 clone.http_method = "post"
                 parameters :dict = form_dict["parameters"]
+
                 enctype = form_dict["enctype"]
                 r = Request.make(method="post",url="http://example.com",headers=clone.request_headers)
                 clone._flow.request = r
@@ -83,18 +84,27 @@ class Observer:
                     r.urlencoded_form.update(parameters)
                     clone.request_body_parameters = r.urlencoded_form
                 if enctype == "multipart/form-data":
-                    r.multipart_form.update(parameters)
+                    encoded_parameters = {}
+                    for key,value in parameters.items():
+                        encoded_key = key.encode()
+                        encoded_value = value.encode()
+                        encoded_parameters[encoded_key] = encoded_value
+                    r.multipart_form.update(encoded_parameters)
                     clone.request_body_parameters = r.multipart_form
                 clone.all_parameters = clone.request_body_parameters
-                if flow.query:
-                    clone.all_parameters.update(flow.query)
+
                 clone.request_body_type = enctype
                 clone.request_body_size = len(clone.request_body_content)
                 clone._request_body_parameters = parameters
+                clone.response_body_content = b""
+                clone._response_headers = {}
+                clone.response_body_size = 0
                 action = form_dict["action"]
+                await self.DAL.insert_flow(flow=clone)
+   
                 for param in parameters.keys():
                     new_parameter = Parameter.new_parameter(param=param, flow=clone,endpoint=action)
-                        # SAVING THE PARAMETER
+                    # SAVING THE PARAMETER
                     if new_parameter.id not in self.ANALYZER.parameter_table:
                         saved_parameter = await self.DAL.get_parameter_by_id(new_parameter.id)
                         if saved_parameter is None:

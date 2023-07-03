@@ -17,40 +17,56 @@ class Parameter(Base):
     example_values = Column(JSON)
     total_of_trace = Column(Integer, default=1)
     part = Column(String(50),  nullable=False)
+    endpoint = Column(String(50),  nullable=False)
     request_template_id = Column(String(50),  nullable=False)
 
     @classmethod
-    def calculate_id(cls, name: str, http_method: str, scheme: str, host: str, endpoint: str):
+    def calculate_id(cls, name: str|bytes, http_method: str, scheme: str, host: str, endpoint: str):
         return md5(name+http_method+scheme+host+endpoint)
 
-    def __init__(self, name: str, http_method: str, scheme: str, host: str, data_type: str, example_values: list[str], part: str,request_template_id:str,endpoint:str):
+    def __init__(self, name: str|bytes, http_method: str, scheme: str, host: str, data_type: str, example_values: list[str|bytes], part: str,request_template_id:str,endpoint:str):
+        if type(name) is bytes:
+            name = name.decode()
         self.name = name
-        self.http_method = http_method
+        self.http_method = http_method.lower()
         self.scheme = scheme
         self.host = host
     
         self.endpoint = endpoint
         self.data_type = data_type
         self.id = Parameter.calculate_id(name, http_method, scheme, host, endpoint)
-        self.example_values = example_values
+
+        self.example_values = []
+        for v in example_values:
+            if type(v) is bytes:
+                self.example_values.append(v.decode())
+            else:
+                self.example_values.append(v)
         self.part = part
         self.request_template_id = request_template_id
         self.endpoint = endpoint
 
     @classmethod
     def new_parameter(cls, param: str, flow: ObHttpFlow,endpoint:str=None):
-        data_type = "number"
-
+        data_type = None
         part = None
+        if flow.request_body_type == "multipart/form-data":
+            param = param.encode()
+            data_type = "binary"
+
         if param in flow.query:
             part = "query"
         elif param in flow.request_body_parameters:
             part = "body"
         example_values = [flow.all_parameters[param]]
-        for value in example_values:
-            if not str(value).isdigit():
-                data_type = "string"
-                break
+
+        if data_type is None:
+            for value in example_values:
+                if not str(value).isdigit():
+                    data_type = "string"
+                    break
+            data_type = "number"
+
         if not endpoint:
             endpoint = flow.request_path
 
