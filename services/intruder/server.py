@@ -32,11 +32,12 @@ async def try_exploit(content: dict[str, str]):
 
     # PREPARE DATA BEFORE ASSESSMENT
     dal = get_data_access_layer_instance()
-    flow_id = content["flow_id"]
+    
     parameter_id = content["parameter_id"]
     saved_param = await dal.get_parameter_by_id(parameter_id)
     if saved_param is None:
         return
+    flow_id = saved_param.request_template_id
     saved_flow = await dal.get_flow_by_id(flow_id)
     if saved_flow is None:
         return
@@ -51,10 +52,11 @@ async def try_exploit(content: dict[str, str]):
                 while True:
                     error = False
                     try:
-                        ret = requests.get(CRAWLER_SERVICE+"/busy",timeout=0.008)
+                        ret = requests.get(CRAWLER_SERVICE+"/busy",timeout=0.08)
                         json_data = ret.json()
                         is_blocked = json_data.get("busy")
                     except:
+                        is_blocked = True
                         error=True
                     if not is_blocked and not error:
                         break
@@ -63,7 +65,7 @@ async def try_exploit(content: dict[str, str]):
                 t = loop.create_task(vector.exploit(flow=saved_flow,parameter=saved_param))
                 pool.append(t)
             else:
-                await asyncio.gather(*pool,return_exceptions=True)
+                await asyncio.gather(*pool)
                 pool.clear()
             
     except Exception as e:

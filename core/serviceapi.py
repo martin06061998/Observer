@@ -22,6 +22,6 @@ class ObserverServiceAPI:
 
     async def handle_response(self,  flow: http.HTTPFlow) -> None:
         f = ObHttpFlow(flow=flow)
-        if f.all_parameters is None:
-            return
+        #if f.all_parameters is None:
+        #    return
         await self.observer.handle_response(f)

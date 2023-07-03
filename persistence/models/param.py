@@ -12,31 +12,33 @@ class Parameter(Base):
     data_type = Column(String(50),  nullable=False)
     scheme = Column(String(50),  nullable=False)
     host = Column(String(50),  nullable=False)
-    path = Column(String(50),  nullable=False)
+    #path = Column(String(50),  nullable=False)
     http_method = Column(String(50),  nullable=False)
     example_values = Column(JSON)
     total_of_trace = Column(Integer, default=1)
     part = Column(String(50),  nullable=False)
+    request_template_id = Column(String(50),  nullable=False)
 
     @classmethod
-    def calculate_id(cls, name: str, http_method: str, scheme: str, host: str, path: str):
-        path = path.split("?")[0]
-        return md5(name+http_method+scheme+host+path)
+    def calculate_id(cls, name: str, http_method: str, scheme: str, host: str, endpoint: str):
+        return md5(name+http_method+scheme+host+endpoint)
 
-    def __init__(self, name: str, http_method: str, scheme: str, host: str, path: str, data_type: str, example_values: list[str], part: str):
+    def __init__(self, name: str, http_method: str, scheme: str, host: str, data_type: str, example_values: list[str], part: str,request_template_id:str,endpoint:str):
         self.name = name
         self.http_method = http_method
         self.scheme = scheme
         self.host = host
-        path = path.split("?")[0]
-        self.path = path
+    
+        self.endpoint = endpoint
         self.data_type = data_type
-        self.id = Parameter.calculate_id(name, http_method, scheme, host, path)
+        self.id = Parameter.calculate_id(name, http_method, scheme, host, endpoint)
         self.example_values = example_values
         self.part = part
+        self.request_template_id = request_template_id
+        self.endpoint = endpoint
 
     @classmethod
-    def new_parameter(cls, param: str, flow: ObHttpFlow):
+    def new_parameter(cls, param: str, flow: ObHttpFlow,endpoint:str=None):
         data_type = "number"
 
         part = None
@@ -49,8 +51,10 @@ class Parameter(Base):
             if not str(value).isdigit():
                 data_type = "string"
                 break
-        new_input = Parameter(name=param, http_method=flow.http_method, scheme=flow.request_scheme,
-                              host=flow.request_host, path=flow.request_path, data_type=data_type, example_values=example_values, part=part)
+        if not endpoint:
+            endpoint = flow.request_path
+
+        new_input = Parameter(name=param, http_method=flow.http_method, scheme=flow.request_scheme,host=flow.request_host, data_type=data_type, example_values=example_values, part=part,request_template_id=flow.id,endpoint=endpoint)
         return new_input
 
 

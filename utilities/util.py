@@ -1,8 +1,12 @@
 import base64
 import hashlib
+import logging
 import re
 import html2text
 from mitmproxy.http import Request 
+from bs4 import BeautifulSoup
+from bs4.element import Tag
+
 
 def md5(value: str):
     return hashlib.md5(value.encode("utf-8", "ignore")).hexdigest()
@@ -61,4 +65,48 @@ def base64_encode(value) -> str:
 
 def base64_decode(value: str) -> str:
     return base64.b64decode(value.encode('utf-8', 'ignore'))
+
+
+def form2dict(html:bytes):
+    ret = []
+    soup = BeautifulSoup(html, "html.parser")
+    from_tag = soup.find_all(name="form",attrs={"method":re.compile("^post$", re.I)})
+    tag:Tag
+    for tag in from_tag:
+        form_dict = dict()
+        form_dict["action"] = tag.get("action")
+        form_dict["enctype"] = tag.get("enctype","application/x-www-form-urlencoded")
+
+        if form_dict["enctype"] == "multipart/form-data":
+            is_binary = True
+        else:
+           is_binary = False
+
+        parameters = dict()
+        input_tags = tag.find_all(name="input")
+        for t in input_tags:
+            tag_type = t.get("type")
+            tag_name = t.get("name")
+            tag_value = t.get("value")
+            if tag_value:
+                parameters[tag_name] = tag_value
+            else:
+                if tag_type == "email":
+                    parameters[tag_name] = b"example@gmail.com" if is_binary else "example@gmail.com"
+                elif tag_type == "checkbox":
+                    parameters[tag_name] = b"on" if is_binary else "on"
+                elif tag_type == "file":
+                    parameters[tag_name] = b"" if is_binary else ""
+                elif tag_type != "submit":
+                    parameters[tag_name] = b"" if is_binary else ""
+        selection_tags = tag.find_all(name="select")
+        for t in selection_tags:
+            tag_name = t.get("name")
+            options_tag = t.find_all(name="option")
+            value = options_tag[0].get("value") if len(options_tag) > 0 else None
+            if value:
+                parameters[tag_name] = value.encode() if is_binary else value
+        form_dict["parameters"] = parameters
+        ret.append(form_dict)
+    return ret if len(ret) > 0 else None
 

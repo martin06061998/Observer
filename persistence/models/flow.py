@@ -28,13 +28,14 @@ class ObHttpFlow(Base):
     _request_body_parameters = Column(JSON)
     _query = Column(JSON)
 
-    def __init__(self, flow: http.HTTPFlow = None, request_scheme: str = None, request_host: str = None, request_path: str = None, http_method: str = None, url: str = None, status_code: int = None, timestamp: float = None, request_headers: dict[str:str] = None, response_headers: dict[str:str] = None, response_body_content: bytes = None, request_body_parameters: dict[str:str] = None, query: dict[str:str] = None,group=None):
+    def __init__(self, flow: http.HTTPFlow = None, request_scheme: str = None, request_host: str = None, request_path: str = None, http_method: str = None, url: str = None, status_code: int = None, timestamp: float = None, request_headers: dict[str:str] = None, response_headers: dict[str:str] = None, response_body_content: bytes = None, request_body_parameters: dict[str:str] = None, query: dict[str:str] = None):
+        self._flow = flow
         if flow:
             # General Info
             self.id = md5(flow.id)
             flow.request.headers["flow-id"] = self.id
             self.is_clone = flow.is_replay == "request"
-            self.group = group
+
             # Parsing Request
             self.request_body_content = flow.request.content
             if self.request_body_content:
@@ -102,7 +103,6 @@ class ObHttpFlow(Base):
                 self.status_code = None
             # END
         else:
-            self.group = group
             self.request_scheme = request_scheme
             self.request_host = request_host
             self.request_path = request_path
@@ -120,6 +120,12 @@ class ObHttpFlow(Base):
             self._request_body_parameters = request_body_parameters
             self._query = query
         
+
+    def copy(self):
+        clone = self._flow.copy()
+        ret = ObHttpFlow(flow=clone)
+        return ret
+
 
     def in_trace(self):
         return "tag" in self.request_headers

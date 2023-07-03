@@ -12,11 +12,16 @@ A dynamic input validation vulnerability detection system based on Mitmproxy. Th
 ```
 git clone https://github.com/martin06061998/Observer.git
 ```
-2.Install dependencies
+2.Create Virtual Environment ( Python >= 3.9)
+```
+python.exe -m venv .
+```
+
+3.Install dependencies
 ```python
 pip install -r requirements.txt
 ```
-3.Install headless broswer to scrape dynamic websites
+4.Install headless broswer to scrape dynamic websites
 ```python
 playwright install chromium
 ```
