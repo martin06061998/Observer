@@ -51,8 +51,12 @@ class ObHttpFlow(Base):
                 self.request_body_parameters = flow.request.urlencoded_form
                 self.request_body_type = "application/x-www-form-urlencoded"
             elif flow.request.raw_content and "content-type" in flow.request.headers and flow.request.headers["content-type"] == "application/json":
-                self.request_body_parameters = flow.request.json()
+                try:
+                    self.request_body_parameters = flow.request.json()
+                except:
+                    self.request_body_parameters = None
                 self.request_body_type = "application/json"
+
             else:
                 self.request_body_parameters = None
                 self.request_body_type = None

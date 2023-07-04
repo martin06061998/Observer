@@ -15,7 +15,7 @@ from utilities.util import base64_decode
 
 class Payload:
     def __init__(self, value: str, tag: str = "None", position: str = "None"):
-        self.value = value.lower()
+        self.value = value
         self.tag = tag.lower()
         self.position = position.lower()
         self.id = md5(value+tag+position)
@@ -239,10 +239,8 @@ class AttackVector():
                 continue
             payload:Payload = exploit.payload
 
-            if payload is None:
-                continue
             rendered_payload = payload.render(pattern)
-
+            
             if params:
                 params[parameter.name] = rendered_payload
             if data:

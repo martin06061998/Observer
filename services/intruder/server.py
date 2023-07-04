@@ -30,6 +30,10 @@ async def try_exploit(content: dict[str, str]):
     # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
     await asyncio.sleep(0.2)
 
+    
+
+            
+    
     # PREPARE DATA BEFORE ASSESSMENT
     dal = get_data_access_layer_instance()
     
@@ -44,8 +48,11 @@ async def try_exploit(content: dict[str, str]):
     # END
     
     pool = []
-    
+
     try:
+        vector:AttackVector
+        
+        
         for vector in vector_list:
             if len(pool) < LIMIT:
                 counter = 0
@@ -61,12 +68,19 @@ async def try_exploit(content: dict[str, str]):
                     if not is_blocked and not error:
                         break
                     counter=counter+1
-                    await asyncio.sleep(counter*5)
+                    await asyncio.sleep(counter*1)
+                    
+                        
                 t = loop.create_task(vector.exploit(flow=saved_flow,parameter=saved_param))
                 pool.append(t)
             else:
                 await asyncio.gather(*pool)
                 pool.clear()
+                
+                
+        if len(pool) > 0:
+            await asyncio.gather(*pool)
+            pool.clear()    
             
     except Exception as e:
             logging.error(str(e))

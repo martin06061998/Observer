@@ -14,9 +14,14 @@ flows:
   flow_1:
     endpoint: "{{base_url}}"
     payloads:
-      - value: 'comefromvoid369\..\'
+      - value: '""'
+        position: "append"
+        tag: "general"
+      
+
+      - value: '.\.\.\'
         position: "prepend"
-        tag: "window"
+        tag: "general"
       
     verify:
       - function: "has_similar_content_wordlist"

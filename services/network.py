@@ -60,6 +60,7 @@ async def browserless_request(method:str,end_point:str,headers:dict[str:str]=Non
     }
 
 async def httpx_request(method:str,end_point:str,headers:str,params:dict[str:str]=None,data:dict[str:str]=None,json:dict[str:str]=None,timeout:float=None,proxy:str="http://127.0.0.1:8080"):
+    
     async with httpx.AsyncClient(verify=False,proxies={"https://":proxy,"http://":proxy}) as client:
         r : httpx.Response = await client.request(url= end_point,method=method,params=params,headers=headers,json=json,data=data,timeout=timeout)
         content = r.content

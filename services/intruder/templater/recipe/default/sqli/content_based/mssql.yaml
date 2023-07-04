@@ -46,7 +46,7 @@ flows:
   match-condition: "all"
   flow_1:
     payloads:
-      - value: "'+'"
+      - value: "'         +                 '"
         position: "inject"
         tag: "mssql"
 
@@ -61,7 +61,7 @@ flows:
   
   flow_2:
     payloads:
-      - value: "' '"
+      - value: "'               '"
         position: "inject"
         tag: "mssql"
 
