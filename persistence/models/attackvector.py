@@ -217,6 +217,7 @@ class AttackVector():
             return
         end_point = f"{flow.request_scheme}://{flow.request_host}{flow.request_path}"
         headers: dict = flow._request_headers
+
         headers["tag"] = self.bug_type
         headers.pop("content-length",None)
         headers.pop("Content-Length",None)
@@ -262,6 +263,7 @@ class AttackVector():
             ret = r.json()
 
             if ret.get("msg",None) != "ok":
+                logging.warning(f"An error has occurred: {ret.get('msg',None)}")
                 continue 
             ret["content"] =  base64_decode(ret["content"])
             new_flow = ObHttpFlow(request_scheme=flow.request_scheme, request_host=flow.request_host, request_path=flow.request_path, http_method=flow.http_method, url=flow.url,

@@ -5,7 +5,8 @@ from playwright.async_api import async_playwright,Route
 from utilities.util import dict_to_url_encoded
 import asyncio
 
-async def browserless_request(method:str,end_point:str,headers:dict[str:str]=None,data:str=None,timeout:float=None,proxy:str="http://127.0.0.1:8080") -> dict:
+
+async def browserless_request(method:str,end_point:str,headers:dict[str:str]=None,data:str|bytes=None,timeout:float=None,proxy:str="http://127.0.0.1:8080") -> dict:
     async def handler(route: Route):
         # Fetch original response.
         if "tag" in route.request.headers:
@@ -59,10 +60,10 @@ async def browserless_request(method:str,end_point:str,headers:dict[str:str]=Non
         "response_headers":response_headers
     }
 
-async def httpx_request(method:str,end_point:str,headers:str,params:dict[str:str]=None,data:dict[str:str]=None,json:dict[str:str]=None,timeout:float=None,proxy:str="http://127.0.0.1:8080"):
-    
+async def httpx_request(method:str,end_point:str,headers:str,params:dict[str:str]=None,data:bytes|str=None,timeout:float=None,proxy:str="http://127.0.0.1:8080"):
+
     async with httpx.AsyncClient(verify=False,proxies={"https://":proxy,"http://":proxy}) as client:
-        r : httpx.Response = await client.request(url= end_point,method=method,params=params,headers=headers,json=json,data=data,timeout=timeout)
+        r : httpx.Response = await client.request(url= end_point,method=method,params=params,headers=headers,data=data,timeout=timeout)
         content = r.content
         response_headers = r.headers
         status_code = r.status_code
@@ -76,20 +77,15 @@ async def httpx_request(method:str,end_point:str,headers:str,params:dict[str:str
     
 
 
-async def request(method:str,end_point:str,headers:str=None,params:dict[str:str]=None,data:dict[str:str]=None,timeout:float=None,body_type:str="application/x-www-form-urlencoded",browser:bool=False,json=None,proxy:str="http://127.0.0.1:8080"):
+async def request(method:str,end_point:str,headers:str=None,params:dict[str:str]=None,data:dict[str:str]=None,timeout:float=None,browser:bool=False,proxy:str="http://127.0.0.1:8080"):
     r=None
     if browser:
-        encoded_params = None
-        encoded_data = None
-        if data:
-            if body_type == "application/x-www-form-urlencoded":
-                encoded_data = dict_to_url_encoded(data=data)
         if params:
             encoded_params=dict_to_url_encoded(params)
             end_point=f"{end_point}?{encoded_params}"
-        r : dict = await browserless_request(end_point= end_point,method=method,headers=headers,data=encoded_data,proxy=proxy,timeout=timeout)
+        r : dict = await browserless_request(end_point= end_point,method=method,headers=headers,data=data,proxy=proxy,timeout=timeout)
     else:
-        r = await httpx_request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=timeout,json=json,proxy=proxy)
+        r = await httpx_request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=timeout,proxy=proxy)
     
     if r.get("elapsed",None) and r.get("content",None) and r.get("response_headers",None) and r.get("status_code",None):
         return r

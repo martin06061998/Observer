@@ -38,7 +38,6 @@ class ParameterCollector():
                     logging.warning(f"Can not parse a form in {action}")
                     continue
                 
-                logging.warning(endpoint)
 
                 clone.http_method = "post"
                 parameters :dict = form_dict["parameters"]
@@ -57,7 +56,7 @@ class ParameterCollector():
                         encoded_parameters[encoded_key] = encoded_value
                     r.multipart_form.update(encoded_parameters)
                     clone.request_body_parameters = r.multipart_form
-                clone.all_parameters = clone.request_body_parameters
+    
 
                 clone.request_body_type = enctype
                 clone.request_body_size = len(clone.request_body_content)
@@ -86,7 +85,7 @@ class BugAnalyzer():
         self.parameter_table: dict[str:Parameter] = dict()
         self.DAL = db_service
 
-    async def try_exploit(self, parameter_id: str, flow_id: str):
+    async def try_exploit(self, parameter_id: str):
         end_point = INTRUDER_SERVICE + "/exploit"
         data = {
             "parameter_id": parameter_id,
@@ -94,9 +93,8 @@ class BugAnalyzer():
         r = requests.post(url=end_point, json=data)
 
     async def analyze(self, flow: ObHttpFlow) -> None:
-        if flow.all_parameters is None:
-            return
-        for param in flow.all_parameters.keys():
+        #logging.warning(flow.url)
+        for param in flow.get_all_parameter_names():
             parameter = Parameter.new_parameter(
                 param=param, flow=flow)
 
@@ -107,13 +105,13 @@ class BugAnalyzer():
             # SAVING THE PARAMETER
             saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)
             if saved_parameter is None:
-                await self.DAL.insert_parameter(parameter)
+                await self.DAL.insert_parameter( new_parameter=parameter)
 
             self.parameter_table[parameter_id] = parameter
             #await self.DAL.add_param_flow(parameter_id=parameter_id, flow_id=flow.id)
 
             # START EXPLOITING
-            await self.try_exploit(parameter_id=parameter_id, flow_id=flow.id)
+            await self.try_exploit(parameter_id=parameter_id)
 
 class Observer:
     def __init__(self) -> None:
@@ -143,7 +141,7 @@ class Observer:
         
         await self.PARAMETER_COLLECTOR.collect_forms(flow)
 
-        if flow.in_trace() or flow.is_replayed() or flow.all_parameters is None:
+        if flow.in_trace() or flow.is_replayed() or flow.has_no_parameters():
             return
         await self.DAL.insert_flow(flow)
 

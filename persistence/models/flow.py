@@ -5,7 +5,6 @@ from sqlalchemy import Column, Float, Integer, String, LargeBinary, Boolean, JSO
 from persistence.database import Base
 from mitmproxy import http
 from utilities.util import md5
-from url_normalize import url_normalize
 
 class ObHttpFlow(Base):
     __tablename__ = 'flows'
@@ -43,7 +42,7 @@ class ObHttpFlow(Base):
             else:
                 self.request_body_size = None
 
-            self.all_parameters = None
+
             if flow.request.multipart_form:
                 self.request_body_parameters = flow.request.multipart_form
                 self.request_body_type = "multipart/form-data"
@@ -60,19 +59,17 @@ class ObHttpFlow(Base):
             else:
                 self.request_body_parameters = None
                 self.request_body_type = None
-            if self.request_body_parameters:
-                self.all_parameters = self.request_body_parameters
-                self._request_body_parameters = dict()
-                for key, value in self.request_body_parameters.items():
-                    self._request_body_parameters[key] = value
+            
+            #self._request_body_parameters = None
+                
+   
 
             self.query = flow.request.query
             if self.query:
                 self._query = dict()
                 for key, value in self.query.items():
                     self._query[key] = value
-                self.all_parameters = self.query if self.all_parameters is None else self.all_parameters.update(
-                    self.query)
+              
 
             self.url = flow.request.pretty_url
             self.request_host = flow.request.host
@@ -119,10 +116,19 @@ class ObHttpFlow(Base):
             self._request_headers = request_headers
             self._response_headers = response_headers
             self.response_body_content = response_body_content
+            self.request_body_parameters = request_body_parameters
             if self.response_body_content:
                 self.response_body_size = len(self.response_body_content)
-            self._request_body_parameters = request_body_parameters
+            self.query = query
             self._query = query
+    
+        if self.request_body_parameters:
+            self._request_body_parameters = dict()
+            for key, value in self.request_body_parameters.items():
+                if "multipart/form-data" in self.request_body_type:
+                    self._request_body_parameters[key.decode(errors="ignore")] = value.decode(errors="ignore")
+                else:
+                    self._request_body_parameters[key] = value
         
 
     def copy(self):
@@ -137,5 +143,28 @@ class ObHttpFlow(Base):
     def is_replayed(self):
         return self.is_clone
     
+    def has_no_parameters(self):
+        return self.request_body_parameters is None and self.query is None
+    
     def empty_request_body(self):
         return self.request_body_content == None
+    
+    def get_parameter_value(self,param:str|bytes):
+        if param is bytes:
+            param = param.decode()
+        if param in self.query:
+            return self.query[param]
+        if param in self.request_body_parameters:
+            return self.request_body_parameters[param]
+    
+    def get_all_parameter_names(self):
+        ret = []
+        if self.request_body_parameters:
+            for name in self.request_body_parameters:
+                if name is bytes:
+                    name = name.decode()
+                ret.append(name)
+        if self.query:
+            for name in self.query:
+                ret.append(name)
+        return ret

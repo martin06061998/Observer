@@ -24,7 +24,7 @@ class FlowDAO():
                     async with session.begin():
                         stmt = select(ObHttpFlow).where(ObHttpFlow.id == id)
                         result = await session.execute(stmt)
-                        saved_flow = result.scalars().one()
+                        saved_flow = result.scalars().one_or_none()
                         error = False
             except exc.SQLAlchemyError as e:
                 if num_of_tried == self.MAX_TRY:

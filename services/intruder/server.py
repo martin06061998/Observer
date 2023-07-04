@@ -40,6 +40,7 @@ async def try_exploit(content: dict[str, str]):
     parameter_id = content["parameter_id"]
     saved_param = await dal.get_parameter_by_id(parameter_id)
     if saved_param is None:
+        logging.warning(f"parameter id {parameter_id} not exists")
         return
     flow_id = saved_param.request_template_id
     saved_flow = await dal.get_flow_by_id(flow_id)
@@ -50,34 +51,28 @@ async def try_exploit(content: dict[str, str]):
     pool = []
 
     try:
-        vector:AttackVector
-        
-        
-        for vector in vector_list:
-            if len(pool) < LIMIT:
-                counter = 0
-                while True:
-                    error = False
-                    try:
-                        ret = requests.get(CRAWLER_SERVICE+"/busy",timeout=0.08)
-                        json_data = ret.json()
-                        is_blocked = json_data.get("busy")
-                    except:
-                        is_blocked = True
-                        error=True
-                    if not is_blocked and not error:
-                        break
-                    counter=counter+1
-                    await asyncio.sleep(counter*1)
+        index = 0
+        num_of_vectors = len(vector_list)
+        while index < num_of_vectors:
+            counter = 0
+            while True:
+                error = False
+                try:
+                    ret = requests.get(CRAWLER_SERVICE+"/busy",timeout=0.08)
+                    json_data = ret.json()
+                    is_blocked = json_data.get("busy")
+                except:
+                    is_blocked = True
+                    error=True
+                if not is_blocked and not error:
+                    break
+                counter=counter+1
+                await asyncio.sleep(counter*1)
                     
-                        
-                t = loop.create_task(vector.exploit(flow=saved_flow,parameter=saved_param))
-                pool.append(t)
-            else:
-                await asyncio.gather(*pool)
-                pool.clear()
-                
-                
+            t = loop.create_task(vector_list[index].exploit(flow=saved_flow,parameter=saved_param))
+            pool.append(t)
+            index = index+1
+ 
         if len(pool) > 0:
             await asyncio.gather(*pool)
             pool.clear()    

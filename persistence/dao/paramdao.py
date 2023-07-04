@@ -18,29 +18,20 @@ class ParameterDao:
             if param is None or flow is None:
                 return
             new_parameter = Parameter.new_parameter(param, flow)
-        
+        logging.warning(f"add {new_parameter}")
         await add(new_parameter)
         return new_parameter
 
-    async def add_param_flow(self, parameter_id: str, flow_id: str):
-        param_flow = ParamFlowMap(
-            parameter_id=parameter_id, flow_id=flow_id)
-        async_session = await db_session()
-        ret = None
-        async with async_session() as session:
-            async with session.begin():
-                session.add(param_flow)
-                await session.commit()
-        return ret
 
     async def get_parameter_by_id(self, id: str):
         async_session = await db_session()
         ret = None
+        saved_parameter = None
         async with async_session() as session:
             async with session.begin():
                 stmt = select(Parameter).where(Parameter.id == id)
                 ret = await session.execute(stmt)
-                saved_parameter = ret.scalars().first()
+                saved_parameter = ret.scalars().one_or_none()
         return saved_parameter
 
     async def add_example_value(self, parameter_id: str, value: str):

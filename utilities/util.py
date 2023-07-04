@@ -57,8 +57,10 @@ def dict_to_url_encoded(data:dict[str:str])->bytes:
     text = r.content.decode("utf-8","ignore")
     return text
 
-def dict_to_multipart_form(data:dict[bytes:bytes])->bytes:
+def dict_to_multipart_form(data:dict[bytes|str:bytes|str])->bytes:
     r = Request.make(method="post",url="http://example.com")
+    encoded_data = dict
+    
     r.multipart_form.update(data)
     text = r.content.decode("utf-8","ignore")
     return text

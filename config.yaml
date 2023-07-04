@@ -1,29 +1,11 @@
 allow_hosts:
-- preprod.truckonnect.bharatbenz.com
-- internal.truckonnect.bharatbenz.com
-- api.truckonnect.bharatbenz.com
-- proservuat1.bharatbenz.com
-- ibms.bharatbenz.com
-- buslive.bharatbenz.com
-- dmsbi.bharatbenz.com
-- proserv.bharatbenz.com
-- proservuat.bharatbenz.com
-- bharatbenz.com
-- extranet.bharatbenz.com
-- portal.busapp.bharatbenz.com
-- qaportal.busapp.bharatbenz.com
-- qabusconnect.bharatbenz.com
-- staging.truckonnect.bharatbenz.com
-- td.staging.truckonnect.bharatbenz.com
-- td.truckonnect.bharatbenz.com
-- truckonnect.bharatbenz.com
-- sra.bharatbenz.com
-- tlms.bharatbenz.com
-- visibilite.bharatbenz.com
-- www.bharatbenz.com
-- www.digitalsupplychain.bharatbenz.com
-- www.preprod.truckonnect.bharatbenz.com
-- www.staging.truckonnect.bharatbenz.com
-- bulletin.bharatbenz.com
+- ring.com
+- api.ring.com
+- fw.ring.com
+- app.ring.com
+- admin.ring.com
+- nw.ring.com
+- oauth.ring.com
+- billing.ring.com
 
 ssl_insecure: True

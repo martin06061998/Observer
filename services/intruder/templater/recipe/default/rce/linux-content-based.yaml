@@ -49,6 +49,10 @@ target-arguments:
 flows:
   flow_1:
     payloads:
+      - value: ";set a=2"
+        position: "append"
+        tag: "linux"
+
       - value: ";export a=2"
         position: "append"
         tag: "linux"

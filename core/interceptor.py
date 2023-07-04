@@ -17,17 +17,11 @@ class FlowInterceptor:
     def done(self):
         self.service_api.clean()
 
-    def handle_preflight(self, flow: http.HTTPFlow) -> None:
-        flow.response = http.Response.make(
-            200,
-            b"OK",  # (optional) content
-            {"Content-Type": "text/html", "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "*"},
-        )
 
     async def request(self, flow: http.HTTPFlow) -> None:
         """This function is called when a client request has been received. We do the injection here."""
         # Handle DOM Report
+        flow.request.headers["user-agent"] = "RingResearcher_m4rt1n98"
         await self.service_api.handle_request(flow)
 
     async def response(self, flow: http.HTTPFlow) -> None:

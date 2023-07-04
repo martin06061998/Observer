@@ -53,14 +53,12 @@ class Parameter(Base):
     @classmethod
     def new_parameter(cls, param: str, flow: ObHttpFlow,endpoint:str=None,data_type="string",original_url=None):
         part = None
-        if flow.request_body_type == "multipart/form-data":
-            param = param.encode()
         if param in flow.query:
             part = "query"
         elif param in flow.request_body_parameters:
             part = "body"
         
-        example_values = [flow.all_parameters[param]]
+        example_values = [flow.get_parameter_value(param)]
         if original_url is None:
             original_url = flow.url
         

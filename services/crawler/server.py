@@ -2,8 +2,10 @@ import asyncio
 import logging
 from quart import Quart, request 
 from services.network import request as r
-from utilities.util import base64_encode
+from utilities.util import base64_encode,dict_to_url_encoded,dict_to_multipart_form
 from definitions import CRAWLER_PORT
+import json
+
 
 loop = None
 semaphore = None
@@ -37,14 +39,36 @@ async def send_request():
         data=content.get("data",None)
         timeout=content.get("timeout",60)
         browser=content.get("browser",False)
+        
+        encoded_data = None
+        if data:
+            body_type = None
+            if "content-type" in headers:
+                body_type = headers["content-type"]
+            else:
+                logging.error(f"Can not define data type")
+                return {"msg":"data error"}
+        
+            if "application/x-www-form-urlencoded" in body_type:
+                encoded_data = dict_to_url_encoded(data=data)
+            elif "application/json" in body_type:
+                encoded_data = json.dumps(data)
+            elif "multipart/form-data" in body_type:
+                encoded_parameters = {}
+                for key,value in data.items():
+                    encoded_key = key.encode()
+                    encoded_value = value.encode()
+                    encoded_parameters[encoded_key] = encoded_value
+                encoded_data = dict_to_multipart_form(encoded_parameters)
         async with semaphore:
-            ret = await r(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=timeout,browser=browser)
+            ret = await r(method=method,end_point=end_point,headers=headers,params=params,data=encoded_data,timeout=timeout,browser=browser)
         if ret is None:
             return {"msg":"data error"}
         ret["msg"] = "ok"
         ret["content"]=base64_encode(ret.get("content"))
         return ret
-    except:
+    except Exception as e:
+        logging.error(f"an error hash occur: {str(e)}")
         return {"msg":"an error hash occur"}
     
 

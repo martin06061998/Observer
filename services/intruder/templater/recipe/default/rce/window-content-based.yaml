@@ -48,11 +48,7 @@ target-arguments:
      - "action"
 flows:
   flow_1:
-    payloads:
-      - value: ";set a=2"
-        position: "append"
-        tag: "window"
-      
+    payloads:      
       - value: ";`set a=2"
         position: "append"
         tag: "window"
