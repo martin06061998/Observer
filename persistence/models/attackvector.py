@@ -202,8 +202,12 @@ class AttackVector():
                 f.write(f"Template Path: {self.path}\n")
                 f.write(f"Parameter: {parameter.name}\n")
                 f.write(f"Flow id: {template_flow.id}\n")
-                exploit = self.exploit_sequence[0] if self.exploit_sequence[0] else self.exploit_sequence[1] 
-                payload = exploit.payload if exploit.payload  else None
+                payload = None
+                for e in self.exploit_sequence:
+                    if e and e.payload:
+                        payload = e.payload
+                        break
+                     
                 if payload:
                     f.write(f"Payload: {payload.render(pattern)}\n")
                     f.write(f"Tag: {payload.tag}\n")
@@ -248,7 +252,7 @@ class AttackVector():
             ret : dict = request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=120,javascript_enable=javascript_enable,proxy="http://127.0.0.1:8080")
        
             if ret.get("msg",None) != "ok":
-                logging.warning(f"An error has occurred: {ret.get('msg',None)}")
+                logging.warning(f"An error occur in AttackVector.exploit: {ret.get('msg',None)}")
                 continue 
             ret["content"] =  base64_decode(ret["content"])
             new_flow = ObHttpFlow(request_scheme=template_flow.request_scheme, request_host=template_flow.request_host, request_path=template_flow.request_path, http_method=template_flow.http_method, url=template_flow.url,

@@ -7,7 +7,7 @@ from persistence.models.param import Parameter
 from persistence.dal import DataAccessLayer
 from persistence.models.flow import ObHttpFlow
 from definitions import INTRUDER_SERVICE,ROOT_DIR
-from utilities.util import find_all_forms,is_absolute_url,is_relative_url
+from utilities.util import find_all_forms,is_absolute_url,is_relative_url,md5
 from mitmproxy.http import Request 
 
 class ParameterCollector():
@@ -25,7 +25,7 @@ class ParameterCollector():
         all_forms = find_all_forms(html=html)
 
         if all_forms:
-            for form_dict in all_forms:
+            for i,form_dict in enumerate(all_forms):
                 action = form_dict["action"]
                 if is_absolute_url(action):
                     endpoint = action
@@ -66,7 +66,8 @@ class ParameterCollector():
                 await self.DAL.insert_flow(flow=clone)
 
                 for param in parameters.keys():
-                    new_parameter = Parameter.new_parameter(param=param, flow=clone,endpoint=endpoint,data_type=form_dict["type_map"][param])
+                    group_id = md5(endpoint+str(i))
+                    new_parameter = Parameter.new_parameter(param=param, flow=clone,endpoint=endpoint,data_type=form_dict["type_map"][param],group_id=group_id)
                     # SAVING THE PARAMETER
                     saved_parameter = await self.DAL.get_parameter_by_id(new_parameter.id)
                     if saved_parameter is None:
@@ -91,14 +92,16 @@ class BugAnalyzer():
 
     async def analyze(self, flow: ObHttpFlow) -> None:
         #logging.warning(flow.url)
+        i = 0
         for param in flow.get_all_parameter_names():
+            group_id = md5(flow.url+str(i))
+            i = i + 1
             parameter = Parameter.new_parameter(
-                param=param, flow=flow)
+                param=param, flow=flow,group_id=group_id)
 
             parameter_id = parameter.id
             if parameter_id in self.parameter_table:
-                pass
-                #continue
+                continue
 
             # SAVING THE PARAMETER
             saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)

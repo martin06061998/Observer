@@ -1,10 +1,14 @@
 
 import random
+import tempfile
 import time
+from venv import logger
+import requests
 from sqlalchemy import Column, Float, Integer, String, LargeBinary, Boolean, JSON
 from persistence.database import Base
 from mitmproxy import http
 from utilities.util import md5
+from mitmproxy.addons.export import raw_request
 
 class ObHttpFlow(Base):
     __tablename__ = 'flows'
@@ -167,4 +171,36 @@ class ObHttpFlow(Base):
         if self.query:
             for name in self.query:
                 ret.append(name)
+        return ret
+    
+    def export_request(self):
+        def pretty_print(req):
+            """
+            At this point it is completely built and ready
+            to be fired; it is "prepared".
+
+            However pay attention at the formatting used in 
+            this function because it is programmed to be pretty 
+            printed and may differ from the actual request.
+            """
+            body = req.body.decode() if req.body else None
+            if body:
+                return('{}\r\n{}\r\n\r\n{}'.format(
+                    req.method + ' ' + req.url,
+                    '\r\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
+                    body,
+                ))
+            return('{}\r\n{}\r\n\r\n'.format(
+                    req.method + ' ' + req.url,
+                    '\r\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items())
+                ))
+        
+        ret = None
+        try:
+            req = requests.Request(self.http_method.upper(),self.url,headers=self._request_headers,data=self.request_body_content)
+            ret = req.prepare()
+            ret = pretty_print(ret)
+        except Exception as e:
+            logger.warning(f"An error occur in flow.export_request {str(e)}")
+            ret = None
         return ret

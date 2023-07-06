@@ -98,9 +98,10 @@ def request(method:str,end_point:str,headers:str=None,params:dict[str:str]=None,
         body_type = None
         if "content-type" in headers:
             body_type = headers["content-type"]
+        elif "Content-Type" in headers:
+            body_type = headers["Content-Type"]
         else:
-            logging.error(f"Can not define data type")
-            return {"msg":"data error"}
+            return {"msg":"Cannot find content-type for request body data"}
     
         if "application/x-www-form-urlencoded" in body_type:
             encoded_data = dict_to_url_encoded(data=data)

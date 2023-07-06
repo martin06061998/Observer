@@ -15,6 +15,13 @@ target-arguments:
       - "name"
       - "content"
       - "redirect"
+  
+  - type: "word"
+    target: "value"
+    part: "all"
+    words:
+      - "user.name"
+      - "user.first_name"
 
 number-of-flow: 2
 flows:

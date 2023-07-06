@@ -30,14 +30,24 @@ class DataAccessLayer():
     # END
 
     # PARAMETER DAL
-    async def insert_parameter(self, new_parameter=None, param: str = None, flow: ObHttpFlow = None):
+    async def insert_parameter(self, new_parameter=None):
         service = self.db_services["parameter"]
-        ret: Parameter = await service.insert_parameter(new_parameter=new_parameter, param=param, flow=flow)
+        ret: Parameter = await service.insert_parameter(new_parameter=new_parameter)
         return ret
 
     async def get_parameter_by_id(self, id: str) -> Parameter:
         service = self.db_services["parameter"]
         ret: Parameter = await service.get_parameter_by_id(id)
+        return ret
+    
+    async def get_parameters_by_group_id(self,id:str)->list[Parameter]:
+        service = self.db_services["parameter"]
+        ret: list[Parameter] = await service.get_parameters_by_group_id(id)
+        return ret
+    
+    async def get_parameters_by_name(self,name:str)->list[Parameter]:
+        service = self.db_services["parameter"]
+        ret: list[Parameter] = await service.get_parameters_by_name(name)
         return ret
 
     async def add_param_flow(self, parameter_id: str, flow_id: str):

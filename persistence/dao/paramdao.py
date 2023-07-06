@@ -13,12 +13,9 @@ class ParameterDao:
     def __init__(self) -> None:
         pass
 
-    async def insert_parameter(self, new_parameter: Parameter = None, param: str = None, flow: ObHttpFlow = None):
+    async def insert_parameter(self, new_parameter: Parameter = None):
         if new_parameter is None:
-            if param is None or flow is None:
-                return
-            new_parameter = Parameter.new_parameter(param, flow)
-
+            return
         await add(new_parameter)
         return new_parameter
 
@@ -33,6 +30,32 @@ class ParameterDao:
                 ret = await session.execute(stmt)
                 saved_parameter = ret.scalars().one_or_none()
         return saved_parameter
+    
+    async def get_parameters_by_name(self, name: str):
+        async_session = await db_session()
+        ret = None
+        saved_parameter = None
+        async with async_session() as session:
+            async with session.begin():
+                stmt = select(Parameter).filter(Parameter.name.like(f"%{name}%")).limit(10)
+                saved_parameter = await session.execute(stmt)
+            ret = []
+            for row in saved_parameter:
+                ret.append(row[0])    
+        return ret
+    
+    async def get_parameters_by_group_id(self,id:str):
+        async_session = await db_session()
+        ret = None
+        saved_parameter = None
+        async with async_session() as session:
+            async with session.begin():
+                stmt = select(Parameter).where(Parameter.group == id)
+                saved_parameter = await session.execute(stmt)
+            ret = []
+            for row in saved_parameter:
+                ret.append(row[0])    
+        return ret
 
     async def add_example_value(self, parameter_id: str, value: str):
         async_session = await db_session()
