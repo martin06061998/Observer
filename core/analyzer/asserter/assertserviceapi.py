@@ -41,6 +41,7 @@ class AsserterServiceAPI:
 
     @classmethod
     def is_delayed_for(cls, timestamp: float, duration: float):
+
         return timestamp >= duration
 
     @classmethod
@@ -98,5 +99,5 @@ class AsserterServiceAPI:
         return ret
 
     @classmethod
-    def test(cls, message):
-        print(f"receive {message}")
+    def nop(cls):
+        return True

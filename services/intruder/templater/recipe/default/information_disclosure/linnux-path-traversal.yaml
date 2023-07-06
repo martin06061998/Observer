@@ -2,6 +2,22 @@ bug-name: "Path Traversal"
 description: "Detect path traversal"
 bug-type: "lfi"
 target-arguments:
+  - type: "word"
+    target: "name"
+    part: "all"
+    words:
+      - file
+      - document
+      - folder
+      - root
+      - path
+      - pg
+      - style
+      - pdf
+      - template
+      - php_path
+      - doc
+
   - type: "regex"
     target: "value"
     part: "all"

@@ -1,0 +1,43 @@
+bug-name: "Debug"
+description: "Parameter is most often associated to debug,  access, or critical functionality in applications"
+bug-type: "debug"
+target-arguments:
+  - type: "word"
+    target: "name"
+    part: "all"
+    words:
+      - "access"
+      - "admin"
+      - "dbg"
+      - "debug"
+      - "edit"
+      - "grant"
+      - "test"
+      - "alter"
+      - "clone"
+      - "create"
+      - "delete"
+      - "disable"
+      - "enable"
+      - "exec"
+      - "execute"
+      - "load"
+      - "make"
+      - "modify"
+      - "rename"
+      - "reset"
+      - "shell"
+      - "toggle"
+      - "adm"
+      - "root"
+      - "cfg"
+      - "config"
+
+number-of-flow: 1
+flows:
+  match-condition: "all"
+  flow_0:
+    endpoint: "{{base_url}}"
+    verify:
+      - function: "nop"
+        expected-value: True

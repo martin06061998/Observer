@@ -32,16 +32,13 @@ target-arguments:
       - "number"
       - "page"
       - "filter"
-      - "v"
-      - "w"
-      - "q"
 
   - type: "regex"
     target: "name"
     part: "all"
     regexes: 
       - "^.*(id|col|item|category|select|sort|row).*$"
-number-of-flow: 3
+number-of-flow: 4
 flows:
   match-condition: "all"
   flow_1:
@@ -61,9 +58,9 @@ flows:
   
   flow_2:
     payloads:
-      - value: "+9-3*3"
+      - value: "+5-3*3"
         position: "append"
-        tag: "all"
+        tag: "general"
             
     endpoint: "{{base_url}}"
     verify:
@@ -71,5 +68,20 @@ flows:
         args:
           body_content_1: "{{response_body_content!0}}"
           body_content_2: "{{response_body_content!2}}"
+          rate: 93
+        expected-value: False
+
+  flow_3:
+    payloads:
+      - value: ""
+        position: "replace"
+        tag: "general"
+
+    endpoint: "{{base_url}}"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!3}}"
           rate: 93
         expected-value: False

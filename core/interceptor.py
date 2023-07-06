@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from persistence.database import initialize
 from mitmproxy import http
 from core.serviceapi import ObserverServiceAPI
@@ -26,4 +27,7 @@ class FlowInterceptor:
 
     async def response(self, flow: http.HTTPFlow) -> None:
         """This function is called when a server response has been received. We do the analysis here."""
-        await self.service_api.handle_response(flow)
+        try:
+            await self.service_api.handle_response(flow)
+        except Exception as e:
+            logging.warning(f"An error has occurred {str(e)}")

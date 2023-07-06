@@ -7,6 +7,14 @@ target-arguments:
     part: "all"
     words:
       - "message"
+      - "template"
+      - "preview"
+      - "id"
+      - "view"
+      - "activity"
+      - "name"
+      - "content"
+      - "redirect"
 
 number-of-flow: 2
 flows:
@@ -21,6 +29,26 @@ flows:
       - value: '<%= "6"*7 %>'
         position: "replace"
         tag: "ERB"
+      
+      - value: '{{printf "%d" 115947*765  }}'
+        position: "replace"
+        tag: "go"
+      
+      - value: '@(115947*765)'
+        position: "replace"
+        tag: "razor"
+      
+      - value: '{{"6"*7 }}'
+        position: "replace"
+        tag: "general"
+      
+      - value: '#{115947*765}'
+        position: "replace"
+        tag: "PugJs"
+      
+      - value: '${115947*765}'
+        position: "replace"
+        tag: "general"
       
     verify:
       - function: "contain_any_patterns"

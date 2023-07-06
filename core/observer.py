@@ -10,9 +10,6 @@ from definitions import INTRUDER_SERVICE,ROOT_DIR
 from utilities.util import find_all_forms,is_absolute_url,is_relative_url
 from mitmproxy.http import Request 
 
-
-
-
 class ParameterCollector():
 
     def __init__(self, db_service: DataAccessLayer) -> None:
@@ -100,7 +97,8 @@ class BugAnalyzer():
 
             parameter_id = parameter.id
             if parameter_id in self.parameter_table:
-                continue
+                pass
+                #continue
 
             # SAVING THE PARAMETER
             saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)
@@ -124,10 +122,10 @@ class Observer:
         nul = open(os.devnull, "w")
         intruder = subprocess.Popen(
             ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\intruder\server.py")],stdout=nul,stderr=nul)
-        crawler = subprocess.Popen(
-            ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\crawler\server.py")],stdout=nul,stderr=nul)
+        #crawler = subprocess.Popen(
+        #    ["Scripts\python.exe", os.path.join(ROOT_DIR,"services\crawler\server.py")],stdout=nul,stderr=nul)
         self.services.append(intruder)
-        self.services.append(crawler)
+        #self.services.append(crawler)
 
 
     def clean(self):
@@ -138,7 +136,6 @@ class Observer:
         pass
 
     async def handle_response(self, flow: ObHttpFlow):
-        
         await self.PARAMETER_COLLECTOR.collect_forms(flow)
 
         if flow.in_trace() or flow.is_replayed() or flow.has_no_parameters():

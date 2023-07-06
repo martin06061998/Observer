@@ -18,7 +18,7 @@ class ParameterDao:
             if param is None or flow is None:
                 return
             new_parameter = Parameter.new_parameter(param, flow)
-        logging.warning(f"add {new_parameter}")
+
         await add(new_parameter)
         return new_parameter
 

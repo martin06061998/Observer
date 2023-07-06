@@ -27,6 +27,17 @@ class Parameter(Base):
 
     @classmethod
     def calculate_id(cls, name: str|bytes, http_method: str, scheme: str, host: str, endpoint: str):
+        if name is None:
+            raise ValueError(f"Can not calculate parameter id due to name is None")
+        if http_method is None:
+            raise ValueError(f"Can not calculate parameter id due to http_method is None")
+        if scheme is None:
+            raise ValueError(f"Can not calculate parameter id due to scheme is None")
+        if host is None:
+            raise ValueError(f"Can not calculate parameter id due to host is None")
+        if endpoint is None:
+            raise ValueError(f"Can not calculate parameter id due to endpoint is None")
+            
         return md5(name+http_method+scheme+host+endpoint)
 
     def __init__(self, name: str|bytes, http_method: str, scheme: str, host: str, data_type: str, example_values: list[str|bytes], part: str,request_template_id:str,endpoint:str,original_url:str):
