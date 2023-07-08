@@ -2,7 +2,8 @@ from persistence.dao.flowdao import FlowDAO
 from persistence.dao.paramdao import ParameterDao
 from persistence.models.flow import ObHttpFlow
 from persistence.models.param import Parameter,ParamFlowMap
-
+from persistence.models.testresult import TestResult
+from persistence.dao.testresultdao import TestResultDao
 
 class DataAccessLayer():
     """This class is responsible for connecting to the database and executing queries"""
@@ -11,6 +12,7 @@ class DataAccessLayer():
         self.db_services = dict()
         self.db_services["flow"] = FlowDAO()
         self.db_services['parameter'] = ParameterDao()
+        self.db_services['testresults'] = TestResultDao()
 
     # FLOW DAL
     async def get_flow_by_id(self, id: str) -> ObHttpFlow:
@@ -55,6 +57,18 @@ class DataAccessLayer():
         ret: ParamFlowMap = await service.get_last_param_flow(parameter_id)
         return ret
     # END
+    
+    #TEST RESULT DAO
+    async def insert_test_result(self, test_result:TestResult):
+        service = self.db_services["testresults"]
+        ret: TestResult = await service.insert_test_result(test_result)
+        return ret
+    
+    async def search_vulnerable_parameters_by_bug_type(self,name,endpoint,bug_type,is_vulnerable,is_tested,limit,template_path):
+        service = self.db_services["testresults"]
+        ret: list[TestResult] = await service.search_vulnerable_parameters_by_bug_type(name,endpoint,bug_type,is_vulnerable,is_tested,limit,template_path)
+        return ret
+    #END
     
 
 def get_data_access_layer_instance():

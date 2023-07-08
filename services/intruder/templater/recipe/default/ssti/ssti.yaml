@@ -45,7 +45,7 @@ flows:
         position: "replace"
         tag: "razor"
       
-      - value: '{{"6"*7 }}'
+      - value: '{{"uijk"*7 }}'
         position: "replace"
         tag: "general"
       
@@ -62,5 +62,5 @@ flows:
         args:
           patterns:
             - "88699455"
-            - "6666666"
+            - "uijkuijkuijkuijkuijkuijkuijk"
         expected-value: True

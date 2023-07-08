@@ -43,6 +43,7 @@ class Parameter(Base):
         self.endpoint = endpoint
         self.data_type = data_type
         self.original_url = original_url
+        self.body_data_type = body_data_type
         self.example_values = []
         for v in example_values:
             if type(v) is bytes:

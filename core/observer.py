@@ -46,7 +46,7 @@ class ParameterCollector():
                 for param_name in parameters.keys():
                     if param_name:
                         data_type=form_dict["type_map"][param_name]
-                        new_parameter = Parameter(name=param_name,http_method=flow.http_method,data_type=data_type,example_values=[parameters[param_name]],part="body",endpoint=endpoint,original_url=flow.url,group_id=group_id,body_data_type=enctype)
+                        new_parameter = Parameter(name=param_name,http_method="post",data_type=data_type,example_values=[parameters[param_name]],part="body",endpoint=endpoint,original_url=flow.url,group_id=group_id,body_data_type=enctype)
                         await self.DAL.insert_parameter(new_parameter)
         
         self.crawled_urls.add(flow.url)

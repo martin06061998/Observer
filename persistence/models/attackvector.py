@@ -196,30 +196,16 @@ class AttackVector():
                     return False
         return True
     
-    def exploit(self,template_flow:ObHttpFlow,parameter:Parameter,lock:Lock):
-        def report_bug():
-            with open("bug.log", "a+") as f:
-                f.write(f"Bug type: {self.bug_type}\n")
-                f.write(f"Description: {self.description}\n")
-                f.write(f"Template Path: {self.path}\n")
-                f.write(f"Parameter: {parameter.name}\n")
-                f.write(f"Flow id: {template_flow.id}\n")
-                payload = None
-                for e in self.exploit_sequence:
-                    if e and e.payload:
-                        payload = e.payload
-                        break
-                     
-                if payload:
-                    f.write(f"Payload: {payload.render(pattern)}\n")
-                    f.write(f"Tag: {payload.tag}\n")
-                f.write(f"="*125+"\n\n")
-                f.flush()
-    
-    
+    def exploit(self,template_flow:ObHttpFlow,parameter:Parameter,lock:Lock,force:bool=False)->bool:
         #START
-        if not self.match(parameter):
-            return
+
+        if not self.match(parameter) and not force:
+            return {"parameter_id" : parameter.id,
+                "bug_type" : self.bug_type,
+                "template_path" : self.path,
+                "is_vulnerable": None
+            }
+            
         end_point =  parameter.endpoint
         headers: dict = template_flow.request_headers
 
@@ -286,10 +272,11 @@ class AttackVector():
         isVulnerable = self.verify(flow_sequence=flow_sequence)
 
         # REPORT BUG
-        if isVulnerable:
-            with lock:
-                report_bug()
-            
+        return {"parameter_id" : parameter.id,
+                "bug_type" : self.bug_type,
+                "template_path" : self.path,
+                "is_vulnerable": isVulnerable
+            }
         # END
 
 class Template():

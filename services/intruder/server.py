@@ -18,7 +18,7 @@ from persistence.models.flow import ObHttpFlow
 from utilities.util import base64_encode,md5
 from quart import send_file
 from definitions import ROOT_DIR
-
+from persistence.models.testresult import TestResult
 
 vector_list : list[AttackVector]=  []
 loop = None
@@ -47,6 +47,7 @@ app.url_map.converters['regex'] = RegexConverter
 
 
 
+
 async def try_exploit(content: dict[str, str]):
     # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
     await asyncio.sleep(0.2)
@@ -56,25 +57,31 @@ async def try_exploit(content: dict[str, str]):
     
     parameter_id = content["parameter_id"]
     saved_param = await dal.get_parameter_by_id(parameter_id)
+
     if saved_param is None:
         logging.warning(f"parameter id {parameter_id} not exists")
         return
-    
+
     flow_map = await dal.get_last_param_flow(parameter_id=parameter_id)
     
     if flow_map is None:
         logging.warning(f"Cannot find any flow for {parameter_id}")
         return
-    
-    saved_flow =  await dal.get_flow_by_id(flow_map.flow_id)
-    
-    TASKS = []
-    
-    for vector in vector_list:
-        TASKS.append(loop.run_in_executor(POOL, vector.exploit, saved_flow,saved_param,lock))
 
+    saved_flow =  await dal.get_flow_by_id(flow_map.flow_id)
+
+    TASKS = []
+    force = content.get("force",False)
+    for vector in vector_list:
+        TASKS.append(loop.run_in_executor(POOL, vector.exploit, saved_flow,saved_param,lock,force))
+   
     
-    asyncio.gather(*TASKS)
+    await asyncio.gather(*TASKS)
+    t:asyncio.Future
+    for t in TASKS:
+        test_result = TestResult(**t.result())
+        await dal.insert_test_result(test_result)
+        
 
 async def __get_parameter_by_id(id:str):
     # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
@@ -174,15 +181,6 @@ async def get_flow_by_id():
             return {"data":encoded}
     return {"msg": "flow not found"}
 
-@app.route("/test", methods=['GET'])
-async def test():
-    return await send_file(os.path.normpath(r'D:\Tools\observer\services\intruder\templates\index.html'))
-
-
-
-
-
-
 @app.route("/", methods=['POST','GET'])
 @route_cors(allow_origin="*")
 async def index():
@@ -218,6 +216,32 @@ async def add_parameter():
    
     return {"msg": "parameter not found"}
 
+@app.route("/get-vulnerable-parameters", methods=['POST'])
+async def get_vulnerable_parameters_by_bug_type():
+    content = await request.get_json(force=True,silent=True)
+    bug_type = content.get("bug_type","")
+    endpoint = content.get("endpoint","")
+    name = content.get("name",None)
+    is_vulnerable = content.get("is_vulnerable",True)
+    limit = content.get("limit",10)
+    is_tested = content.get("is_tested",True)
+    template_path = content.get("template_path","")
+    
+    dal = get_data_access_layer_instance()
+    
+    ret = await dal.search_vulnerable_parameters_by_bug_type(name,endpoint,bug_type,is_vulnerable,is_tested,limit,template_path)
+    reply = {}
+    for i,r in enumerate(ret):
+        reply[i] = {
+            "parameter_id":r[0],
+            "parameter_name":r[1],
+            "endpoint":r[2],
+            "bug_type":r[3],
+            "template_path" : r[4]
+        }
+        
+    #logging.warning(ret)
+    return reply
 
 
 
