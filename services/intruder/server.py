@@ -1,8 +1,12 @@
 import asyncio
 import base64
+import json
 import logging
 import multiprocessing
+import os
+import time
 from quart import Quart, request
+from quart_cors import route_cors
 from werkzeug.routing import BaseConverter
 from services.intruder.templater.template import build_vector_table
 from persistence.dal import get_data_access_layer_instance
@@ -11,7 +15,10 @@ from definitions import INTRUDER_PORT
 from concurrent.futures import ProcessPoolExecutor
 from persistence.models.param import Parameter
 from persistence.models.flow import ObHttpFlow
-from utilities.util import base64_encode
+from utilities.util import base64_encode,md5
+from quart import send_file
+from definitions import ROOT_DIR
+
 
 vector_list : list[AttackVector]=  []
 loop = None
@@ -21,10 +28,10 @@ m = None
 lock = None
 
 #process_pool: list[Process] = []
-SEMAPHORE = asyncio.Semaphore(LIMIT*2)
+#SEMAPHORE = asyncio.Semaphore(3*LIMIT)
 app = Quart(__name__)
 
-logging.basicConfig(filename="log\error.log",
+logging.basicConfig(filename=os.path.join(ROOT_DIR,"log","intruder.log"),
                     filemode='a',
                     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                     datefmt='%H:%M:%S',
@@ -52,15 +59,20 @@ async def try_exploit(content: dict[str, str]):
     if saved_param is None:
         logging.warning(f"parameter id {parameter_id} not exists")
         return
-    flow_id = saved_param.request_template_id
-    saved_flow = await dal.get_flow_by_id(flow_id)
-    if saved_flow is None:
+    
+    flow_map = await dal.get_last_param_flow(parameter_id=parameter_id)
+    
+    if flow_map is None:
+        logging.warning(f"Cannot find any flow for {parameter_id}")
         return
+    
+    saved_flow =  await dal.get_flow_by_id(flow_map.flow_id)
     
     TASKS = []
     
     for vector in vector_list:
         TASKS.append(loop.run_in_executor(POOL, vector.exploit, saved_flow,saved_param,lock))
+
     
     asyncio.gather(*TASKS)
 
@@ -95,6 +107,11 @@ async def __get_flow_by_id(id:str):
     flow:ObHttpFlow = await dal.get_flow_by_id(id)
     
     return flow
+
+async def __insert_parameter(new_parameter):
+    dal = get_data_access_layer_instance()
+    
+    await dal.insert_parameter(new_parameter)
 
 
 @app.route("/exploit", methods=['POST'])
@@ -157,6 +174,52 @@ async def get_flow_by_id():
             return {"data":encoded}
     return {"msg": "flow not found"}
 
+@app.route("/test", methods=['GET'])
+async def test():
+    return await send_file(os.path.normpath(r'D:\Tools\observer\services\intruder\templates\index.html'))
+
+
+
+
+
+
+@app.route("/", methods=['POST','GET'])
+@route_cors(allow_origin="*")
+async def index():
+    return{"msg":"ok"}
+
+@app.route("/add-parameter", methods=['POST'])
+@route_cors(allow_origin="*")
+async def add_parameter():
+    content :dict = await request.get_json(force=True,silent=True)
+
+    endpoint = content.get("endpoint",None)
+    if endpoint is None:
+        return {"msg": "endpoint can not be none"}
+    original_url = content.get("original_url",None)
+    if original_url is None:
+        return {"msg": "original_url can not be none"}
+    data:dict= content.get("data",None)
+    if data is None:
+        return {"msg": "data cannot be none"}
+    method = data.get("method",None)
+    if method is None:
+        return {"msg": "method cannot be none"}
+    body : dict = data.get("body",None)
+    if body is None:
+        return {"msg": "body can not be none"}
+
+    body = json.loads(body)
+    group_id = md5(original_url+str(time.time()))
+    for name,value in body.items():
+        new_parameter :  Parameter = Parameter(name=name,http_method=method,original_url=original_url,endpoint=endpoint,example_values=[value],group_id=group_id,part="body")
+        await __insert_parameter(new_parameter)
+        
+   
+    return {"msg": "parameter not found"}
+
+
+
 
 
 if __name__ == "__main__":
@@ -165,4 +228,4 @@ if __name__ == "__main__":
     lock = m.Lock()
     loop = asyncio.get_event_loop()
     loop.create_task(build_vector_table(vector_list=vector_list))
-    app.run(port=INTRUDER_PORT, loop=loop)
+    app.run(port=INTRUDER_PORT, loop=loop,debug=True)

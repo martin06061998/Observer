@@ -2,7 +2,7 @@
 
 import logging
 
-from sqlalchemy import update
+from sqlalchemy import desc, update
 from persistence.models.param import Parameter, ParamFlowMap
 from persistence.models.flow import ObHttpFlow
 from persistence.database import db_session,add
@@ -57,23 +57,19 @@ class ParameterDao:
                 ret.append(row[0])    
         return ret
 
-    async def add_example_value(self, parameter_id: str, value: str):
+    
+    async def add_param_flow(self, parameter_id: str, flow_id: str):
+        new_map = ParamFlowMap(parameter_id,flow_id)
+        await add(new_map)
+
+    
+    async def get_last_param_flow(self,parameter_id:str)->ParamFlowMap:
         async_session = await db_session()
         ret = None
+        saved_flow = None
         async with async_session() as session:
             async with session.begin():
-                stmt = select(Parameter).where(Parameter.id == parameter_id)
+                stmt = select(ParamFlowMap).where(ParamFlowMap.parameter_id == parameter_id).order_by(desc('created_date')).limit(1)
                 ret = await session.execute(stmt)
-                saved_parameter: Parameter = ret.scalars().one()
-                if saved_parameter:
-                    example_values = saved_parameter.example_values
-                    if example_values:
-                        example_values.append(value)
-                        example_values = [*set(example_values)]
-                    else:
-                        example_values = [value]
-                    update_statement = update(Parameter).values(
-                        {"example_values": example_values}).where(Parameter.id == parameter_id)
-                    await session.execute(update_statement)
-                await session.commit()
-        return saved_parameter
+                saved_flow = ret.scalars().one_or_none()
+        return saved_flow

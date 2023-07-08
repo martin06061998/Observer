@@ -1,5 +1,5 @@
 
-import asyncio
+from venv import logger
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from definitions import ROOT_DIR
@@ -14,7 +14,7 @@ engine = create_async_engine(
     echo=False
 )
 
-MAX_TRIES = 2
+MAX_TRIES = 1
 
 async def initialize():
     async with engine.begin() as conn:
@@ -27,21 +27,16 @@ async def db_session():
 
 
 async def add(instance):
-    number_of_tried = 0
+    #number_of_tried = 0
     async_session = await db_session()
-    while number_of_tried < MAX_TRIES:
+
+    async with async_session() as session:
         try:
-            async with async_session() as session:
-                async with session.begin():
-                    session.add(instance)
-                    await session.commit()
-            error = False
-        except exc.SQLAlchemyError as e:
-            if number_of_tried == MAX_TRIES:
-                raise e
-            error = True
-        if not error:
-            break
-        number_of_tried = number_of_tried + 1
-        await asyncio.sleep(number_of_tried*1)
+            async with session.begin():
+                session.add(instance)
+                await session.commit()
+        except exc.IntegrityError as i:
+            logger.warning(f"cannot add duplicate instance of {type(instance)}")
+
+            
 

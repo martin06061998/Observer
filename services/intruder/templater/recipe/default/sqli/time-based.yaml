@@ -37,10 +37,24 @@ target-arguments:
     part: "query"
     regexes: 
       - "^.*(id|col|item|category|select|sort|row).*$"
-number-of-flow: 2
+number-of-flow: 3
 flows:
   match-condition: "all"
   flow_1:
+    payloads:
+      - value: ""
+        position: "replace"
+        tag: "postgresql"
+    endpoint: "{{base_url}}"
+    verify:
+      - function: "has_similar_content_wordlist"
+        args:
+          body_content_1: "{{response_body_content!0}}"
+          body_content_2: "{{response_body_content!2}}"
+          rate: 93
+        expected-value: False
+
+  flow_2:
     payloads:
       - value: "'||(select 1 from pg_sleep(10))||'"
         position: "inject"

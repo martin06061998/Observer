@@ -2,7 +2,9 @@
 import logging
 import os
 import subprocess
+import time
 import requests
+import url_normalize
 from persistence.models.param import Parameter
 from persistence.dal import DataAccessLayer
 from persistence.models.flow import ObHttpFlow
@@ -21,56 +23,30 @@ class ParameterCollector():
             return
         
         html = flow.response_body_content
-        clone = flow.copy()
         all_forms = find_all_forms(html=html)
 
         if all_forms:
-            for i,form_dict in enumerate(all_forms):
+            
+            for form_dict in all_forms:
                 action = form_dict["action"]
                 if is_absolute_url(action):
                     endpoint = action
                 elif is_relative_url(action):
-                    endpoint = f"{clone.request_scheme}://{clone.request_host}{action}"
+                    endpoint =url_normalize.url_normalize(f"{flow.url}{action}")
                 else:
                     logging.warning(f"Can not parse a form in {action}")
                     continue
                 
-
-                clone.http_method = "post"
+                group_id = md5(endpoint+str(time.time()))
                 parameters :dict = form_dict["parameters"]
 
                 enctype = form_dict["enctype"]
-                r = Request.make(method="post",url="http://example.com",headers=clone.request_headers)
-                clone._flow.request = r
-                if enctype == "application/x-www-form-urlencoded":
-                    r.urlencoded_form.update(parameters)
-                    clone.request_body_parameters = r.urlencoded_form
-                if enctype == "multipart/form-data":
-                    encoded_parameters = {}
-                    for key,value in parameters.items():
-                        encoded_key = key.encode()
-                        encoded_value = value.encode()
-                        encoded_parameters[encoded_key] = encoded_value
-                    r.multipart_form.update(encoded_parameters)
-                    clone.request_body_parameters = r.multipart_form
-    
 
-                clone.request_body_type = enctype
-                clone.request_body_size = len(clone.request_body_content)
-                clone._request_body_parameters = parameters
-                clone.request_body_content = r.content
-                clone.response_body_content = b""
-                clone._response_headers = {}
-                clone.response_body_size = 0
 
-                await self.DAL.insert_flow(flow=clone)
-
-                for param in parameters.keys():
-                    group_id = md5(endpoint+str(i))
-                    new_parameter = Parameter.new_parameter(param=param, flow=clone,endpoint=endpoint,data_type=form_dict["type_map"][param],group_id=group_id)
-                    # SAVING THE PARAMETER
-                    saved_parameter = await self.DAL.get_parameter_by_id(new_parameter.id)
-                    if saved_parameter is None:
+                for param_name in parameters.keys():
+                    if param_name:
+                        data_type=form_dict["type_map"][param_name]
+                        new_parameter = Parameter(name=param_name,http_method=flow.http_method,data_type=data_type,example_values=[parameters[param_name]],part="body",endpoint=endpoint,original_url=flow.url,group_id=group_id,body_data_type=enctype)
                         await self.DAL.insert_parameter(new_parameter)
         
         self.crawled_urls.add(flow.url)
@@ -92,24 +68,21 @@ class BugAnalyzer():
 
     async def analyze(self, flow: ObHttpFlow) -> None:
         #logging.warning(flow.url)
-        i = 0
-        for param in flow.get_all_parameter_names():
-            group_id = md5(flow.url+str(i))
-            i = i + 1
-            parameter = Parameter.new_parameter(
-                param=param, flow=flow,group_id=group_id)
 
+        group_id = md5(flow.url+str(time.time()))
+        
+        for param in flow.get_all_parameter_names():
+            parameter = Parameter(name=param,http_method=flow.http_method,example_values=[flow.get_parameter_value(param)],part=flow.get_parameter_part(param),group_id=group_id,original_url=flow.url,endpoint=flow.url,body_data_type=flow.body_data_type)
             parameter_id = parameter.id
             if parameter_id in self.parameter_table:
                 continue
 
             # SAVING THE PARAMETER
-            saved_parameter = await self.DAL.get_parameter_by_id(parameter_id)
-            if saved_parameter is None:
-                await self.DAL.insert_parameter( new_parameter=parameter)
+            await self.DAL.insert_parameter( new_parameter=parameter)
 
             self.parameter_table[parameter_id] = parameter
-            #await self.DAL.add_param_flow(parameter_id=parameter_id, flow_id=flow.id)
+            
+            await self.DAL.add_param_flow(parameter_id=parameter_id, flow_id=flow.id)
 
             # START EXPLOITING
             await self.try_exploit(parameter_id=parameter_id)
@@ -141,8 +114,9 @@ class Observer:
     async def handle_response(self, flow: ObHttpFlow):
         await self.PARAMETER_COLLECTOR.collect_forms(flow)
 
-        if flow.in_trace() or flow.is_replayed() or flow.has_no_parameters():
+        if flow.in_trace  or flow.has_no_parameters():
             return
+
         await self.DAL.insert_flow(flow)
 
         await self.ANALYZER.analyze(flow)

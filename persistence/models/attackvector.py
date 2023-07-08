@@ -11,7 +11,7 @@ from definitions import ATTRIBUTE_TABLE
 from core.analyzer.asserter.assertserviceapi import AsserterServiceAPI
 from utilities.util import base64_decode
 from services.network import request
-
+import json
 
 
 
@@ -77,6 +77,8 @@ class ParameterMatcher():
             target = p.name
         else:
             target = p.example_values[-1]
+        if type(target) is dict:
+            target = json.dumps(target,indent=0)
         if self.words:
             return target in self.words
         elif self.regexes:
@@ -218,45 +220,65 @@ class AttackVector():
         #START
         if not self.match(parameter):
             return
-        end_point = f"{template_flow.request_scheme}://{template_flow.request_host}{template_flow.request_path}"
-        headers: dict = template_flow._request_headers
+        end_point =  parameter.endpoint
+        headers: dict = template_flow.request_headers
 
         headers["tag"] = self.bug_type
         headers.pop("content-length",None)
+        headers.pop("Content-Length",None)
         flow_sequence = [template_flow]
         method = parameter.http_method
-        params = None
-        data=None
-        pattern = None
 
-        if parameter.part == "query":
-            params = copy.deepcopy(template_flow._query)
-            pattern = copy.deepcopy(params[parameter.name])
-        else:
-            data = copy.deepcopy(template_flow._request_body_parameters)
-            pattern = copy.deepcopy(data[parameter.name])
+
+        part = parameter.part
+        params = None
+        data = None
+        
+        pattern = template_flow.get_parameter_value(param=parameter.name)
 
         exploit:Exploit
         for exploit in self.exploit_sequence:
             if exploit is None:
                 continue
             payload:Payload = exploit.payload
+            if payload is None:
+                continue
             rendered_payload = payload.render(pattern)
-            if params:
+            if part == "query":
+                params = copy.deepcopy(template_flow.query)
                 params[parameter.name] = rendered_payload
-            if data:
+            else:
+                data = copy.deepcopy(template_flow.body_parameters)
                 data[parameter.name] = rendered_payload
             javascript_enable = True if self.bug_type == "xss" else False
-
             
-            ret : dict = request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=120,javascript_enable=javascript_enable,proxy="http://127.0.0.1:8080")
-       
+            #SEND PAYLOADS TO THE TARGET
+            tries = 0
+            MAX_TRY = 1
+            error = False
+            while tries < MAX_TRY:
+                try:
+                    ret : dict = request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=120,javascript_enable=javascript_enable,proxy="http://127.0.0.1:8080")
+                    error = False
+                except Exception as e:
+                    logging.warning(f"A network issue in AttackVector.exploit: {str(e)}:\n Headers: {headers}\nEndpoint: {end_point}\nParams: {params}\nData: {data}\nJavascript Enable: {javascript_enable}")
+                    error = True
+                finally:
+                    tries = tries + 1
+                if not error:
+                    break
+      
+            if error:
+                logging.warning(f"attack vector {self.path} failed due to network issue")
+                break
+            #END
+            
             if ret.get("msg",None) != "ok":
                 logging.warning(f"An error occur in AttackVector.exploit: {ret.get('msg',None)}")
                 continue 
             ret["content"] =  base64_decode(ret["content"])
-            new_flow = ObHttpFlow(request_scheme=template_flow.request_scheme, request_host=template_flow.request_host, request_path=template_flow.request_path, http_method=template_flow.http_method, url=template_flow.url,
-                                        status_code=ret.get("status_code"), timestamp=ret.get("elapsed"), request_headers=headers, response_headers=ret.get("response_headers"), response_body_content=ret.get("content"), query=params)
+            new_flow : ObHttpFlow= ObHttpFlow.new_flow(http_method=method,url=end_point,response_body_content= ret["content"],timestamp=ret["elapsed"],response_headers=ret["response_headers"],status_code=ret["status_code"])
+
             flow_sequence.append(new_flow)
 
 
