@@ -27,7 +27,7 @@ class TestResultDao:
             async with session.begin():
                 if not is_tested:
                     is_vulnerable = None
-                stmt = select(Parameter.id,Parameter.name,Parameter.endpoint,TestResult.bug_type,TestResult.template_path).filter(Parameter.id == TestResult.parameter_id).filter(Parameter.name.like(f"%{name}%")).filter(TestResult.is_vulnerable == is_vulnerable).filter(TestResult.bug_type.like(f"%{bug_type}%")).filter(Parameter.endpoint.like(f"%{endpoint}%")).filter(TestResult.template_path.like(f"%{template_path}%")).limit(limit)
+                stmt = select(Parameter.id,Parameter.name,Parameter.endpoint,TestResult.bug_type,TestResult.template_path,TestResult.payloads).filter(Parameter.id == TestResult.parameter_id).filter(Parameter.name.like(f"%{name}%")).filter(TestResult.is_vulnerable == is_vulnerable).filter(TestResult.bug_type.like(f"%{bug_type}%")).filter(Parameter.endpoint.like(f"%{endpoint}%")).filter(TestResult.template_path.like(f"%{template_path}%")).limit(limit)
                 saved_test_results = await session.execute(stmt)
             ret = [row for row in saved_test_results]
 

@@ -16,7 +16,6 @@ from concurrent.futures import ProcessPoolExecutor
 from persistence.models.param import Parameter
 from persistence.models.flow import ObHttpFlow
 from utilities.util import base64_encode,md5
-from quart import send_file
 from definitions import ROOT_DIR
 from persistence.models.testresult import TestResult
 
@@ -99,11 +98,11 @@ async def __get_parameter_by_group_id(id:str):
     
     return parameters
 
-async def __get_parameters_by_name(name:str):
+async def __search_parameters(name:str,enctype:str,endpoint:str,data_type:str,limit:int):
     # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
     dal = get_data_access_layer_instance()
     
-    parameters:Parameter = await dal.get_parameters_by_name(name)
+    parameters:Parameter = await dal.search_parameters(name,enctype,endpoint,data_type,limit)
     
     return parameters
 
@@ -153,13 +152,16 @@ async def get_parameter_by_group_id():
         return ret    
     return {"msg": "parameters not found"}
 
-@app.route("/get-parameters-by-name", methods=['POST'])
-async def get_parameters_by_name():
+@app.route("/search-parameters", methods=['POST'])
+async def search_parameters():
     content = await request.get_json(force=True,silent=True)
-    name = content.get("name",None)
-    if name is None:
-        return {"msg": "invalid data"}
-    parameters : list[Parameter] = await __get_parameters_by_name(name)
+    name = content.get("name","")
+    enctype = content.get("enctype","")
+    endpoint = content.get("endpoint","")
+    data_type = content.get("data_type","")
+    limit = content.get("limit",10)
+    
+    parameters : list[Parameter] = await __search_parameters(name=name,enctype=enctype,endpoint=endpoint,data_type=data_type,limit=limit)
     if parameters:
         ret = dict()
         for i,p in enumerate(parameters):
@@ -219,6 +221,8 @@ async def add_parameter():
 @app.route("/get-vulnerable-parameters", methods=['POST'])
 async def get_vulnerable_parameters_by_bug_type():
     content = await request.get_json(force=True,silent=True)
+    if content is None:
+        return {"msg":"not valid json"}
     bug_type = content.get("bug_type","")
     endpoint = content.get("endpoint","")
     name = content.get("name",None)
@@ -237,10 +241,11 @@ async def get_vulnerable_parameters_by_bug_type():
             "parameter_name":r[1],
             "endpoint":r[2],
             "bug_type":r[3],
-            "template_path" : r[4]
+            "template_path" : r[4],
+            "payloads" : r[5]
         }
         
-    #logging.warning(ret)
+
     return reply
 
 

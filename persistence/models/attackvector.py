@@ -208,12 +208,11 @@ class AttackVector():
             
         end_point =  parameter.endpoint
         headers: dict = template_flow.request_headers
-
         headers["tag"] = self.bug_type
         headers.pop("content-length",None)
-        headers.pop("Content-Length",None)
         flow_sequence = [template_flow]
         method = parameter.http_method
+        payloads = []
 
 
         part = parameter.part
@@ -230,6 +229,8 @@ class AttackVector():
             if payload is None:
                 continue
             rendered_payload = payload.render(pattern)
+            payloads.append(rendered_payload)
+            
             if part == "query":
                 params = copy.deepcopy(template_flow.query)
                 params[parameter.name] = rendered_payload
@@ -275,6 +276,7 @@ class AttackVector():
         return {"parameter_id" : parameter.id,
                 "bug_type" : self.bug_type,
                 "template_path" : self.path,
+                "payloads":payloads,
                 "is_vulnerable": isVulnerable
             }
         # END

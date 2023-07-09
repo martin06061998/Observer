@@ -19,9 +19,10 @@ class ParameterCollector():
         self.crawled_urls = set()
 
     async def collect_forms(self, flow: ObHttpFlow):
+
         if flow.url in self.crawled_urls or flow.response_headers is None or "content-type" not in  flow.response_headers or "html" not in flow.response_headers["content-type"].lower():
             return
-        
+
         html = flow.response_body_content
         all_forms = find_all_forms(html=html)
 

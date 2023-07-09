@@ -43,9 +43,9 @@ class DataAccessLayer():
         ret: list[Parameter] = await service.get_parameters_by_group_id(id)
         return ret
     
-    async def get_parameters_by_name(self,name:str)->list[Parameter]:
+    async def search_parameters(self,name:str,enctype:str,endpoint:str,data_type:str,limit:int)->list[Parameter]:
         service = self.db_services["parameter"]
-        ret: list[Parameter] = await service.get_parameters_by_name(name)
+        ret: list[Parameter] = await service.search_parameters(name,enctype,endpoint,data_type,limit)
         return ret
 
     async def add_param_flow(self, parameter_id: str, flow_id: str):

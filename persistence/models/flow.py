@@ -64,7 +64,7 @@ class ObHttpFlow(Base):
             self.request_headers = dict()     
             
             for k,v in self._flow.request.headers.items():
-                self.request_headers[k] = v    
+                self.request_headers[k.lower()] = v    
                 
             
             self.http_method = self._flow.request.method
@@ -113,7 +113,7 @@ class ObHttpFlow(Base):
                 self.timestamp = self._flow.response.timestamp_end - self._flow.request.timestamp_start
                 self.response_headers = dict()
                 for k,v in self._flow.response.headers.items():
-                    self.response_headers[k] = v    
+                    self.response_headers[k.lower()] = v    
     
     @classmethod
     def new_flow(cls,http_method:str,url:str,request_body_content:bytes=None,response_body_content:bytes=None,body_data_type:str=None,query:dict[str:str]=None,body_parameters:dict[str:str]=None,request_headers:dict[str:str]=None,response_headers:dict[str:str]=None,status_code:int=None,timestamp:float=None,is_clone:bool=False):

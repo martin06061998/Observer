@@ -1,0 +1,1486 @@
+"<form action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/timkiem/tracuu"" class="""" method=""get"">
+
+    <div class=""form-group-wrap"">
+
+     <div class=""form-group margin_0"">
+
+      <label class=""sr-only"" for=""topline-search"">Search for:</label>
+
+      <input class=""form-control"" id=""topline-search"" name=""search"" placeholder=""Tìm thông tin"" type=""text"" value="""">
+
+     </div>
+
+     <button class=""theme_button color1 no_bg_button"" type=""submit"">Search</button>
+
+    </div>
+
+   </form>"
+"<form action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/vanbanphapluat/tracuu"" method=""POST"">
+
+<div class=""form_input_wp row"">
+
+ <div class=""col-xs-12 col-md-4 form_input_left"">
+
+  <label>Từ khóa tìm kiếm</label>
+
+ </div>
+
+ <div class=""form_input_right col-xs-12 col-md-8"">
+
+  <input name=""noidungtracuu"" placeholder=""Từ khóa tìm kiếm"" type=""text"" value="""">
+
+ </div>
+
+</div>
+<div class=""form_input_wp now"">
+ <div class=""col-xs-12 col-md-4 form_input_left"">
+
+ </div>
+ <div class=""col-xs-12 col-md-8 col_radio"">
+  <div>
+   <label><span>Theo số văn bản</span>
+    <input checked name=""locvanban"" type=""radio"" value=""locsovanban"">
+   </label>
+  </div>
+  <div>
+   <label><span>Theo nội dung</span>
+    <input name=""locvanban"" type=""radio"" value=""locnoidung"">
+    <span class=""checkmark""></span>
+   </label>
+  </div>
+ </div>
+
+</div>
+
+<div class=""form_input_wp row"">
+
+ <div class=""form_input_left col-xs-12 col-md-4"">
+
+  <label>Thời gian ban hành</label>
+
+ </div>
+
+ <div class=""form_input_right col-xs-12 col-md-8"">
+
+  <div>
+
+   <label>Từ ngày:</label>
+
+   <input name=""tungay"" required=""required"" type=""date"">
+
+  </div>
+
+  <div class="""">
+
+   <label>Đến ngày</label>
+
+   <input name=""denngay"" required=""required"" type=""date"">
+
+  </div>
+
+ </div>
+
+</div>
+
+<div class=""form_input_wp row"">
+
+ <div class=""form_input_left col-xs-12 col-md-4"">
+
+  <label>Cơ quan ban hành</label>
+
+ </div>
+
+ <div class=""form_input_right1 col-xs-12 col-md-8"">
+
+  <!-- <select name=""cqbh"" id="""">
+   
+   //foreach ($cqbh as $coquan) {
+   
+    <option value="" //$coquan->Ten ?>""> //$coquan->Ten ?></option>
+   
+   //}
+   
+  </select> -->
+  <div class=""dropdown dropdown_wp"" style="""">
+   <button aria-expanded=""false"" aria-haspopup=""true"" class=""btn btn-secondary dropdown-toggle"" data-toggle=""dropdown"" id=""dropdown_coins"" type=""button"">
+    Bộ Công thương        </button>
+   <div aria-labelledby=""dropdown_coins"" class=""dropdown-menu"" id=""menu"">
+    <input autofocus=""autofocus"" class=""form-control search_dropdow"" id=""searchCoin"" placeholder=""Tìm kiếm"" type=""search"">
+    <div id=""menuItems"">
+                <input class=""dropdown-item"" type=""button"" value=""Bộ Công thương"">
+                <input class=""dropdown-item"" type=""button"" value=""Bộ Lao động - Thương binh và Xã hội"">
+                <input class=""dropdown-item"" type=""button"" value=""Tổng Cục Thuế"">
+                <input class=""dropdown-item"" type=""button"" value=""Bộ Nông nghiệp và Phát triển Nông thôn"">
+                <input class=""dropdown-item"" type=""button"" value=""Bộ Y tế"">
+                <input class=""dropdown-item"" type=""button"" value=""Tổng Cục Hải quan"">
+                <input class=""dropdown-item"" type=""button"" value=""Bộ Thương Mại"">
+                <input class=""dropdown-item"" type=""button"" value=""Bộ Tài Nguyên và Môi Trường"">
+                <input class=""dropdown-item"" type=""button"" value=""Bộ Tài chính"">
+                <input class=""dropdown-item"" type=""button"" value=""Thủ tướng Chính phủ"">
+                <input class=""dropdown-item"" type=""button"" value=""Quốc hội"">
+                <input class=""dropdown-item"" type=""button"" value=""Chính phủ"">
+                <input class=""dropdown-item"" type=""button"" value=""Ủy ban nhân dân Thành phố Hồ Chí Minh"">
+              </div>
+    <div class=""dropdown-header"" id=""empty"" style=""display: none;"">Không tìm thấy</div>
+   </div>
+  </div>
+  <input id=""save_data_dropdown"" name=""cqbh"" type=""hidden"" value=""Bộ Công thương"">
+
+ </div>
+
+</div>
+
+<div class=""form_input_wp row"">
+
+ <div class=""form_input_left col-xs-12 col-md-4"">
+
+  <label>Loại văn bản</label>
+
+ </div>
+
+ <div class=""form_input_right col-xs-12 col-md-8"">
+
+  <div class=""linhvuc_wp"">
+
+   <select id="""" name=""chuyenmucvb"">
+              <option value=""1"">Văn bản quy phạm pháp luật</option>
+              <option value=""2"">Văn bản chỉ đạo điều hành</option>
+            </select>
+
+  </div>
+
+  <div class=""linhvuc_wp1"">
+
+   <label>Lĩnh vực</label>
+
+   <select name=""linhvuc"">
+
+              <option value=""1"">Thuế</option>
+              <option value=""2"">Hải quan</option>
+              <option value=""3"">Lao động</option>
+              <option value=""4"">Bảo hiểm xã hội</option>
+              <option value=""5"">Đầu tư</option>
+              <option value=""6"">Thương mại</option>
+              <option value=""7"">Tài nguyên và Môi trường</option>
+              <option value=""8"">Xây dựng</option>
+              <option value=""9"">Quy hoạch - Kiến trúc</option>
+              <option value=""14"">Ngân hàng</option>
+              <option value=""15"">Nông nghiệp</option>
+              <option value=""16"">Các lĩnh vực khác</option>
+    
+   </select>
+
+  </div>
+
+ </div>
+
+</div>
+
+<div class=""form_input_btn"">
+
+ <button class=""btn_submit_form"" type=""submit"">
+
+  Tìm kiếm
+
+ </button>
+
+</div>
+
+</form>"
+
+"<form action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/timkiem/tracuu"" class="""" method=""get"">
+
+                               <div class=""form-group-wrap"">
+
+                                   <div class=""form-group margin_0"">
+
+                                       <label class=""sr-only"" for=""topline-search"">Search for:</label>
+
+                                       <input class=""form-control"" id=""topline-search"" name=""search"" placeholder=""Tìm thông tin"" type=""text"" value="""">
+
+                                   </div>
+
+                                   <button class=""theme_button color1 no_bg_button"" type=""submit"">Search</button>
+
+                               </div>
+
+                           </form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20688"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Thuế thu nhập cá nhân đối với quà tặng ngày 08/03 là voucher</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">26/04/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Kính chào Cục Thuế !</p>
+<p>Công ty tôi vào ngày lễ 08/03 có tặng mỗi lao động nữ là 1 phiếu voucher mua hàng (trị giá khoảng 500 ngàn) tại Lotte mart. </p>
+<p>Vậy khi nhận voucher này thì người lao động nữ có chịu thuế TNCN hay không?.</p>
+<p>Còn về thuế TNDN: Công ty tôi lập chứng từ chi chuyển khoản cho Lotte là được phải không? có cần lập thêm hợp đồng hay không?.</p>
+<p>Mong nhận tư vấn từ Cục Thuế, tôi chân thành cảm ơn</p>
+<p> </p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Cục Thuế TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">18/05/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Căn cứ điểm đ, khoản 2, Điều 2 Thông tư số 111/2013/TT-BTC ngày 15/08/2013 của Bộ Tài chính hướng dẫn về thuế thu nhập cá nhân (TNCN) quy định thu nhập chịu thuế TNCN từ tiền luơng, tiền công:</p>
+<p><em>“Điều 2. Các khoản thu nhập chịu thuế</em></p>
+<p><em>...</em></p>
+<ol start=""2"">
+<li><em> Thu nhập từ tiền lương, tiền công</em></li>
+</ol>
+<p><em>Thu nhập từ tiền lương, tiền công là thu nhập người lao động nhận được từ người sử dụng lao động, bao gồm:</em></p>
+<p><em>…</em></p>
+<p><em>đ) Các khoản lợi ích bằng tiền hoặc không bằng tiền ngoài tiền lương, tiền công do người sử dụng lao động trả mà người nộp thuế được hưởng dưới mọi hình thức:</em></p>
+<p><em>…”.</em></p>
+<p>Căn cứ Điều 8 Thông tư số 219/2013/TT-BTC ngày 31/12/2013 của Bộ Tài chính hướng dẫn về thuế giá trị gia tăng (GTGT) quy định thời điểm xác định thuế GTGT:</p>
+<p><em>“Điều 8. Thời điểm xác định thuế GTGT</em></p>
+<ol>
+<li><em>Đối với bán hàng hóa là thời điểm chuyển giao quyền sở hữu hoặc quyền sử dụng hàng hóa cho người mua, không phân biệt đã thu được tiền hay chưa thu được tiền.</em></li>
+<li><em>Đối với cung ứng dịch vụ là thời điểm hoàn thành việc cung ứng dịch vụ hoặc thời điểm lập hóa đơn cung ứng dịch vụ, không phân biệt đã thu được tiền hay chưa thu được tiền.</em></li>
+</ol>
+<p><em>…”.</em></p>
+<p>Căn cứ khoản 2 Điều 9 Nghị định số 123/2020/NĐ-CP ngày 19/10/2020 của Chính phủ quy định về hóa đơn, chứng từ hướng dẫn về thời điểm lập hóa đơn:</p>
+<p><em>“Điều 9. Thời điểm lập hóa đơn</em></p>
+<p><em>…</em></p>
+<ol start=""2"">
+<li><em> Thời điểm lập hóa đơn đối với cung cấp dịch vụ là thời điểm hoàn thành việc cung ứng dịch vụ hoặc thời điểm lập hóa đơn cung ứng dịch vụ, không phân biệt đã thu được tiền hay chưa thu được tiền. Trường hợp người cung cấp dịch vụ có thu tiền trước hoặc trong khi cung cấp dịch vụ thì thời điểm lập hóa đơn là thời điểm thu tiền (không bao gồm trường hợp thu tiền đặt cọc hoặc tạm ứng để đảm bảo thực hiện hợp đồng cung cấp các dịch vụ: kế toán, kiểm toán, tư vấn tài chính, thuế; thẩm định giá; khảo sát, thiết kế kỹ thuật; tư vấn giám sát; lập dự án đầu tư xây dựng).</em></li>
+</ol>
+<p><em>...”.</em></p>
+<p>Căn cứ Thông tư số 96/2015/TT-BTC ngày 22/6/2015 của Bộ Tài chính hướng dẫn về thuế thu nhập doanh nghiệp (TNDN):</p>
+<p>+ Tại Điều 3 quy định thời điểm xác định doanh thu để tính thu nhập chịu thuế TNDN:</p>
+<p><em>“Điều 3. Sửa đổi, bổ sung</em><em> Khoản 2 Điều 5 Thông tư số 78/2014/TT-BTC như sau:</em></p>
+<p><em>“2. Thời điểm xác định doanh thu để tính thu nhập chịu thuế được xác định như sau:</em></p>
+<ol>
+<li><em>a) Đối với hoạt động bán hàng hóa là thời điểm chuyển giao quyền sở hữu, quyền sử dụng hàng hóa cho người mua.</em></li>
+<li><em>b) Đối với hoạt động cung ứng dịch vụ là thời điểm hoàn thành việc cung ứng dịch vụ hoặc hoàn thành từng phần việc cung ứng dịch vụ cho người mua trừ trường hợp nêu tại Khoản 3 Điều 5 Thông tư số 78/2014/TT-BTC, Khoản 1 Điều 6 Thông tư số 119/2014/TT-BTC.</em></li>
+<li><em>c) Đối với hoạt động vận tải hàng không là thời điểm hoàn thành việc cung ứng dịch vụ vận chuyển cho người mua.</em></li>
+<li><em>d) Trường hợp khác theo quy định của pháp luật”.”.</em></li>
+</ol>
+<p>+ Tại  Điều 4 quy định về các khoản chi được trừ và không được trừ khi xác định thu nhập chịu thuế (đã được sửa đổi, bổ sung tại Thông tư 25/2018/TT-BTC ngày 01/5/2018 của Bộ Tài chính):</p>
+<p><em>“Điều 6. Các khoản chi được trừ và không được trừ khi xác định thu nhập chịu thuế</em></p>
+<ol>
+<li><em> Trừ các khoản chi không được trừ nêu tại Khoản 2 Điều này, doanh nghiệp được trừ mọi khoản chi nếu đáp ứng đủ các điều kiện sau:</em></li>
+<li><em>a) Khoản chi thực tế phát sinh liên quan đến hoạt động sản xuất, kinh doanh của doanh nghiệp.</em></li>
+<li><em>b) Khoản chi có đủ hoá đơn, chứng từ hợp pháp theo quy định của pháp luật.</em></li>
+<li><em>c) Khoản chi nếu có hoá đơn mua hàng hoá, dịch vụ từng lần có giá trị từ 20 triệu đồng trở lên (giá đã bao gồm thuế GTGT) khi thanh toán phải có chứng từ thanh toán không dùng tiền mặt.</em></li>
+</ol>
+<p><em>Chứng từ thanh toán không dùng tiền mặt thực hiện theo quy định của các văn bản pháp luật về thuế giá trị gia tăng.</em></p>
+<p><em>..</em></p>
+<p><em>2.30. Các khoản chi không tương ứng với doanh thu tính thuế, trừ các khoản chi sau:</em></p>
+<p><em>...</em></p>
+<p><em>- Khoản chi có tính chất phúc lợi chi trực tiếp cho người lao động như: chi đám hiếu, hỷ của bản thân và gia đình người lao động; chi nghỉ mát, chi hỗ trợ Điều trị; chi hỗ trợ bổ sung kiến thức học tập tại cơ sở đào tạo; chi hỗ trợ gia đình người lao động bị ảnh hưởng bởi thiên tai, địch họa, tai nạn, ốm đau; chi khen thưởng con của người lao động có thành tích tốt trong học tập; chi hỗ trợ chi phí đi lại ngày lễ, tết cho người lao động; chi bảo hiểm tai nạn, bảo hiểm sức khỏe, bảo hiểm tự nguyện khác cho người lao động (trừ Khoản chi mua bảo hiểm nhân thọ cho người lao động, bảo hiểm hưu trí tự nguyện cho người lao động hướng dẫn tại điểm 2.11 Điều này) và những Khoản chi có tính chất phúc lợi khác. Tổng số chi có tính chất phúc lợi nêu trên không quá 01 tháng lương bình quân thực tế thực hiện trong năm tính thuế của doanh nghiệp.</em></p>
+<p><em>...”.</em></p>
+<p>Trường hợp của Công ty theo trình bày, có tặng phiếu mua hàng (voucher) cho nhân viên nhân dịp lễ 8/3 thì khi tặng phiếu mua hàng cho nhân viên, Công ty không phải lập hóa đơn, khi thu tiền bán phiếu mua hàng, bên bán không thực hiện lập hóa đơn mà lập chứng từ thu theo quy định. Khi khách hàng sử dụng phiếu mua hàng để mua hàng hóa, dịch vụ là thời điểm bên bán (các nhà cung cấp hàng hóa, dịch vụ) lập hóa đơn và kê khai thuế theo quy định.</p>
+<p>Khoản tặng phiếu mua hàng cho nhân viên được xem là khoản lợi ích người lao động được hưởng và được tính vào thu nhập từ tiền lương, tiền công của nhân viên để khấu trừ, kê khai, nộp thuế TNCN theo quy định. Về việc hạch toán chi phí được trừ đối với các khoản chi mua phiếu mua hàng tặng nhân viên của Công ty, đề nghị Công ty nghiên cứu thực hiện theo quy định tại Điều 4 Thông tư số 96/2015/TT-BTC (đã được sửa đổi tại Thông tư 25/2018/TT-BTC).</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20686"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Nộp thuế thay chjo cá nhân kinh doanh, hộ kinh doanh</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">28/03/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Thực hiện thông tư 40/2021/TT-BTC, công ty thực hiện việc kê khai và nộp thuế cho cá nhân kinh doanh, hộ kinh doanh đối với các khoản chiết khấu, khuyến mại. Tuy nhiên việc thu thuế khách hàng là rất khó khăn dù doanh nghiệp đã giải thích với khách hàng. Khách hàng phản ứng khi công ty thu khoản thuế này. Để duy trì việc bán hàng công ty chấp nhận nộp thay khoản thuế này cho khách hàng.</p>
+<p>Xin được hỏi: Công ty khi ký hợp đồng mua bán với cá nhân kinh doanh và hộ kinh doanh có ghi rõ công ty sẽ nộp hộ khoản thuế này cho họ thì khoản thuế công ty nộp có được gji nhận là chi phí hợp lý hợp lệ hay không?</p>
+<p>Cảm ơn</p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Cục Thuế TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">18/05/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Theo hướng dẫn của Tổng cục Thuế tại văn bản số 3870/TCT-DNNCN ngày 19/10/2022 về việc khai thuế thay, nộp thuế thay đối với khoản thưởng khuyến mại, chiết khấu thương mại cho HKD, CNKD.</p>
+<p><em>“Căn cứ các quy định nêu trên, trường hợp Công ty 4 Oranges Co., LTD chi trả các khoản quà tặng khuyến mại, chiết khấu thương mại,... cho cá nhân và nộp thuế thay cho cá nhân thì Công ty không được khấu trừ thuế GTGT đầu vào và không được tính vào chi phí được trừ khi xác định thu nhập chịu thuế TNDN đối với khoản thuế nộp thay cho cá nhân.”</em></p>
+<p>Trường hợp Công ty thực hiện việc kê khai và nộp thuế thay cho cá nhân kinh doanh, hộ kinh doanh đối với các khoản chiết khấu, khuyến mại thì việc hạch toán chi phí được trừ đề nghị Công ty nghiên cứu thực hiện theo hướng dẫn tại văn bản số 3870/TCT-DNNCN.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20689"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Thắc mắc về quy định trường hợp được miễn thực hiện thủ tục tự công bố sản phẩm và miễn ghi nhãn phụ trong quá trình kinh doanh và vận chuyển đến kho của các cửa hàng</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">28/04/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Công ty TNHH Pizza Việt Nam, giấy chứng nhận đăng ký kinh doanh số 0303902751, hiện đang quản lý hoạt động kinh doanh của chuỗi các nhà hàng dưới thương hiệu Pizza Hut để cung cấp dịch vụ ăn uống là bánh Pizza và một số món ăn khác. Bằng văn bản này Công ty TNHH Pizza Việt Nam (sau đây gọi là “Pizza Việt Nam”) kính chào Quý Cơ Quan và mong muốn được Quý Cơ Quan hỗ trợ làm rõ việc hiểu và áp dụng quy định pháp luật về Nhãn phụ và tụ công bố sản phẩm.</p>
+<p> </p>
+<p>Theo Nghị định số 15/2018/NĐ-CP quy định về việc ghi nhãn phụ và tự công bố sản phẩm như sau:</p>
+<p><strong>“Điều 25. Miễn một số nội dung ghi nhãn bắt buộc</strong></p>
+<ol>
+<li>Miễn ghi nhãn phụ đối với sản phẩm mang theo người nhập cảnh để tiêu dùng cá nhân, quà tặng, quà biếu trong định mức được miễn thuế nhập khẩu; sản phẩm nhập khẩu của đối tượng được ưu đãi, miễn trừ ngoại giao; sản phẩm quá cảnh, chuyển khẩu, trung chuyển, tạm nhập, tái xuất, gửi kho ngoại quan; sản phẩm là mẫu thử nghiệm hoặc nghiên cứu; sản phẩm là mẫu trưng bày hội chợ, triển lãm; <em>sản phẩm, nguyên liệu sản xuất, nhập khẩu chỉ dùng để sản xuất, gia công hàng xuất khẩu hoặc phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước</em>.”</li>
+</ol>
+<p><strong> </strong></p>
+<p><strong>“Điều 4. Tự công bố sản phẩm</strong></p>
+<ol>
+<li>Tổ chức, cá nhân sản xuất, kinh doanh thực phẩm thực hiện tự công bố thực phẩm đã qua chế biến bao gói sẵn, phụ gia thực phẩm, chất hỗ trợ chế biến thực phẩm, dụng cụ chứa đựng thực phẩm, vật liệu bao gói tiếp xúc trực tiếp với thực phẩm (sau đây gọi chung là sản phẩm) trừ các sản phẩm quy định tại khoản 2 Điều này và Điều 6 Nghị định này.</li>
+<li><em>Sản phẩm, nguyên liệu sản xuất, nhập khẩu chỉ dùng để sản xuất, gia công hàng xuất khẩu hoặc phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước được miễn thực hiện thủ tục tự công bố sản phẩ</em>m.”</li>
+</ol>
+<p> </p>
+<p>Đồng thời, theo Nghị định 43/2017/NĐ-CP quy định về việc ghi nhãn phụ như sau:</p>
+<p><strong>“Điều 8 – Ghi nhãn phụ:</strong></p>
+<ol start=""5"">
+<li>Những hàng hóa sau đây không phải ghi nhãn phụ:</li>
+<li>a) Linh kiện nhập khẩu để thay thế các linh kiện bị hỏng trong dịch vụ bảo hành hàng hóa của tổ chức, cá nhân chịu trách nhiệm đối với hàng hóa đó, không bán ra thị trường;</li>
+<li>b) <em>Nguyên liệu, phụ gia thực phẩm, chất hỗ trợ chế biến thực phẩm, linh kiện nhập khẩu về để sản </em><em>xuất, không bán ra thị trường.</em>”</li>
+</ol>
+<p> </p>
+<p>Theo đó, Pizza Việt Nam đã nhập các sản phẩm nguyên liệu như sau: phô mai, sốt cà chua…từ nước ngoài để làm nguyên liệu sản xuất ra bánh Pizza phục vụ tại các nhà hàng ở Việt Nam. Các sản phẩm nguyên liệu này Pizza Việt Nam chỉ dùng để sản xuất bánh Pizza và không bán riêng lẻ, trực tiếp ra thị trường các sản phẩm nguyên liệu này. Theo Nghị định số 43/2017/NĐ-CP và Nghị định số 15/2018/NĐ-CP đang có hiệu lực, Pizza Việt Nam đang gặp khó khăn, vướng mắc trong việc hiểu và áp dụng quy định hiện hành về nhãn phụ và thủ tục tự công bố sản phẩm (như nêu trên); nếu Pizza Việt Nam hiểu sai và áp dụng sai quy định pháp luật sẽ dẫn đến việc bị xử phạt vi pham ở các nhà hàng. Thực tế, Pizza Việt Nam cam kết tuân thủ quy định pháp luật hiện hành về nhãn phụ và thủ tục tự công bố. Do đó, Pizza Việt Nam kính đề nghị Quý Cơ Quan hỗ trợ làm rõ các vấn đề như sau:</p>
+<ul>
+<li>Việc nhập các sản phẩm nguyên liệu như sau: phô mai, sốt cà chua…của Pizza Việt Nam chỉ để chế biến bánh Pizza bán tại các nhà hàng thì có được xem là <em>“sản phẩm, nguyên liệu sản xuất, nhập khẩu chỉ dùng để phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước</em>” theo Nghị định số 15/2018/NĐ-CP hay không?</li>
+<li>Pizza Việt Nam có phải dán Nhãn phụ cho các sản phẩm nguyên liệu nhập khẩu như: phô mai, sốt cà chua…. chỉ để chế biến bánh Pizza bán tại các nhà hàng hay không ?</li>
+<li>Pizza Việt Nam có phải thực hiện thủ tục tự công bố sản phẩm cho các sản phẩm nguyên liệu nhập khẩu như: phô mai, sốt cà chua…. chỉ để chế biến bánh Pizza bán tại các nhà hàng hay không ?</li>
+<li>Nếu trường hợp nêu trên của chúng tôi đã được xem là trường hợp được miễn thực hiện thủ tục tự công bố sản phẩm và miễn ghi nhãn phụ thì trong quá trình vận chuyển hàng nhập khẩu trên đến các kho của các cửa hàng, nếu có cơ quan nào kiểm tra hành chính về việc không có bản tự công bố và không dán nhãn phụ đối với hàng nhập khẩu thì Pizza Việt Nam sẽ được xem là không vi phạm pháp luật?</li>
+</ul>
+<p> </p>
+<p>Chân thành cảm ơn Quý Cơ Quan đã hỗ trợ Pizza Việt Nam trong việc hiểu và tuân thủ quy định pháp luật rất nhiều.</p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Ban Quản lý An toàn thực phẩm TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">07/06/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input checked class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Tiếp nhận câu hỏi trên trang Đối thoại doanh nghiệp của Công ty TNHH Pizza Việt Nam về việc hướng dẫn được miễn thực hiện thủ tục công bố và miễn ghi nhãn phụ hàng hóa, Ban Quản lý An toàn thực phẩm Thành phố có ý kiến như sau:</p>
+<p><br>1. Đối với việc thực hiện thủ tục tự công bố nguyên liệu thực phẩm như sau:</p>
+<p><br>Theo quy định tại Khoản 2 Điều 4 Nghị định số 15/2018/NĐ-CP ngày 02/02/2018 của Chính phủ quy định chi tiết thi hành một số điều của Luật An toàn thực phẩm quy định: “Sản phẩm, nguyên liệu sản xuất, nhập khẩu chỉ dùng để sản xuất, gia công hàng xuất khẩu hoặc phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước được miễn thực hiện thủ tục tự công bố sản phẩm”. Như vậy, nguyên liệu nhập khẩu như: phô mai, sốt cà chua chỉ để chế biến bánh Pizza bán tại các cửa hàng không phải thực hiện thủ tục công bố sản phẩm</p>
+<p><br>2. Đối với việc thực hiện ghi nhãn phụ hàng hóa nhập khẩu: thống nhất với ý kiến trả lời của Chi cục Đo lường Chất lượng - Sở Khoa học và Công nghệ)</p>
+<p><br>3. Như vậy, sản phẩm của Công ty được miễn thực hiện thủ tục tự công bố sản phẩm và miễn ghi nhãn phụ thì được xem là không vi phạm hành chính về tự công bố sản phẩm và ghi nhãn hàng hóa./.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20687"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Các khoản chi, mua sắm từ quỹ khen thưởng phúc lợi có được khấu trừ thuế?</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">24/04/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Căn cứ CV 4003/TCT-CS ngày 17/10/2018 của Tổng Cục thuế thì các khoản mua hàng hóa phục vụ cho người lao động dùng chi phí có tính chất phúc lợi thì được khấu trừ thuế đầu vào. Xin hỏi trường hợp dùng quỹ khen thưởng phúc lợi thì có được khấu trừ thuế GTGT hóa đơn mua vào hay không?</p>
+<p>Cảm ơn.</p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Cục Thuế TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">18/05/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Căn cứ Điều 14 Thông tư số 219/2013/TT-BTC ngày 31/12/2013 của Bộ Tài chính hướng dẫn nguyên tắc khấu trừ thuế giá trị gia tăng đầu vào:</p>
+<p><em>“1. Thuế GTGT đầu vào của hàng hóa, dịch vụ dùng cho sản xuất, kinh doanh hàng hóa, dịch vụ chịu thuế GTGT được khấu trừ toàn bộ, kể cả thuế GTGT đầu vào không được bồi thường của hàng hóa chịu thuế GTGT bị tổn thất.</em></p>
+<p><em>…”</em></p>
+<p>Căn cứ Điều 4 Thông tư số 96/2015/TT-BTC ngày 22/06/2015 của Bộ Tài chính sửa đổi, bổ sung Điều 6 Thông tư số 78/2014/TT-BTC (đã được sửa đổi, bổ sung tại Khoản 2 Điều 6 Thông tư số 119/2014/TT-BTC và Điều 1 Thông tư số 151/2014/TT-BTC) như sau:</p>
+<p><em>“Điều 6. Các khoản chi được trừ và không được trừ khi xác định thu nhập chịu thuế</em></p>
+<ol>
+<li><em> Trừ các khoản chi không được trừ nêu tại Khoản 2 Điều này, doanh nghiệp được trừ mọi khoản chi nếu đáp ứng đủ các điều kiện sau:</em></li>
+<li><em>a) Khoản chi thực tế phát sinh liên quan đến hoạt động sản xuất, kinh doanh của doanh nghiệp.</em></li>
+</ol>
+<p><em>…”</em></p>
+<p>Căn cứ các quy định trên, trường hợp Công ty theo trình bày có sử dụng quỹ khen thưởng phúc lợi để chi, mua sắm hàng hóa cho người lao động, về nguyên tắc không được tính vào chi phí được trừ khi xác định thu nhập chịu thuế TNDN, thì Công ty không được khấu trừ thuế GTGT đầu vào đối với các hàng hóa trên theo quy định.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20680"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Thời gian tính đóng BHXH trong tháng</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">01/03/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Kính gửi Anh/Chị</p>
+<p>Em có câu hỏi như sau:</p>
+<p>Lao động thôi việc từ ngày 14/1/2023 => Thì tháng 1 có tham gia BHXH cho lao động không?</p>
+<p>(Trong đó Doanh nghiệp nghỉ tết từ ngày 20-26/01/2023)</p>
+<p>...</p>
+<p>Nghỉ việc từ ngày 14/1/2023 (nghỉ trước tết) +Tính từ đủ 14 ngày không làm việc trừ lễ tết => Thì chưa đủ 14 ngày không làm việc</p>
+<p>+Tính từ đủ 14 ngày không làm việc Tính luôn lễ tết => Thì đủ 14 ngày không làm việc (Vì họ nghỉ trước tết nên không nhận lương tết)</p>
+<p>Vì đơn vị có hỏi 1 số ý kiến của các cơ quan bảo hiểm thì trả lời là có tham gia BHXH tháng 1.</p>
+<p>Nên kính mong Anh/Chị hỗ trợ xác nhận lại trường hợp này có tham gia BHXH tháng 1 cho lao động hay không?</p>
+<p>Kính mong câu trả lời từ Anh/Chị ạ để doanh nghiệp áp dụng theo ạ!</p>
+<p>Em cảm ơn!</p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Bảo hiểm xã hội TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">10/03/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>BHXH TPHCM trả lời như sau:</p>
+<p>Căn cứ khoản 3 Điều 85 Luật BHXH năm 2014 quy định người lao động không làm việc và không hưởng tiền lương từ 14 ngày làm việc trở lên trong tháng thì không đóng BHXH tháng đó. Thời gian này không được tính để hưởng BHXH, trừ trường hợp nghỉ việc hưởng chế độ thai sản.</p>
+<p>Đối chiếu theo quy định trên trường hợp Người lao động nghỉ việc từ ngày 14/01/2023, số ngày không làm việc và không hưởng lương trong tháng 01/2023 dưới 14 ngày, do đó, đơn vị vẫn đóng BHXH cho người lao động tháng 01/2023.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20681"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Thuế giá trị gia tăng  Trường hơp chủ hàng mua hàng từ người bán tại Việt Nam nhưng được người bán chỉ định nhận hàng từ nước ngoài thì cơ quan hải quan chấp nhận hóa đơn do người bán tại Việt Nam phát hành cho chủ hàng</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">01/03/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p> </p>
+<p> </p>
+<p>Kính gửi Quý Cơ quan</p>
+<p>Công ty chúng tôi là bên bán (Bên A) và công ty bên mua (Bên B) đều là hai công ty tại Việt Nam ký hợp đồng mua bán chỉ định Bên mua (Bên B) nhận hàng từ nước ngoài như sau:<br> Chúng tôi ký hợp đồng mua hàng hóa với bên bán hàng hóa (Bên C) ở nước ngoài. Bên C chịu trách nhiệm giao hàng đến cửa khẩu đường hàng không ở Việt Nam.<br> Chúng tôi đã thực hiện hợp đồng, đã giao hàng từ nước ngoài và Bên B đã hoàn thành thủ tục nhập khẩu hàng hóa với Chi cục Hải quan tại cửa khẩu đường không bao gồm nộp thuế nhập khẩu, nộp thuế giá trị gia tăng 10% và đã thông quan hàng hóa.</p>
+<p>Chúng tôi đã tham khảo và thực hiện theo:<br> - Điểm b, Khoản 2, Điều 16 Thông tư 39/2018/TT-BTC ngày20/04/2018 và Thông tư 38/2015/TT-BTC ngày 25/3/2015<br> -  Điểm a, Khoản 2, Điều 9 Thông tư số 219/2013/TT-BTC ngày 31/12/2013 của Bộ Tài chính<br> - Công văn số 399/GSQL-GQ1 CỤC GSQL VỀ HẢI QUAN – Tổng Cục Hải Quan ngày 27/02/2017</p>
+<p>Theo qui định tại Điểm b, Khoản 2, Điều 16 Thông tư 39/2018/TT-BTC ngày20/04/2018 và Thông tư 38/2015/TT-BTC ngày 25/3/2015 của Bộ Tài chính thì <em>“trường hợp chủ hàng mua hàng từ người bán tại Việt Nam </em><em>nhưng</em><em> được người bán chỉ định nhận hàng từ nước ngoài thì cơ quan hải quan</em><em> chấp nhận hóa đơn do người bán tại Việt Nam phát hành cho chủ hàng”.</em></p>
+<p>Theo Công văn 399/GSQL-GQ1 CỤC GSQL VỀ HẢI QUAN đã hướng dẫn giải thích về Điểm b, Khoản 2, Điều 16 Thông tư 38/2018/TT-BTC.</p>
+<p>“<em>Trường hợp Công ty TNHH Hafele Việt Nam mua hàng từ nước ngoài (Bên bán tại nước ngoài) bán cho khách hàng trong nước (Bên mua) đồng thời chuyển giao quyền sở hữu cho Bên mua ở ngoài lãnh thổ Việt Nam thì chủ hàng lúc này là Bên mua. Như vậy, cơ quan hải quan chấp nhận hóa đơn do người bán tại Việt Nam (trường hợp này là Công ty TNHH Hafele Việt Nam) phát hành cho chủ hàng để thực hiện thủ tục hải quan</em>”</p>
+<p>Chúng tôi đã phát hành hóa đơn cho chủ hàng (Bên B) hàng hóa với trị giá theo hợp đồng đã ký với thuế suất thuế giá trị gia tăng là 0% (không phần trăm). Hóa đơn này đã được Chi cục Hải quan tại cửa khẩu đường hàng không chấp nhận cho Bên B tiến hành khai báo mở tờ khai Hải quan, xác định trị giá hàng hóa nhập khẩu, Bên B nộp các loại thuế nhập khẩu, thuế giá trị gia tăng 10% trên giá trị hàng hóa theo hợp đồng ký giữa chúng tôi và Bên B.</p>
+<p>Chúng tôi thực hiện theo quy định tại Điểm a, Khoản 2, Điều 9 Thông tư số 219/2013/TT-BTC ngày 31/12/2013 của Bộ Tài chính hướng dẫn về thuế GTGT quy định thuế suất thuế GTGT 0% đối với hàng hóa bán mà điểm giao, nhận hàng hoá ở ngoài Việt Nam, cơ sở kinh doanh (bên bán) có tài liệu chứng minh việc giao, nhận hàng hóa ở ngoài Việt Nam như:</p>
+<p>- Hợp đồng mua hàng hóa ký với bên bán hàng hoá ở nước ngoài;</p>
+<p>- Hợp đồng bán hàng hoá ký với bên mua hàng;</p>
+<p>- Chứng từ chứng minh hàng hóa được giao, nhận ở ngoài Việt Nam như: hóa đơn thương mại theo thông lệ quốc tế, vận đơn (hàng hóa được vận chuyển từ nước ngoài đến cửa khẩu đường hàng không ở Việt Nam), phiếu đóng gói, giấy chứng nhận xuất xứ.</p>
+<p>- Chứng từ thanh toán qua ngân hàng gồm: chứng từ qua ngân hàng của cơ sở kinh doanh thanh toán cho bên bán hàng hóa ở nước ngoài;</p>
+<p>- Chứng từ thanh toán qua ngân hàng của bên mua hàng hóa thanh toán cho cơ sở kinh doanh.</p>
+<p>Hiện nay cán bộ phụ trách quản lý thuế tại Cơ quan thuế tại địa phương không chấp nhận hóa đơn với thuế suất thuế giá trị gia tăng 0% mà chúng tôi đã phát hành cho Bên B với lập luận hợp đồng mua bán giữa chúng tôi và Bên B là hai công ty trong nước mua bán hàng hóa giao tại Việt Nam không phải là hàng hóa giao từ nước ngoài; không phải là hàng hóa mà điểm giao, điểm nhận hàng ngoài Việt Nam.</p>
+<p>Theo ngữ nghĩa tiếng Việt hàng hóa giao đến cửa khẩu (chưa hoàn thành thủ tục Hải quan nhập khẩu) thì vẫn là hàng hóa chưa được phép đưa vào Việt Nam, chỉ để tạm ở khu vưc kho hàng của cửa khẩu. Điều này phù hợp với hướng dẫn của Tổng cục Hải Quan trường hợp công ty chúng tôi <em>mua hàng từ nước ngoài (Bên bán tại nước ngoài) bán cho khách hàng trong nước (Bên mua) đồng thời chuyển giao quyền sở hữu cho Bên mua ở ngoài lãnh thổ Việt Nam</em>.<br> Chúng tôi thực hiện hàng hóa chỉ giao đến cửa khẩu, chuyển giao quyền sỡ hữu cho Bên B ở ngoài lãnh thổ Việt Nam.</p>
+<p>Cán bộ quản lý thuế lập luận rằng nghiệp vụ Hải quan chấp nhận hóa đơn của chúng tôi có thuế suất giá trị gia tăng là 0% chỉ là nghiệp vụ Hải quan hoặc Hải quan đã làm sai, còn theo cán bộ thuế thì chúng tôi phải phát hành hóa đơn với thuế giá trị gia tăng 10%.<br> Nếu làm theo hướng dẫn của cán bộ thuế là đúng thì dẫn đến hai trường hợp:</p>
+<ul>
+<li>Cơ quan hải quan đã làm sai, thất thoát thuế. Trị giá hàng hóa khai báo nhập khẩu phải bao gồm thuế giá trị gia tăng trên từng hàng hóa. Bên B phải nộp hai lần thuế giá trị gia tăng (một lần nộp thuế này cho Chi cục Hải quan và lần hai là nộp thanh toán cho Bên A). Điều này mâu thuẫn là cùng môt hàng hóa mà Bên mua phải chịu thuế giá trị gia tăng 2 lần. Nộp hai lần thuế là không hợp lý.</li>
+<li>Chúng tôi mua hàng từ Bên bán ở nước ngoài, chúng tôi đâu có nhập khẩu hàng, thực tế không nhận hàng thì chúng tôi đâu có đầu vào có nghĩa là hàng hóa chúng tôi chưa có mà phát hành hóa đơn tài chính có thuế giá trị gia tăng giống như mua bán trong nước thì vi phạm nghiệp vụ thuế xuất khống hóa đơn khi chưa nhập khẩu hay chưa có hóa đơn mua hàng của công ty trong nước.</li>
+</ul>
+<p>Cán bộ thuế lập luận chỉ chấp nhận thuế GTGT 0% như tại ví dụ 48, Thông tư số <a href=""https://thuvienphapluat.vn/van-ban/thue-phi-le-phi/thong-tu-219-2013-tt-btc-huong-dan-luat-thue-gia-tri-gia-tang-va-nghi-dinh-209-2013-nd-cp-220761.aspx"">219/2013/TT-BTC</a> <em>Hàng hóa bán mà điểm giao, nhận hàng hóa ở ngoài Việt Nam</em><em>.</em></p>
+<p><em>Ví dụ 48: Công ty A và Công ty B (là các doanh nghiệp Việt Nam) ký hợp đồng mua bán dầu nhờn. Công ty A mua dầu nhờn của các công ty ở Sin-ga-po, sau đó bán cho Công ty B tại cảng biển Sin-ga-po. Trường hợp Công ty A có: Hợp đồng mua dầu nhờn ký với các công ty ở Sin-ga-po, hợp đồng bán hàng giữa Công ty A và Công ty B; chứng từ chứng minh hàng hóa đã giao cho Công ty B tại cảng biển Sin-ga-po, chứng từ thanh toán tiền qua ngân hàng do Công ty A chuyển cho các công ty bán dầu nhờn ở Sin-ga-po, chứng từ thanh toán tiền qua ngân hàng do Công ty B thanh toán cho Công ty A thì doanh thu do Công ty A nhận được từ bán dầu nhờn cho Công ty B được áp dụng thuế suất thuế GTGT 0%.</em></p>
+<p>Ở ví dụ trên Công ty B mua và nhận hàng tại cảng biển Singapore thì ghi rõ công ty A được áp dụng thuế suất GTGT 0%. <br> Theo suy nghĩ của chúng tôi nếu như khi Công ty B vận chuyển dầu từ cảng Singapore về cửa khẩu ở Việt Nam thì vẫn sử dụng hóa đơn do Công ty A phát hành thuế GTGT 0%. Suy đoán của chúng tôi theo lập luận như cán bộ thuế sẽ là Bên B nhận hàng ở Singapore thì đồng ý hóa đơn GTGT 0% còn khi Bên B vận chuyển hàng về cửa khẩu Việt Nam thì Bên A phải xuất hóa đơn GTGT 10% vì là bán hàng giao tại Việt Nam.<br> Trở lại trường hợp của chúng tôi chỉ khác ví dụ 48 là hàng hóa được bán chưa bao gồm chi phí vận chuyển từ nước ngoài đến cửa khẩu Việt Nam (Bên B tự bỏ tiền thuê vận chuyển từ Singapore về cửa khẩu Việt Nam) và trường hợp của chúng tôi là hàng hóa được bán đã bao gồm phí vận chuyển từ nước ngoài về cửa khẩu Việt Nam.</p>
+<p>Kính mong Quý cơ quan giải đáp hướng dẫn chi tiết về việc Chi cục Hải quan chấp nhận hóa đơn có thuế GTGT 0% trong khi cán bộ thuế yêu cầu chúng tôi phải phát hành hóa đơn thuế suất GTGT 10%. Hóa đơn thuế suất giá trị gia tăng 0% do chúng tôi phát hành cho Bên B là đúng hay sai?</p>
+<p>Trân trọng kính chào</p>
+<p>Dương Cương Nhơn</p>
+<p> </p>
+<p> </p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Cục Thuế TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">18/05/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input checked class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Căn cứ Nghị định 123/2020/NĐ-CP ngày 19/10/2020 của Chính phủ quy định về hóa đơn, chứng từ;</p>
+<p>Căn cứ Thông tư số 219/2013/TT-BTC ngày 31/12/2013 của Bộ Tài chính hướng dẫn thi hành Luật Thuế giá trị gia tăng và Nghị định số 209/2013/NĐ-CP ngày 18/12/2013 của Chính phủ quy định chi tiết và hướng dẫn thi hành một số Điều của Luật Thuế giá trị gia tăng:</p>
+<ul>
+<li>Tại Điều 9 quy định về thuế suất 0% như sau:</li>
+</ul>
+<p><em>“</em><em>Điều 9. Thuế suất 0%</em></p>
+<ol>
+<li><em> Thuế suất 0%: áp dụng đối với hàng hóa, dịch vụ xuất khẩu; hoạt động xây dựng, lắp đặt công trình ở nước ngoài và ở trong khu phi thuế quan; vận tải quốc tế; hàng hóa, dịch vụ thuộc diện không chịu thuế GTGT khi xuất khẩu,trừ các trường hợp không áp dụng mức thuế suất 0% hướng dẫn tại khoản 3 Điều này.</em></li>
+</ol>
+<p><em>Hàng hóa, dịch vụ xuất khẩu là hàng hóa, dịch vụ được bán, cung ứng cho tổ chức, cá nhân ở nước ngoài và tiêu dùng ở ngoài Việt Nam; bán, cung ứng cho tổ chức, cá nhân trong khu phi thuế quan; hàng hóa, dịch vụ cung cấp cho khách hàng nước ngoài theo quy định của pháp luật.</em></p>
+<ol>
+<li><em>a) Hàng hóa xuất khẩu bao gồm:</em></li>
+</ol>
+<p><em>- </em><em>Hàng hóa xuất khẩu ra nước ngoài, kể cả ủy thác xuất khẩu;</em></p>
+<p><em>- </em><em>Hàng hóa bán vào khu phi thuế quan theo quy định của Thủ tướng Chính phủ; hàng bán cho cửa hàng miễn thuế;</em></p>
+<p><em>- </em><em>Hàng hóa bán mà điểm giao, nhận hàng hóa ở ngoài Việt Nam;</em></p>
+<p><em>- Phụ tùng, vật tư thay thế để sửa chữa, bảo dưỡng phương tiện, máy móc thiết bị cho bên nước ngoài và tiêu dùng ở ngoài Việt Nam;</em></p>
+<p><em>- Các trường hợp được coi là xuất khẩu theo quy định của pháp luật:</em></p>
+<p><em>+ Hàng hóa gia công chuyển tiếp theo quy định của pháp luật thương mại về hoạt động mua, bán hàng hóa quốc tế và các hoạt động đại lý mua, bán, gia công hàng hóa với nước ngoài.</em></p>
+<p><em>+ Hàng hóa xuất khẩu tại chỗ theo quy định của pháp luật.</em></p>
+<p><em>+ Hàng hóa xuất khẩu để bán tại hội chợ, triển lãm ở nước ngoài</em><em>.</em></p>
+<p><em>…</em></p>
+<ol start=""2"">
+<li><em>Điều kiện áp dụng thuế suất 0%:</em></li>
+<li><em>a) Đối với hàng hóa xuất khẩu:</em></li>
+</ol>
+<p><em>- Có hợp đồng bán, gia công hàng hóa xuất khẩu; hợp đồng ủy thác xuất khẩu;</em></p>
+<p><em>- Có chứng từ thanh toán tiền hàng hóa xuất khẩu qua ngân hàng và các chứng từ khác theo quy định của pháp luật;</em></p>
+<p><em>- Có tờ khai hải quan theo quy định tại khoản 2 Điều 16 Thông tư này.</em></p>
+<p><em>Riêng đối với trường hợp hàng hóa bán mà điểm giao, nhận hàng hóa ở ngoài Việt Nam, cơ sở kinh doanh (bên bán) phải có tài liệu chứng minh việc giao, nhận hàng hóa ở ngoài Việt Nam như: hợp đồng mua hàng hóa ký với bên bán hàng hóa ở nước ngoài; hợp đồng bán hàng hóa ký với bên mua hàng; chứng từ chứng minh hàng hóa được giao, nhận ở ngoài Việt Nam như: hóa đơn thương mại theo thông lệ quốc tế, vận đơn, phiếu đóng gói, giấy chứng nhận xuất xứ…; chứng từ thanh toán qua ngân hàng gồm: chứng từ qua ngân hàng của cơ sở kinh doanh thanh toán cho bên bán hàng hóa ở nước ngoài; chứng từ thanh toán qua ngân hàng của bên mua hàng hóa thanh toán cho cơ sở kinh doanh.</em></p>
+<p><em>…”</em></p>
+<ul>
+<li>Tại Điều 11 quy định về thuế suất 10% như sau:</li>
+</ul>
+<p><em>“</em><em>Điều 11. Thuế suất 10%</em></p>
+<p><em>Thuế suất 10% áp dụng đối với hàng hóa, dịch vụ không được quy định tại Điều 4, Điều 9 và Điều 10 Thông tư này.</em></p>
+<p><em>…”</em></p>
+<p>Căn cứ văn bản số 4285/TCT-CS ngày 29/10/2018 của Tổng cục Thuế về thuế GTGT;</p>
+<p>Căn cứ văn bản số 3330/TCT-CS ngày 14/8/2020 của Tổng cục Thuế về thuế GTGT;</p>
+<p>Căn cứ quy định và hướng dẫn nêu trên, trường hợp Công ty A (người bán) mua hàng hóa từ Công ty C là nhà cung cấp nước ngoài với điều kiện giao hàng tại Cảng hàng không Việt Nam nhưng không làm thủ tục nhập khẩu vào Việt Nam mà bán lại cho khách hàng Công ty B là doanh nghiệp hoạt động, kinh doanh tại Việt Nam (người mua) với điều kiện giao hàng tại Cảng hàng không Việt Nam và người mua là người làm thủ tục hải quan nhập khẩu và nộp các khoản thuế liên quan (nếu có) ở khâu nhập khẩu thì hoạt động bán hàng hóa nêu trên không đủ điều kiện áp dụng thuế suất 0% và thuộc đối tượng chịu thuế theo quy định, người bán phải lập hóa đơn, tính và kê khai thuế GTGT đầu ra khi bán hàng hóa cho khách hàng Việt Nam theo quy định.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20684"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Khi được cấp căn cước công dân có gắn chíp có cần cập nhật thông tin len giấy giấy chứng nhận đăng ký doanh nghiệp, Doanh nghiệp tư nhân</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">10/03/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Kính chào Ban Điều Hành.<br>Tôi là chủ DNTN Nguyễn Quốc. Đăng ký lần đầu ngày 05/05/2006; Đăng ký thay đổi lần thứ 1 ngày 09/07/2016.</p>
+<p>Hiện nay tôi đã được cấp căn cước công dân có gắn chíp Vậy tôi có cần tiến hành thủ tục để cập nhật số căn cước công dân vào Giấy chứng nhận đăng ký doanh nghiệp - Doanh nghiệp tư nhân? Nếu có kính nhờ Quý Ban Điều Hành hướng dẫn các hồ sơ cần phải thực hiện và nộp cho cơ quan nào.</p>
+<p>Rát mong nhận được hướng dẫn của Quý Ban Điều Hành</p>
+<p>Trân trọng</p>
+<p>NGUYỄN QUỐC TUẤN</p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Sở kế hoạch và đầu tư TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">14/03/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input checked class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Phòng Đăng ký kinh doanh - Sở Kế hoạch và Đầu tư phúc đáp đến quý ông/bà như sau:</p>
+<p>1/ Hồ sơ, trình tự thủ tục Cập nhật bổ sung thông tin được thực hiện theo quy định tại  Điều 63 của Nghị định 01/2021/NĐ-CP của Chính Phủ ngày 04/01/2021 về đăng ký doanh nghiệp</p>
+<p>Doanh nghiệp tham khảo mẫu và thủ tục theo đường link: <a href=""https://doanhnghiep.hochiminhcity.gov.vn/"">https://doanhnghiep.hochiminhcity.gov.vn/</a> Tra cứu thủ tục hành chính/ Đăng ký doanh nghiệp</p>
+<p>+ Trường hợp cần hỗ trợ soạn hồ sơ, Doanh nghiệp truy cập đường link sau: <a href=""http://120.72.100.66/vie/webappDN/TNHHCPQM"">http://120.72.100.66/vie/webappDN/TNHHCPQM</a>.</p>
+<p>Sau khi hoàn tất hồ sơ, đề nghị doanh nghiệp nộp hồ sơ trực tuyến trên Cổng thông tin quốc gia về đăng ký doanh nghiệp tại địa chỉ website:www.dangkykinhdoanh.gov.vn/Đăng ký qua mạng ,hộp thư hỗ trợ: <a href=""mailto:hotro@dangkykinhdoanh.gov.vn"">hotro@dangkykinhdoanh.gov.vn</a></p>
+<p>2/ Căn cứ khoản 2 Điều 30 Luật Doanh nghiệp số 59/2020/QH14 ngày 17 tháng 6 năm 2020 (sau đây gọi tắt là Luật Doanh nghiệp 2020) quy định ""2. Doanh nghiệp chịu trách nhiệm đăng ký thay đổi nội dung Giấy chứng nhận đăng ký doanh nghiệp trong thời hạn 10 ngày kể từ ngày có thay đổi.""</p>
+<p>Đề nghị doanh nghiệp nghiên cứu thực hiện</p>
+<p>Trân trọng./</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20685"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Có được lưu trữ chứng từ kế toán dạng file PDF và phê duyệt qua email trong thời gian cao điểm đại dịch COVID – 19 làm việc tại nhà không? </div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">17/03/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Kính gửi cơ quan thuế HCM,</p>
+<p>Trong thời gian diễn biến phức tạp của đại dịch COVID xảy ra, <strong><em>từ 01/06/2021 đến 31/1/2022 </em></strong> Công ty có áp dụng chính sách toàn thể nhân viên làm việc tại nhà.</p>
+<p><strong>- Theo đó, toàn bộ bút toán kế toán sẽ được ghi nhận trong hệ thống kế toán vào báo cáo tài chính của công ty. Chứng từ kế toán sẽ được lưu hành như sau</strong>: truy xuất chứng từ hạch toán từ hệ thống kế toán ra dạng file PDF; xin phê duyệt của cấp lãnh đạo các phòng qua emai; lưu chứng từ trên ổ lưu dữ liệu chung của công ty & gửi email cho phòng kế toán. Phòng kế toán sẽ kiểm tra; lấy phê duyệt của lãnh đạo phòng kế toán cho thanh toán (khoản phải trả) hoặc xuất hóa đơn GTGT (khoản phải thu) dựa trên những chứng từ PDF & phê duyệt của các phòng ban.</p>
+<p><strong>- Bộ chứng từ đầy đủ gồm:</strong> chứng từ hạch toán, hóa đơn GTGT, phiếu giao hàng, hợp đồng, PO, email phê duyệt của lãnh đạo từng phòng và các chứng từ cần thiết khác đều được truy xuất ra dạng PDF. Phòng kế toán sẽ kiểm tra đối chiếu; lãnh đạo phê duyệt cho thanh toán (qua email & website của Ngân hàng) hoặc xuất hóa đơn GTGT (ký duyệt bằng token của Công ty).</p>
+<p>Xin hỏi: Sau khi quay lại chế độ làm việc bình thường tại văn phòng 100%, do lượng chứng từ khá lớn và cần rất nhiều thời gian để in ra giấy & lấy lại chữ ký của lãnh đạo - nên xin hỏi Công ty có thể áp dụng chính sách lưu trữ các bộ chứng từ như giải trình trong giai đoạn từ <strong><em>01/06/2021 đến 31/1/2022 </em></strong>dưới dạng file PDF được không?</p>
+<p>(Khi có thanh tra quyết toán, công ty chúng tôi cam kết in chứng từ ra giấy theo yêu cầu kiểm tra lựa chọn chứng từ của cơ quan thuế và các cơ quan có thẩm quyền)  </p>
+<p> Xin vui lòng hướng dẫn</p>
+<p>Chân thành cảm ơn</p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Cục Thuế TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">18/05/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input checked class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Về vướng mắc của Công ty liên quan việc lưu trữ chứng từ kế toán không thuộc thẩm quyền hướng dẫn của cơ quan thuế, đề nghị Công ty thực hiện theo Luật Kế toán và chế độ kế toán hiện hành. Trường hợp có vướng mắc, đề nghị liên hệ với đơn vị có thẩm quyền (Cục Quản lý, giám sát kế toán, kiểm toán – Bộ Tài chính) để được hướng dẫn.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20683"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">ĐĂNG KÝ LÀM THÊM 300h/năm</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">09/03/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><div class=""chat-item flx me"">
+<div class=""chat-content flx flx-col flx-cell  me"">
+<div class=""chat-message wrap-message rotate-container me  -reaction"" data-node-type=""bubble-message"" id=""bb_msg_id_1678163341250"">
+<div class="""">
+<div class=""card  me  card--text"" data-id=""div_SentMsg_Text"">
+<div><span class=""text"">Chào ITPC/Sở lao động<br><br>Tôi tên là Nguyễn Thị Kim Yến - Công ty TNHH First Kakoh VN.<br><br>Tôi có câu hỏi muốn được giải đáp giúp ạ. Xin trình bày như sau:</span></div>
+<div> </div>
+<div><span class=""text"">Ngành nghề hoạt động của Công ty thuộc lĩnh vực xây dựng chuyên về bắn keo và chống thấm cho nhà xưởng, nhà máy. Do đó nên công ty chúng tôi có nhiều công trình được yêu cầu làm nhanh cho kịp tiến độ của chủ đầu tư, vì vậy số giờ làm thêm có thể vượt qua mốc 200h/năm.</span></div>
+<div><span class=""text"">Nay công ty tôi muốn đăng ký số giờ làm thêm từ 200h lên 300h/năm được không ạ? </span></div>
+<div><span class=""text"">Khoản 3 điều 107 Bộ Luật lao động 2019 có quy định một số ngành nghề và các trường hợp được phép sử dụng người lao động làm thêm giờ không quá 300h/năm</span></div>
+<div><span class=""text"">Vậy trường hợp công ty tôi có được hiểu là thuộc đối tượng được phép đăng ký làm thêm giờ :""Trường hợp phải giải quyết công việc cấp bách, không thể trì hoãn do tính chất thời vụ, thời điểm của nguyên liệu, sản phẩm"" không ạ?<br><br>Nếu được thì thủ tục đăng ký/thông báo như thế nào ạ?</span></div>
+<div> </div>
+</div>
+</div>
+</div>
+<div class=""chat-message wrap-message rotate-container me  -send-time -reaction"" data-node-type=""bubble-message"" id=""bb_msg_id_1678163385120"">
+<div class="""">
+<div class=""chat-message__actionholder  me  last-msg""> </div>
+<div class=""chat-message__actionholder  me  last-msg"">Mong được giải đáp ạ.<br>Trân trọng cảm ơn!</div>
+</div>
+</div>
+</div>
+</div>
+<div class=""chat-item flx"">
+<div class=""rel zavatar-container avatar--overlay"">
+<div class=""zavatar zavatar-m zavatar-single flx flx-al-c flx-center rel clickable disableDrag""> </div>
+</div>
+<div class=""chat-content flx flx-col flx-cell""> </div>
+</div></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Sở Lao Động - Thương Binh và Xã Hội</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">13/03/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input checked class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p><em></em></p>
+<p>Thời gian làm thêm giờ là khoảng thời gian làm việc ngoài thời giờ làm việc bình thường theo quy định của pháp luật, thỏa ước lao động tập thể hoặc nội quy lao động theo quy định tại Điều 107 Bộ Luật lao động năm 2019; Người sử dụng lao động được sử dụng người lao động làm thêm giờ và bảo đảm số giờ làm thêm của người lao động <strong>không quá 200 giờ trong 01 năm</strong> khi đáp ứng đầy đủ các yêu cầu theo quy định tại khoản 2 Điều 107 Bộ Luật lao động năm 2019.</p>
+<p>Trường hợp người sử dụng lao động tổ chức làm thêm từ <strong>trên 200 giờ đến 300 giờ trong năm </strong>(<em>đã sử dụng hết 200 giờ trong năm</em><strong>)</strong> phải thông báo bằng văn bản cho cơ quan chuyên môn về lao động thuộc Ủy ban nhân dân cấp tỉnh theo quy định tại khoản 3, khoản 4 Điều 107 Bộ Luật lao động năm 2019.</p>
+<p>Hồ sơ thông báo tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong năm của đơn vị cung cấp phải đảm bảo các nội dung theo quy định:</p>
+<ol>
+<li>Thời gian thông báo cho Sở Lao động - Thương binh và Xã hội chậm nhất sau 15 ngày kể từ ngày thực hiện làm thêm giờ theo mẫu số 02/PLIV Phụ lục IV khoản 2, Điều 62 ban hành kèm theo Nghị định 145/2020/NĐ-CP ngày 14/12/2020 của Chính phủ.</li>
+<li>Phải có sự đồng ý của người lao động khi làm thêm giờ, được ký thành văn bản riêng về các nội dung: <em>Thời giờ làm thêm, địa điểm làm thêm, công việc làm thêm</em> theo quy định Điều 59 Nghị định 145/2020/NĐ-CP ngày 14/12/2020 của Chính phủ (Mẫu số 01/PLIV Phụ lục IV).</li>
+<li>Các trường hợp được tổ chức làm thêm từ trên 200 giờ đến 300 giờ trong một năm phải đảm bảo theo ngành, nghề, công việc theo quy định tại Điều 107 Bộ Luật lao động năm 2019; Điều 61 Nghị định 145/2020/NĐ-CP ngày 14/12/2020 của Chính phủ.</li>
+</ol>
+<p><strong>Đối chiếu với các quy định nêu trên, </strong>trường hợp công ty đăng ký làm thêm giờ theo ""<em>Trường hợp phải giải quyết công việc cấp bách, không thể trì hoãn do tính chất thời vụ, thời điểm của nguyên liệu, sản phẩm</em>"" do công ty tự xác định và chịu trách nhiệm theo quy định pháp luật; Đồng thời khi thực hiện thời giờ làm việc, thời giờ nghỉ ngơi phải đảm bảo theo quy định tại Điều 105 Bộ Luật lao động năm 2019.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/admin/user_login_process"" method=""post"">
+
+   <div class=""error_msg""></div>        <div class=""form_login_input_wp"">
+       <label>Tên đăng nhập :</label>
+       <input id=""name"" name=""username"" placeholder=""Tên đăng nhập"" type=""text"">
+   </div>
+   <div class=""form_login_input_wp"">
+       <label>Mật khẩu :</label>
+
+       <input id=""password"" name=""password"" placeholder=""**********"" type=""password"">
+   </div>
+
+   <!-- <label> </label> -->
+
+   <div class=""form_login_input_wp1"">
+       <input id=""login"" name=""submit"" type=""submit"" value=""Đăng nhập"">
+
+       <!--<a href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/admin/user_registration"">Đăng ký</a>-->
+
+       
+       <!-- <label> </label> -->
+       <div form_login_input_wp2="""">
+           <a class=""register"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/register"">Ðăng ký</a>
+
+           <a class=""register"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/user/recover"">Phục hồi mật khẩu</a>
+       </div>
+
+   </div></form>"
+"<form action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/tracuucauhoitheolinhvuc/tracuu"" method=""POST"">
+<div class=""form_title_wp"">
+ <h3 class=""form_title"">Thông tin tra cứu</h3>
+</div>
+<div class=""form_input_wp row"">
+ <div class=""col-xs-12 col-md-7 form_input_left"">
+  <label>Nội dung tra cứu</label>
+  <input name=""noidungtracuu"" placeholder=""Nội dung tra cứu"" type=""text"" value="""">
+ </div>
+ <div class=""form_input_right col-xs-12 col-md-5"">
+  <label>Ngày hỏi</label>
+  <input name=""tungay"" type=""date"">
+ </div>
+</div>
+<!-- <div class=""form_input_wp now"">
+ <div class=""col-xs-12 col-md-12 col_radio"">
+  <div>
+   <label><span>Theo tiêu đề</span>
+    <input type=""radio"" checked=""checked"" name=""radio"">
+   </label>
+  </div>
+  <div>
+   <label><span>Theo nội dung</span>
+    <input type=""radio"" checked=""checked"" name=""radio"">
+    <span class=""checkmark""></span>
+   </label>
+  </div>
+ </div>
+
+</div> -->
+<div class=""form_input_wp row"">
+ <div class=""col-xs-12 col-md-7 form_input_left"">
+  <label>Lĩnh vực</label>
+  <select name=""linhvuc"">
+   <option value=""0"">Tất cả các Lĩnh vực</option>
+            <option value=""1"">Thuế</option>
+            <option value=""2"">Hải quan</option>
+            <option value=""3"">Lao động</option>
+            <option value=""4"">Bảo hiểm xã hội</option>
+            <option value=""5"">Đầu tư</option>
+            <option value=""6"">Thương mại</option>
+            <option value=""7"">Tài nguyên và Môi trường</option>
+            <option value=""8"">Xây dựng</option>
+            <option value=""9"">Quy hoạch - Kiến trúc</option>
+            <option value=""16"">Các lĩnh vực khác</option>
+          </select>
+ </div>
+ <div class=""form_input_right col-xs-12 col-md-5"">
+  <label>Đến ngày</label>
+  <input name=""denngay"" type=""date"">
+ </div>
+</div>
+<div class=""form_input_btn"">
+ <button class=""btn_submit_form"" type=""submit"">
+  Tra cứu
+ </button>
+</div>
+</form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20691"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Thắc mắc về trường hợp được miễn thực hiện thủ tục tự công bố sản phẩm và miễn ghi nhãn phụ trong quá trình kinh doanh và vận chuyển đến kho của các cửa hàng</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">03/05/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Công ty TNHH Pizza Việt Nam, giấy chứng nhận đăng ký kinh doanh số 0303902751, hiện đang quản lý hoạt động kinh doanh của chuỗi các nhà hàng dưới thương hiệu Pizza Hut để cung cấp dịch vụ ăn uống là bánh Pizza và một số món ăn khác. Công ty TNHH Pizza Việt Nam (sau đây gọi là “Pizza Việt Nam”) kính chào Quý Cơ Quan và mong muốn được Quý Cơ Quan hỗ trợ làm rõ việc hiểu và áp dụng quy định pháp luật về Nhãn phụ và tụ công bố sản phẩm.</p>
+<p> </p>
+<p>Theo Nghị định số 15/2018/NĐ-CP quy định về việc ghi nhãn phụ và tự công bố sản phẩm như sau:</p>
+<p><strong>“Điều 25. Miễn một số nội dung ghi nhãn bắt buộc</strong></p>
+<ol>
+<li>Miễn ghi nhãn phụ đối với sản phẩm mang theo người nhập cảnh để tiêu dùng cá nhân, quà tặng, quà biếu trong định mức được miễn thuế nhập khẩu; sản phẩm nhập khẩu của đối tượng được ưu đãi, miễn trừ ngoại giao; sản phẩm quá cảnh, chuyển khẩu, trung chuyển, tạm nhập, tái xuất, gửi kho ngoại quan; sản phẩm là mẫu thử nghiệm hoặc nghiên cứu; sản phẩm là mẫu trưng bày hội chợ, triển lãm; <em>sản phẩm, nguyên liệu sản xuất, nhập khẩu chỉ dùng để sản xuất, gia công hàng xuất khẩu hoặc phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước</em>.”</li>
+</ol>
+<p><strong> </strong></p>
+<p><strong>“Điều 4. Tự công bố sản phẩm</strong></p>
+<ol>
+<li>Tổ chức, cá nhân sản xuất, kinh doanh thực phẩm thực hiện tự công bố thực phẩm đã qua chế biến bao gói sẵn, phụ gia thực phẩm, chất hỗ trợ chế biến thực phẩm, dụng cụ chứa đựng thực phẩm, vật liệu bao gói tiếp xúc trực tiếp với thực phẩm (sau đây gọi chung là sản phẩm) trừ các sản phẩm quy định tại khoản 2 Điều này và Điều 6 Nghị định này.</li>
+<li><em>Sản phẩm, nguyên liệu sản xuất, nhập khẩu chỉ dùng để sản xuất, gia công hàng xuất khẩu hoặc phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước được miễn thực hiện thủ tục tự công bố sản phẩ</em>m.”</li>
+</ol>
+<p> </p>
+<p>Đồng thời, theo Nghị định 43/2017/NĐ-CP quy định về việc ghi nhãn phụ như sau:</p>
+<p><strong>“Điều 8 – Ghi nhãn phụ:</strong></p>
+<ol start=""5"">
+<li>Những hàng hóa sau đây không phải ghi nhãn phụ:</li>
+<li>a) Linh kiện nhập khẩu để thay thế các linh kiện bị hỏng trong dịch vụ bảo hành hàng hóa của tổ chức, cá nhân chịu trách nhiệm đối với hàng hóa đó, không bán ra thị trường;</li>
+<li>b) <em>Nguyên liệu, phụ gia thực phẩm, chất hỗ trợ chế biến thực phẩm, linh kiện nhập khẩu về để sản </em><em>xuất, không bán ra thị trường.</em>”</li>
+</ol>
+<p> </p>
+<p>Theo đó, Pizza Việt Nam đã nhập các sản phẩm nguyên liệu như sau: phô mai, sốt cà chua…từ nước ngoài để làm nguyên liệu sản xuất ra bánh Pizza phục vụ tại các nhà hàng ở Việt Nam. Các sản phẩm nguyên liệu này Pizza Việt Nam chỉ dùng để sản xuất bánh Pizza và không bán riêng lẻ, trực tiếp ra thị trường các sản phẩm nguyên liệu này. Theo Nghị định số 43/2017/NĐ-CP và Nghị định số 15/2018/NĐ-CP đang có hiệu lực, Pizza Việt Nam đang gặp khó khăn, vướng mắc trong việc hiểu và áp dụng quy định hiện hành về nhãn phụ và thủ tục tự công bố sản phẩm (như nêu trên); nếu Pizza Việt Nam hiểu sai và áp dụng sai quy định pháp luật sẽ dẫn đến việc bị xử phạt vi pham ở các nhà hàng. Thực tế, Pizza Việt Nam cam kết tuân thủ quy định pháp luật hiện hành về nhãn phụ và thủ tục tự công bố. Do đó, Pizza Việt Nam kính đề nghị Quý Cơ Quan hỗ trợ làm rõ các vấn đề như sau:</p>
+<ul>
+<li>Việc nhập các sản phẩm nguyên liệu như sau: phô mai, sốt cà chua…của Pizza Việt Nam chỉ để chế biến bánh Pizza bán tại các nhà hàng thì có được xem là <em>“sản phẩm, nguyên liệu sản xuất, nhập khẩu chỉ dùng để phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước</em>” theo Nghị định số 15/2018/NĐ-CP hay không?</li>
+<li>Pizza Việt Nam có phải dán Nhãn phụ cho các sản phẩm nguyên liệu nhập khẩu như: phô mai, sốt cà chua…. chỉ để chế biến bánh Pizza bán tại các nhà hàng hay không ?</li>
+<li>Pizza Việt Nam có phải thực hiện thủ tục tự công bố sản phẩm cho các sản phẩm nguyên liệu nhập khẩu như: phô mai, sốt cà chua…. chỉ để chế biến bánh Pizza bán tại các nhà hàng hay không ?</li>
+<li>Nếu trường hợp nêu trên của chúng tôi đã được xem là trường hợp được miễn thực hiện thủ tục tự công bố sản phẩm và miễn ghi nhãn phụ thì trong quá trình vận chuyển hàng nhập khẩu trên đến các kho của các cửa hàng, nếu có cơ quan nào kiểm tra hành chính về việc không có bản tự công bố và không dán nhãn phụ đối với hàng nhập khẩu thì Pizza Việt Nam sẽ được xem là không vi phạm pháp luật?</li>
+</ul>
+<p> </p>
+<p>Chân thành cảm ơn Quý Cơ Quan đã hỗ trợ Pizza Việt Nam trong việc hiểu và tuân thủ quy định pháp luật rất nhiều.</p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Sở Khoa học và Công nghệ</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">23/05/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input checked class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Tiếp nhận câu hỏi trên trang Đối thoại doanh nghiệp của Công ty TNHH Pizza Việt Nam (Công ty) về việc hướng dẫn được miễn thực hiện thủ tục công bố và miễn ghi nhãn phụ hàng hóa , Chi cục Tiêu chuẩn Đo lường Chất lượng (thuộc Sở Khoa học và Công nghệ) có ý kiến như sau:</p>
+<ol>
+<li><strong>Về việc thực hiện ghi nhãn phụ hàng hóa nhập khẩu</strong></li>
+</ol>
+<p>Tại khoản 5 Điều 8 Nghị định số 43/2017/NĐ-CP ngày 14 tháng 4 năm 2017 của Chính phủ về nhãn hàng hóa được sửa đổi, bổ sung bởi Nghị định số 111/2021/NĐ-CP ngày ngày 09 tháng 12 năm 2021 của Chính phủ sửa đổi, bổ sung một số điều Nghị định số 43/2017/NĐ-CP ngày 14 tháng 4 năm 2017 của Chính phủ về nhãn hàng hóa quy định:</p>
+<p>“<em>Những hàng hóa sau đây không phải ghi nhãn phụ:</em></p>
+<ol>
+<li><em>a) Linh kiện nhập khẩu để thay thế các linh kiện bị hỏng trong dịch vụ bảo hành hàng hóa của tổ chức, cá nhân chịu trách nhiệm đối với hàng hóa đó, không bán ra thị trường;</em></li>
+<li><em>b) <strong>Nguyên liệu, phụ gia thực phẩm</strong>, chất hỗ trợ chế biến thực phẩm, linh kiện nhập khẩu về <strong>để sản xuất, không bán ra thị trường</strong></em><em>”;</em></li>
+</ol>
+<p>Tại khoản 1 Điều 25 Nghị định số 15/2018/NĐ-CP ngày 02 tháng 02 năm 2018 của Chính phủ quy định chi tiết thi hành một số điều của Luật An toàn thực phẩm quy định: “<em>Miễn ghi nhãn phụ đối với sản phẩm mang theo người nhập cảnh để tiêu dùng cá nhân, quà tặng, quà biếu trong định mức được miễn thuế nhập khẩu; sản phẩm nhập khẩu của đối tượng được ưu đãi, miễn trừ ngoại giao; sản phẩm quá cảnh, chuyển khẩu, trung chuyển, tạm nhập, tái xuất, gửi kho ngoại quan; sản phẩm là mẫu thử nghiệm hoặc nghiên cứu; sản phẩm là mẫu trưng bày hội chợ, triển lãm; sản phẩm, <strong>nguyên liệu sản xuất, nhập khẩu</strong> chỉ dùng để sản xuất, gia công hàng xuất khẩu hoặc <strong>phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước</strong></em>”;</p>
+<p>Như vậy, nguyên liệu, phụ gia thực phẩm, chất hỗ trợ chế biến thực phẩm nhập khẩu về <strong>để sản xuất, không bán ra thị trường </strong>hoặc <strong>phục vụ cho việc sản xuất nội bộ của tổ chức, cá nhân không tiêu thụ tại thị trường trong nước </strong>không phải ghi nhãn phụ.</p>
+<ol start=""2"">
+<li><strong>Về việc thực hiện thủ tục tự công bố sản phẩm</strong></li>
+</ol>
+<p>Việc thực hiện thủ tục tự công bố sản phẩm thực phẩm không thuộc chức năng quản lý nhà nước của Chi cục Tiêu chuẩn Đo lường Chất lượng. Do đó, đề nghị Quý cơ quan liên hệ cơ quan quản lý chuyên ngành về thực phẩm để được hướng dẫn thêm.</p>
+<p>3.Trong trường hợp sản phẩm của Công ty được miễn thực hiện thủ tục tự công bố sản phẩm và miễn ghi nhãn phụ thì được xem là không vi phạm hành chính về tự công bố sản phẩm và ghi nhãn hàng hóa.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20690"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Quyết định 661/QĐ-TT-HCTH ngày 26/03/2019</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">01/05/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p>Kính chào Ban điều hành hệ thống.<br>Hiện nay chúng tôi đang cần Quyết định số 661/QĐ-TT-HCTH ngày 26/03/2019 của Thanh tra Sở Xây Dựng Thành phố Hồ Chí Minh để biết rõ nội dung của Quyết định này từ đó chấp hành đúng theo quy định của pháp luật.</p>
+<p>Qua đây tôi kính đề nghị Quý Sở Xây dựng cung cấp giúp tôi bản sao của Quyết định số 661/QĐ-TT-HCTH ngày 26/03/2019 của Thanh tra Sở Xây Dựng.<br>Rất mong Quý Ban điều hành và Sở Xây Dựng đồng thuận với đề nghị của tôi.</p>
+<p>Trân trọng</p>
+<p>NGUYỄN QUỐC TUẤN</p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Sở Xây dựng</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">22/05/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Qua rà soát, Sở Xây dựng nhận thấy, Quyết định số 661/QĐ-TT-HCTH ngày 26/3/2019 mà doanh nghiệp đề nghị Sở Xây dựng cung cấp là Quyết định của Chánh Thanh tra Sở về việc giao nhiệm vụ của Đội Thanh tra địa bàn quận, huyện thuộc Thanh tra Sở Xây dựng, đây là văn bản chỉ đạo điều hành nội bộ, không có nội dung quy định liên quan đến trách nhiệm của Doanh nghiệp. Do đó, Sở Xây dựng không thể cung cấp văn bản theo đề nghị của Doanh nghiệp.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"
+"<form accept-charset=""utf-8"" action=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/chapnhan/20693"" method=""post"">
+
+
+
+<br>
+
+<!--Dat cau hoi-->
+
+<fieldset>
+<legend>Thông tin câu hỏi</legend>
+
+
+
+<label>Tiêu đề: </label><div style=""display:inline-block;"">Thuế TNDN của cá nhân trong hợp đồng Hợp tác kinh doanh</div><br><br>
+<label>Thời gian hỏi: </label><div style=""display:inline-block;"">07/05/2023</div><br><br>   <!--  -->
+ <label>Nội dung hỏi: </label><div style=""display:inline-block;""><p> </p>
+<p style=""line-height: 18.75pt; background: white; margin: 0cm 0cm 15.0pt 0cm;""><span style=""font-size: 11.5pt; font-family: 'Arial',sans-serif; color: black;"">Kính gửi Cục Thuế Thành phố Hồ Chí Minh</span></p>
+<p style=""line-height: 18.75pt; background: white; margin: 0cm 0cm 15.0pt 0cm;""><span style=""font-size: 11.5pt; font-family: 'Arial',sans-serif; color: black;"">Công ty của Chúng tôi có ký một hợp đồng hợp tác kinh doanh với nhiều bên đối tác (gồm một số cá nhân và một số doanh nghiệp khác ) cùng góp vốn sản xuất kinh doanh và phân chia lợi nhuận trước thuế cho các bên theo tỷ lệ phần vốn góp. </span></p>
+<p style=""line-height: 18.75pt; background: white; margin: 0cm 0cm 15.0pt 0cm;""><span style=""font-size: 11.5pt; font-family: 'Arial',sans-serif; color: black;"">Hợp đồng quy định công ty của chúng tôi là người đại diện để ghi nhận doanh thu và chi phí của hợp đồng hợp tác kinh doanh. Công ty chúng tôi sẽ tính toán đến lợi nhuận trước thuế để chia lợi nhuận cho các bên hợp tác.</span></p>
+<p style=""line-height: 18.75pt; background: white; margin: 0cm 0cm 15.0pt 0cm;""><span style=""font-size: 11.5pt; font-family: 'Arial',sans-serif; color: black;"">Chúng tôi xin hỏi :</span></p>
+<p style=""line-height: 18.75pt; background: white; margin: 0cm 0cm 15.0pt 0cm;""><span style=""font-size: 11.5pt; font-family: 'Arial',sans-serif; color: black;"">Trước khi chia Lợi nhuận trước thuế cho các cá nhân thì Công ty chúng tôi có bắt buộc phải khấu trừ trước tiền thuế Thu nhập doanh nghiệp và Thuế thu nhập cá nhân đối với phần lợi nhuận của cá nhân được chia hay không ? Hiện tại các cá nhân không đồng ý cho Công ty chúng tôi khấu trừ trước tiền thuế Thu nhập doanh nghiệp của phần lợi nhuận trước thuế được chia cho các cá nhân. Họ nói Công ty khấu trừ trước tiền thuế Thu nhập doanh nghiệp rồi mới chia, như vậy là chia lợi nhuận sau thuế, không đúng bản chất của hợp đồng hợp tác kinh doanh chia lợi nhuận trước thuế.</span></p>
+<p style=""line-height: 18.75pt; background: white; margin: 0cm 0cm 15.0pt 0cm;""><span style=""font-size: 11.5pt; font-family: 'Arial',sans-serif; color: black;"">Rất mong Cục Thuế trả lời hướng dẫn cho chúng tôi cách khấu trừ trước tiền thuế nào của cá nhân trong Hợp đồng hợp tác kinh doanh chia lợi nhuận trước thuế để chúng tôi thực hiện cho đúng pháp luật.</span></p>
+<p style=""line-height: 18.75pt; background: white; margin: 0cm 0cm 15.0pt 0cm;""><span style=""font-size: 11.5pt; font-family: 'Arial',sans-serif; color: black;"">Xin cảm ơn ./.</span></p></div><br><br>
+
+
+
+
+</fieldset>
+
+<br>
+
+<br>
+
+<fieldset>
+<legend>Thông tin câu trả lời</legend>
+
+
+
+
+
+<label>Cơ quan trả lời: </label><div style=""display:inline-block;"">Cục Thuế TP.HCM</div><br><br><label>Thời gian trả lời: </label><div style=""display:inline-block;"">18/05/2023</div><br><br><label>Đánh giá trả lời: </label>
+
+
+<div class=""stars"" style=""display:flex;flex-direction:row-reverse"">
+
+
+
+<input checked class=""star star-5"" disabled id=""star-5"" name=""danhgia"" type=""radio"" value=""5"">
+
+<label class=""star star-5"" for=""star-5""></label>
+
+<input class=""star star-4"" disabled id=""star-4"" name=""danhgia"" type=""radio"" value=""4"">
+
+<label class=""star star-4"" for=""star-4""></label>
+
+<input class=""star star-3"" disabled id=""star-3"" name=""danhgia"" type=""radio"" value=""3"">
+
+<label class=""star star-3"" for=""star-3""></label>
+
+<input class=""star star-2"" disabled id=""star-2"" name=""danhgia"" type=""radio"" value=""2"">
+
+<label class=""star star-2"" for=""star-2""></label>
+
+<input class=""star star-1"" disabled id=""star-1"" name=""danhgia"" type=""radio"" value=""1"">
+
+<label class=""star star-1"" for=""star-1""></label>
+
+
+
+</div>
+
+
+
+<br><br><label>Nội dung trả lời: </label><div style=""display:inline-block;""><p>Tại Luật quản lý thuế số 38/2019/QH14 ngày 13/6/2019 của Quốc Hội quy định về quản lý thuế;</p>
+<p>Tại khoản 5 Điều 7 Nghị định số 126/2020/NĐ-CP ngày 19/10/2020 của Chính phủ quy định tổ chức, cá nhân thực hiện khai thuế thay, nộp thuế thay cho người nộp thuế phải có trách nhiệm thực hiện đầy đủ các quy định về khai thuế, nộp thuế như quy định đối với người nộp thuế tại Nghị định này, bao gồm:</p>
+<p><em>“</em><em>5. Tổ chức, cá nhân thực hiện khai thuế thay, nộp thuế thay cho người nộp thuế phải có trách nhiệm thực hiện đầy đủ các quy định về khai thuế, nộp thuế như quy định đối với người nộp thuế tại Nghị định này, bao gồm:</em></p>
+<ol>
+<li><em>a) Tổ chức, cá nhân thực hiện khai thuế thay, nộp thuế thay cho người nộp thuế theo quy định của pháp luật về thuế.</em></li>
+</ol>
+<p><em>…</em></p>
+<ol>
+<li><em>c) Tổ chức hợp tác kinh doanh với cá nhân thì cá nhân không trực tiếp khai thuế. Tổ chức có trách nhiệm khai thuế giá trị gia tăng đối với toàn bộ doanh thu của hoạt động hợp tác kinh doanh theo quy định của pháp luật về thuế và quản lý thuế của tổ chức mà không phân biệt hình thức phân chia kết quả hợp tác kinh doanh, đồng thời khai thay và nộp thay thuế thu nhập cá nhân cho cá nhân hợp tác kinh doanh. Trường hợp tổ chức hợp tác kinh doanh với cá nhân là hộ kinh doanh, cá nhân kinh doanh theo quy định tại khoản 5 Điều 51 Luật Quản lý thuế, mà cá nhân có ngành nghề đang hoạt động cùng với ngành nghề hợp tác kinh doanh với tổ chức thì tổ chức và cá nhân tự thực hiện khai thuế tương ứng với kết quả thực tế hợp tác kinh doanh theo quy định.</em></li>
+</ol>
+<p><em>…”</em></p>
+<p>Tại Thông tư số 40/2021/TT-BTC ngày 01/06/2021 của Bộ Tài Chính hướng dẫn thuế giá trị gia tăng, thuế thu nhập cá nhân và quản lý thuế đối với hộ kinh doanh, cá nhân kinh doanh quy định như sau:</p>
+<ul>
+<li>Tại Điều 1 quy định phạm vi điều chỉnh như sau:</li>
+</ul>
+<p><em>“</em><em>Điều 1. Phạm vi điều chỉnh</em></p>
+<p><em>Thông tư này hướng dẫn về thuế giá trị gia tăng (GTGT), thuế thu nhập cá nhân (TNCN) và quản lý thu</em><em>ế</em><em> đối với hộ kinh doanh, cá nhân kinh doanh.</em><em>”</em></p>
+<ul>
+<li>Tại Điều 2 quy định đối tượng áp dụng như sau:</li>
+</ul>
+<p><em>“</em><em>Điều 2. Đối tượng áp dụng</em></p>
+<ol>
+<li><em> Hộ kinh doanh, cá nhân kinh doanh là cá nhân cư trú có hoạt động sản xuất, kinh doanh hàng hóa, dịch vụ thuộc tất cả các lĩnh vực, ngành nghề sản xuất, kinh doanh theo quy định của pháp luật, bao gồm cả một số trường hợp sau:</em></li>
+<li><em>a) Hành nghề độc lập trong những lĩnh vực, ngành nghề được cấp giấy phép hoặc chứng chỉ hành nghề theo quy định của pháp luật;</em></li>
+<li><em>b) Hoạt động đại lý bán đúng giá đối với đại lý xổ số, đại lý bảo hiểm, đại lý bán hàng đa cấp của cá nhân trực tiếp ký hợp đồng với doanh nghiệp x</em><em>ổ</em><em> số, doanh nghiệp bảo hiểm, doanh nghiệp bán hàng đa cấp;</em></li>
+<li><em>c) Hợp tác kinh doanh với tổ chức;</em></li>
+<li><em>d) Sản xuất, kinh doanh nông nghiệp, lâm nghiệp, làm muối, nuôi trồng, đánh bắt thủy sản không đáp ứng điều kiện được miễn thuế theo quy định của pháp luật về thuế GTGT, thuế TNCN;</em></li>
+</ol>
+<p><em>đ) Hoạt động thương mại điện tử, bao gồm cả trường hợp cá nhân có thu nhập từ sản phẩm, dịch vụ nội dung thông tin số theo quy định của pháp luật về thương mại điện tử.</em></p>
+<p><em>...</em></p>
+<ol start=""3"">
+<li><em> Cá nhân cho thuê tài sản;</em></li>
+<li><em> Cá nhân chuyển nhượng tên miền internet quốc gia Việt Nam “.vn”;</em></li>
+<li><em> Tổ chức hợp tác kinh doanh với cá nhân;</em></li>
+<li><em> Tổ chức, cá nhân khai thuế thay, nộp thuế thay cho cá nhân;</em></li>
+</ol>
+<p><em>…</em></p>
+<ol start=""8"">
+<li><em> Cơ quan thuế, cơ quan nhà nước, tổ chức, cá nhân khác có liên quan.</em><em>”</em></li>
+</ol>
+<p>- Tại Điều 16 quy định quản lý thuế đối với tổ chức, cá nhân khai thuế thay, nộp thuế thay cho cá nhân:</p>
+<p><em>“</em><em>1. Hồ sơ khai thuế</em></p>
+<ol start=""8"">
+<li><em>a) Hồ sơ khai thuế tháng, </em><em>quý</em><em> đối với tổ chức khai thuế thay, nộp thuế thay cho cá nhân trong trường hợp cá nhân hợp tác kinh doanh với tổ chức; tổ chức chi trả cho cá nhân đạt doanh số; tổ chức là chủ sở hữu sàn giao dịch thương mại điện tử; tổ chức tại Việt Nam là đối tác của nhà cung cấp nền tảng số ở nước ngoài (không có cơ sở thường tr</em><em>ú</em><em> tại Việt Nam) thực hiện chi trả thu nhập cho cá nhân quy định tại điểm 8.4 Phụ lục I - Danh mục hồ sơ khai thuế ban hành kèm theo Nghị định số </em><a href=""https://thuvienphapluat.vn/van-ban/thue-phi-le-phi/nghi-dinh-126-2020-nd-cp-huong-dan-luat-quan-ly-thue-455733.aspx""><em>126/2020/NĐ-CP</em></a><em> ngày 19/10/2020 của Chính phủ, cụ thể như sau:</em></li>
+</ol>
+<p><em>- Tờ khai thuế đối với hộ kinh doanh, cá nhân kinh doanh theo mẫu số 01/CNKD ban hành kèm theo Thông tư này;</em></p>
+<p><em>- Phụ lục Bảng kê chi tiết hộ kinh doanh, cá nhân kinh doanh (áp dụng đối với tổ chức, cá nhân khai thuế thay, nộp thuế thay cho cá nhân; cá nhân hợp tác kinh doanh với tổ chức; tổ chức chi trả cho cá nhân đạt doanh s</em><em>ố</em><em>; tổ chức là chủ sở hữu sàn giao dịch thương mại điện tử; tổ chức tại Việt Nam là đối tác của nhà cung cấp nền tảng số ở nước ngoài) theo mẫu số 01-1/BK-CNKD ban hành kèm theo Thông tư này;</em></p>
+<p><em>- Bản sao hợp đồng hợp tác kinh doanh (nếu là lần khai thuế đầu tiên của hợp đồng). Cơ quan thuế có quyền yêu cầu xuất trình bản chính để đối chiếu, xác nhận tính chính xác của bản sao so với bản chính.</em></p>
+<p><em>…</em></p>
+<ol>
+<li><em>c) Hồ sơ khai thuế đối với tổ chức, cá nhân khai thuế thay, nộp thuế thay cho cá nhân ủy quy</em><em>ề</em><em>n theo pháp luật dân sự thực hiện theo quy định đối với cá nhân ủy quy</em><em>ề</em><em>n n</em><em>ế</em><em>u trực tiếp khai thuế.</em></li>
+</ol>
+<p><em>…</em></p>
+<ol start=""2"">
+<li><em> Nơi nộp hồ sơ khai thuế</em></li>
+<li><em>a) Nơi nộp hồ sơ khai thuế đối với tổ chức khai thuế thay, nộp thuế thay cho cá nhân quy định tại khoản 1 Điều 45 Luật Quản lý thuế là cơ quan thuế quản lý trực tiếp tổ chức khai thuế thay, nộp thuế thay. Riêng trường hợp tổ chức, cá nhân khai thuế thay, nộp thuế thay cho cá nhân có thu nhập từ cho thuê bất động sản tại Việt Nam, hồ sơ khai thuế được nộp tại cơ quan thuế quản lý trực tiếp nơi có bất động sản cho thuê.</em></li>
+<li><em>b) Nơi nộp hồ sơ khai thuế đối với cá nhân khai thuế thay, nộp thuế thay cho cá nhân ủy quyền theo pháp luật dân sự thực hiện theo quy định đối với cá nhân ủy quyền nếu trực tiếp khai thuế…</em><em>.”</em></li>
+</ol>
+<p>Căn cứ quy định và hướng dẫn nêu trên, về nguyên tắc tổ chức hợp tác kinh doanh với cá nhân thì cá nhân không trực tiếp khai thuế. Tổ chức có trách nhiệm khai thuế giá trị gia tăng đối với toàn bộ doanh thu của hoạt động hợp tác kinh doanh theo quy định của pháp luật về thuế và quản lý thuế của tổ chức mà không phân biệt hình thức phân chia kết quả hợp tác kinh doanh, đồng thời khai thay và nộp thay thuế thu nhập cá nhân cho cá nhân hợp tác kinh doanh. Do đó, trường hợp cá nhân có hợp tác kinh doanh với Công ty thì Công ty có trách nhiệm khai thay, nộp thuế thay cho cá nhân thuế giá trị gia tăng (GTGT) theo quy định tại điểm c khoản 5 Điều 7 Nghị định số 126/2020/NĐ-CP.</p>
+<p>Về hồ sơ khai thuế khai đối với tổ chức khai thuế thay, nộp thuế thay cho cá nhân trong trường hợp cá nhân hợp tác kinh doanh với tổ chức thì Công ty thực hiện theo hướng dẫn tại khoản 1 Điều 16 Thông tư số 40/2021/TT-BTC<em>. </em>Trường hợp tổ chức hợp tác kinh doanh với cá nhân là hộ kinh doanh, cá nhân kinh doanh theo quy định tại khoản 5 Điều 51 Luật Quản lý thuế, mà cá nhân có ngành nghề đang hoạt động cùng với ngành nghề hợp tác kinh doanh với tổ chức thì tổ chức và cá nhân tự thực hiện khai thuế tương ứng với kết quả thực tế hợp tác kinh doanh theo quy định.</p></div><br><br>
+</fieldset>
+
+<br><div style=""text-align:center""><a class=""register_button"" href=""https://doithoaidn.hochiminhcity.gov.vn/index.php/cauhoi/tracuu"">Trở về</a> </div></form>"

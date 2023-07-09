@@ -63,7 +63,8 @@ class Parameter(Base):
             "part":self.part,
             "original_url":self.original_url,
             "endpoint":self.endpoint,
-            "group":self.group
+            "group":self.group,
+            "enctype":self.body_data_type
         }
 
 class ParamFlowMap(Base):

@@ -31,13 +31,13 @@ class ParameterDao:
                 saved_parameter = ret.scalars().one_or_none()
         return saved_parameter
     
-    async def get_parameters_by_name(self, name: str):
+    async def search_parameters(self, name:str,enctype:str,endpoint:str,data_type:str,limit:int=10):
         async_session = await db_session()
         ret = None
         saved_parameter = None
         async with async_session() as session:
             async with session.begin():
-                stmt = select(Parameter).filter(Parameter.name.like(f"%{name}%")).limit(10)
+                stmt = select(Parameter).filter(Parameter.name.like(f"%{name}%")).filter(Parameter.body_data_type.like(f"%{enctype}%")).filter(Parameter.endpoint.like(f"%{endpoint}%")).filter(Parameter.data_type.like(f"%{data_type}%")).limit(limit)
                 saved_parameter = await session.execute(stmt)
             ret = []
             for row in saved_parameter:
