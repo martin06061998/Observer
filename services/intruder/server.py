@@ -156,12 +156,12 @@ async def get_vulnerable_parameters_by_bug_type():
     return reply
 
 
-
+def set_process_pool(POOL):
+    MAX_WORKER = 6
+    POOL = ProcessPoolExecutor(MAX_WORKER)
 
 if __name__ == "__main__":
-    from services.intruder.app.parameterservice import POOL
-    MAX_WORKER = 4
-    POOL = ProcessPoolExecutor(MAX_WORKER)
+    set_process_pool(POOL=POOL)
     loop = asyncio.get_event_loop()
     loop.create_task(build_vector_table(vector_list=VECTOR_LIST))
     app.run(port=INTRUDER_PORT, loop=loop,debug=True)

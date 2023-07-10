@@ -12,8 +12,8 @@ from utilities.util import base64_decode
 from services.network import request
 import json
 
-
-
+from playwright.sync_api import TimeoutError
+import httpx
 
 class Payload:
     def __init__(self, value: str, tag: str = "None", position: str = "None"):
@@ -258,10 +258,13 @@ class AttackVector():
             error = False
             while tries < MAX_TRY:
                 try:
-                    ret : dict = request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=120,javascript_enable=javascript_enable,proxy="http://127.0.0.1:8080",enctype=enctype)
+                    ret : dict = request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=45,javascript_enable=javascript_enable,proxy="http://127.0.0.1:8080",enctype=enctype)
                     error = False
-                except Exception as e:
-                    logging.warning(f"A network issue in AttackVector.exploit: {str(e)}:\n Headers: {headers}\nEndpoint: {end_point}\nParams: {params}\nData: {data}\nJavascript Enable: {javascript_enable}")
+                except TimeoutError as e:
+                    logging.warning(f"A PlaywrightError issue in AttackVector.exploit: {str(e)}:\n Headers: {headers}\nEndpoint: {end_point}\nParams: {params}\nData: {data}\nJavascript Enable: {javascript_enable}")
+                    error = True
+                except httpx.RequestError as h:
+                    logging.warning(f"A HTTPX issue in AttackVector.exploit: {str(h)}:\n Headers: {headers}\nEndpoint: {end_point}\nParams: {params}\nData: {data}\nJavascript Enable: {javascript_enable}")
                     error = True
                 finally:
                     tries = tries + 1
@@ -273,9 +276,7 @@ class AttackVector():
                 break
             #END
             
-            if ret.get("msg",None) != "ok":
-                logging.warning(f"An error occur in AttackVector.exploit: {ret.get('msg',None)}")
-                continue 
+
             ret["content"] =  base64_decode(ret["content"])
             new_flow : ObHttpFlow= ObHttpFlow.new_flow(http_method=method,url=end_point,response_body_content= ret["content"],timestamp=ret["elapsed"],response_headers=ret["response_headers"],status_code=ret["status_code"])
 
@@ -283,7 +284,10 @@ class AttackVector():
 
 
         # VULNERABILITY ASSESSMENT
-        isVulnerable = self.verify(flow_sequence=flow_sequence)
+        if len(flow_sequence) != len(self.exploit_sequence):
+            isVulnerable = None
+        else:
+            isVulnerable = self.verify(flow_sequence=flow_sequence)
 
         # REPORT BUG
         return {"parameter_id" : parameter.id,

@@ -76,12 +76,17 @@ def base64_decode(value: str) -> str:
 def find_all_forms(html:bytes):
     ret = []
     soup = BeautifulSoup(html, "html.parser",from_encoding="iso-8859-1")
-    from_tag = soup.find_all(name="form",attrs={"method":re.compile("^post$", re.I)})
+    from_tag = soup.find_all(name="form",attrs={"method":re.compile("^(get|post|put|delete|update|option)$", re.I),"action":True})
     tag:Tag
     for tag in from_tag:
         form_dict = dict()
         form_dict["action"] = tag.get("action")
-        form_dict["enctype"] = tag.get("enctype","application/x-www-form-urlencoded")
+        form_dict["method"] = tag.get("method")
+        if form_dict["method"].lower() != "get":
+            form_dict["enctype"] = tag.get("enctype","application/x-www-form-urlencoded")
+        else:
+            form_dict["enctype"] = "undefined"
+        
         form_dict["type_map"] = dict()
         parameters = dict()
         input_tags = tag.find_all(name="input")

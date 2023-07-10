@@ -35,9 +35,12 @@ async def try_exploit(content: dict[str, str]):
     TASKS = []
     force = content.get("force",False)
     loop = asyncio.get_event_loop()
+    semaphore = asyncio.BoundedSemaphore(5)
+    
     for vector in VECTOR_LIST:
-        TASKS.append(loop.run_in_executor(POOL, vector.exploit, saved_flow,saved_param,force))
-   
+        async with semaphore:
+            TASKS.append(loop.run_in_executor(POOL, vector.exploit, saved_flow,saved_param,force))
+
     
     await asyncio.gather(*TASKS)
     t:asyncio.Future

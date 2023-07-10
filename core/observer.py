@@ -20,15 +20,11 @@ class ParameterCollector():
         self.crawled_urls = set()
 
     async def collect_forms(self, flow: ObHttpFlow):
-
         if flow.in_trace or flow.no_path_url in self.crawled_urls or flow.response_headers is None or "content-type" not in  flow.response_headers or "html" not in flow.response_headers["content-type"].lower():
             return
-
         html = flow.response_body_content
         all_forms = find_all_forms(html=html)
-
         if all_forms:
-            
             for form_dict in all_forms:
                 action = form_dict["action"]
                 if is_absolute_url(action):
@@ -42,24 +38,26 @@ class ParameterCollector():
                 
                 group_id = md5(endpoint+str(time.time()))
                 parameters :dict = form_dict["parameters"]
+                if form_dict["method"].lower() == "get":
+                    part = "query"
+                else:
+                    part = "body"
 
                 enctype = form_dict["enctype"]
                 
                 for param_name in parameters.keys():
-                    if param_name:
-                        data_type=form_dict["type_map"][param_name]
-                        new_parameter = Parameter(name=param_name,http_method="post",data_type=data_type,example_values=[parameters[param_name]],part="body",endpoint=endpoint,original_url=flow.url,group_id=group_id,body_data_type=enctype)
-                        await self.DAL.insert_parameter(new_parameter)
-                
+                    data_type=form_dict["type_map"][param_name]
+                    new_parameter = Parameter(name=param_name,http_method=form_dict["method"],data_type=data_type,example_values=[parameters[param_name]],part=part,endpoint=endpoint,original_url=flow.url,group_id=group_id,body_data_type=enctype)
+                    await self.DAL.insert_parameter(new_parameter)
                 
                 headers = flow.request_headers
-                if enctype:
+                if part == "body":
                     encoded_data = encode_data(parameters,enctype=enctype)
-                    new_flow : ObHttpFlow = ObHttpFlow.new_flow(http_method="POST",url=endpoint,request_body_content=encoded_data,body_parameters=parameters,request_headers=headers,body_data_type=enctype)         
-                    await self.DAL.insert_flow(new_flow)
-                    await self.DAL.insert_param_flow(flow_id=new_flow.id ,group_id=group_id)     
-                
-        
+                    new_flow : ObHttpFlow = ObHttpFlow.new_flow(http_method=form_dict["method"],url=endpoint,request_body_content=encoded_data,body_parameters=parameters,request_headers=headers,body_data_type=enctype)
+                else:
+                    new_flow : ObHttpFlow = ObHttpFlow.new_flow(http_method=form_dict["method"],url=endpoint,query=parameters,request_headers=headers,body_data_type=enctype)
+                await self.DAL.insert_flow(new_flow)
+                await self.DAL.insert_param_flow(flow_id=new_flow.id ,group_id=group_id)     
         self.crawled_urls.add(flow.no_path_url)
 
 
@@ -89,7 +87,7 @@ class BugAnalyzer():
                 continue
 
             # SAVING THE PARAMETER
-            saved_parameter : Parameter= self.DAL.get_parameter_by_id(parameter_id)
+            saved_parameter : Parameter= await self.DAL.get_parameter_by_id(parameter_id)
             if saved_parameter is None:
                 await self.DAL.insert_parameter( new_parameter=parameter)
             else:

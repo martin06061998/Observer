@@ -147,7 +147,6 @@ target-arguments:
       - "lang"
       - "keyword"
       - "query"
-      - "page"
       - "keywords"
       - "year"
       - "view"

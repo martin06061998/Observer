@@ -30,7 +30,6 @@ target-arguments:
       - "delete"
       - "string"
       - "number"
-      - "page"
       - "filter"
 
   - type: "regex"

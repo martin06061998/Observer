@@ -30,14 +30,13 @@ target-arguments:
       - "delete"
       - "string"
       - "number"
-      - "page"
       - "filter"
 
   - type: "regex"
     target: "name"
     part: "all"
     regexes: 
-      - "^.*(id|col|item|category|select|sort|row).*$"
+      - "^.*(id|col|item|category|select|row).*$"
 number-of-flow: 3
 flows:
   match-condition: "all"

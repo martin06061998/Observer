@@ -19,7 +19,7 @@ class FlowInterceptor:
     async def request(self, flow: http.HTTPFlow) -> None:
         """This function is called when a client request has been received. We do the injection here."""
         # Handle DOM Report
-        flow.request.headers["user-agent"] = "RingResearcher_m4rt1n98"
+        flow.request.headers["user-agent"] = "HackerOne_m4rt1n98"
         await self.service_api.handle_request(flow)
 
     async def response(self, flow: http.HTTPFlow) -> None:
