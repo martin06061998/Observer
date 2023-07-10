@@ -1,7 +1,7 @@
 
 import itertools
 import logging
-from persistence.models.attackvector import Exploit, Template, ParameterMatcher
+from persistence.models.attackvector import Exploit, ParameterMatcher
 import yaml
 from persistence.models.attackvector import AttackVector, Payload, VerifyFunction
 from utilities.util import md5
@@ -74,6 +74,8 @@ async def parse_template(path: str) -> list[AttackVector]:
             yml_number_of_flow = yml_template['number-of-flow']
             yml_flows = yml_template['flows']
             yml_description = yml_template.get("description",None)
+            yml_technique = yml_template.get("technique","active")
+
 
             # PARSING MATCHER
             new_matchers =  parse_matchers(yml_template=yml_template)
@@ -106,7 +108,7 @@ async def parse_template(path: str) -> list[AttackVector]:
             # BUILD VECTOR
             i=0
             for exploit_sequence in itertools.product(*exploits):
-                new_vector = AttackVector(id=md5(str(i)+path),path=path,matchers=new_matchers,exploit_sequence=exploit_sequence,bug_type=yml_bug_type,description=yml_description)
+                new_vector = AttackVector(id=md5(str(i)+path),path=path,matchers=new_matchers,exploit_sequence=exploit_sequence,bug_type=yml_bug_type,description=yml_description,technique=yml_technique)
                 vectors.append(new_vector)
                 i=i+1 
             # END

@@ -1,7 +1,7 @@
 from persistence.dao.flowdao import FlowDAO
 from persistence.dao.paramdao import ParameterDao
 from persistence.models.flow import ObHttpFlow
-from persistence.models.param import Parameter,ParamFlowMap
+from persistence.models.param import Parameter
 from persistence.models.testresult import TestResult
 from persistence.dao.testresultdao import TestResultDao
 
@@ -25,6 +25,10 @@ class DataAccessLayer():
         ret: ObHttpFlow = await service.insert_flow(flow)
         return ret
 
+    async def get_last_param_flow(self, group_id: str) -> ObHttpFlow:
+        service = self.db_services["flow"]
+        ret: ObHttpFlow = await service.get_last_param_flow(group_id)
+        return ret
     # END
 
     # PARAMETER DAL
@@ -48,14 +52,10 @@ class DataAccessLayer():
         ret: list[Parameter] = await service.search_parameters(name,enctype,endpoint,data_type,limit)
         return ret
 
-    async def add_param_flow(self, parameter_id: str, flow_id: str):
+    async def insert_param_flow(self, group_id: str, flow_id: str):
         service = self.db_services["parameter"]
-        return await service.add_param_flow(parameter_id, flow_id)
+        return await service.insert_param_flow(group_id, flow_id)
     
-    async def get_last_param_flow(self, parameter_id: str) -> ParamFlowMap:
-        service = self.db_services["parameter"]
-        ret: ParamFlowMap = await service.get_last_param_flow(parameter_id)
-        return ret
     # END
     
     #TEST RESULT DAO

@@ -40,4 +40,16 @@ class FlowDAO():
     async def insert_flow(self, flow: ObHttpFlow):
         await add(flow)
         return flow
+    
+    
+    async def get_last_param_flow(self,group_id:str)->ParamFlowMap:
+        async_session = await db_session()
+        ret = None
+        saved_flow = None
+        async with async_session() as session:
+            async with session.begin():
+                stmt = select(ObHttpFlow).filter(ObHttpFlow.id == ParamFlowMap.flow_id).filter(ParamFlowMap.group_id == group_id).order_by(desc('created_date')).limit(1)
+                ret = await session.execute(stmt)
+                saved_flow = ret.scalars().one_or_none()
+        return saved_flow
 

@@ -3,6 +3,7 @@ import logging
 import os
 import subprocess
 import time
+from urllib.parse import urlparse
 import requests
 import url_normalize
 from persistence.models.param import Parameter
@@ -10,7 +11,7 @@ from persistence.dal import DataAccessLayer
 from persistence.models.flow import ObHttpFlow
 from definitions import INTRUDER_SERVICE,ROOT_DIR
 from utilities.util import find_all_forms,is_absolute_url,is_relative_url,md5
-from mitmproxy.http import Request 
+from services.network import encode_data
 
 class ParameterCollector():
 
@@ -20,7 +21,7 @@ class ParameterCollector():
 
     async def collect_forms(self, flow: ObHttpFlow):
 
-        if flow.url in self.crawled_urls or flow.response_headers is None or "content-type" not in  flow.response_headers or "html" not in flow.response_headers["content-type"].lower():
+        if flow.in_trace or flow.no_path_url in self.crawled_urls or flow.response_headers is None or "content-type" not in  flow.response_headers or "html" not in flow.response_headers["content-type"].lower():
             return
 
         html = flow.response_body_content
@@ -33,7 +34,8 @@ class ParameterCollector():
                 if is_absolute_url(action):
                     endpoint = action
                 elif is_relative_url(action):
-                    endpoint =url_normalize.url_normalize(f"{flow.url}{action}")
+                    url_parsed = urlparse(flow.url)
+                    endpoint =url_normalize.url_normalize(f"{url_parsed.scheme}://{url_parsed.netloc}/{action}")
                 else:
                     logging.warning(f"Can not parse a form in {action}")
                     continue
@@ -42,15 +44,23 @@ class ParameterCollector():
                 parameters :dict = form_dict["parameters"]
 
                 enctype = form_dict["enctype"]
-
-
+                
                 for param_name in parameters.keys():
                     if param_name:
                         data_type=form_dict["type_map"][param_name]
                         new_parameter = Parameter(name=param_name,http_method="post",data_type=data_type,example_values=[parameters[param_name]],part="body",endpoint=endpoint,original_url=flow.url,group_id=group_id,body_data_type=enctype)
                         await self.DAL.insert_parameter(new_parameter)
+                
+                
+                headers = flow.request_headers
+                if enctype:
+                    encoded_data = encode_data(parameters,enctype=enctype)
+                    new_flow : ObHttpFlow = ObHttpFlow.new_flow(http_method="POST",url=endpoint,request_body_content=encoded_data,body_parameters=parameters,request_headers=headers,body_data_type=enctype)         
+                    await self.DAL.insert_flow(new_flow)
+                    await self.DAL.insert_param_flow(flow_id=new_flow.id ,group_id=group_id)     
+                
         
-        self.crawled_urls.add(flow.url)
+        self.crawled_urls.add(flow.no_path_url)
 
 
 class BugAnalyzer():
@@ -79,11 +89,15 @@ class BugAnalyzer():
                 continue
 
             # SAVING THE PARAMETER
-            await self.DAL.insert_parameter( new_parameter=parameter)
+            saved_parameter : Parameter= self.DAL.get_parameter_by_id(parameter_id)
+            if saved_parameter is None:
+                await self.DAL.insert_parameter( new_parameter=parameter)
+            else:
+                group_id = saved_parameter.group
 
             self.parameter_table[parameter_id] = parameter
             
-            await self.DAL.add_param_flow(parameter_id=parameter_id, flow_id=flow.id)
+            await self.DAL.insert_param_flow(group_id=group_id, flow_id=flow.id)
 
             # START EXPLOITING
             await self.try_exploit(parameter_id=parameter_id)

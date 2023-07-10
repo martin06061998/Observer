@@ -81,6 +81,7 @@ def __request(method:str,end_point:str,headers:str=None,params:dict[str:str]=Non
     if javascript_enable:
         if params:
             encoded_params=dict_to_url_encoded(params)
+            end_point = end_point.split("?")[0]
             end_point=f"{end_point}?{encoded_params}"
         r : dict =  __browserless_request(end_point= end_point,method=method,headers=headers,data=data,proxy=proxy,timeout=timeout)
     else:
@@ -91,29 +92,29 @@ def __request(method:str,end_point:str,headers:str=None,params:dict[str:str]=Non
     return
 
 
+def encode_data(data:dict,enctype):
+    if "application/x-www-form-urlencoded" in enctype:
+        encoded_data = dict_to_url_encoded(data=data)
+    elif "application/json" in enctype:
+        encoded_data = json.dumps(data)
+    elif "multipart/form-data" in enctype:
+        encoded_parameters = {}
+        for key,value in data.items():
+            encoded_key = key.encode()
+            encoded_value = value.encode()
+            encoded_parameters[encoded_key] = encoded_value
+        encoded_data = dict_to_multipart_form(encoded_parameters)
+    return encoded_data
 
-def request(method:str,end_point:str,headers:str=None,params:dict[str:str]=None,data:dict[str:str]=None,timeout:float=None,javascript_enable:bool=False,proxy:str=None):
+
+
+def request(method:str,end_point:str,headers:dict[str:str]=None,params:dict[str:str]=None,data:dict[str:str]=None,timeout:float=None,javascript_enable:bool=False,proxy:str=None,enctype:str=None):
     encoded_data = None
     if data:
-        body_type = None
-        if "content-type" in headers:
-            body_type = headers["content-type"]
-        elif "Content-Type" in headers:
-            body_type = headers["Content-Type"]
-        else:
-            return {"msg":"Cannot find content-type for request body data"}
-    
-        if "application/x-www-form-urlencoded" in body_type:
-            encoded_data = dict_to_url_encoded(data=data)
-        elif "application/json" in body_type:
-            encoded_data = json.dumps(data)
-        elif "multipart/form-data" in body_type:
-            encoded_parameters = {}
-            for key,value in data.items():
-                encoded_key = key.encode()
-                encoded_value = value.encode()
-                encoded_parameters[encoded_key] = encoded_value
-            encoded_data = dict_to_multipart_form(encoded_parameters)
+        if enctype is None:
+            return {"msg":"can not send request to unknown enctype"}
+        encoded_data = encode_data(data=data,enctype=enctype)
+        headers["content-type"] = enctype
     ret = __request(method=method,end_point=end_point,headers=headers,params=params,data=encoded_data,timeout=timeout,javascript_enable=javascript_enable,proxy=proxy)
     if ret is None:
         return {"msg":"data error"}

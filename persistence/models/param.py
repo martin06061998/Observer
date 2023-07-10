@@ -70,11 +70,10 @@ class Parameter(Base):
 class ParamFlowMap(Base):
     __tablename__ = "paramflows"
     id = Column(Integer, primary_key=True, autoincrement="auto")
-    parameter_id = Column(String(50), ForeignKey(
-        'parameters.id'), nullable=False,)
+    group_id = Column(String(50), nullable=False)
     flow_id = Column(String(50), ForeignKey('flows.id'), nullable=False)
     created_date = Column(DateTime(timezone=True), server_default=func.now())
     
-    def __init__(self,parameter_id,flow_id):
-        self.parameter_id = parameter_id
+    def __init__(self,group_id,flow_id):
+        self.group_id = group_id
         self.flow_id = flow_id

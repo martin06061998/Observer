@@ -2,7 +2,6 @@
 import copy
 import inspect
 import logging
-from multiprocessing import Lock
 import re
 from utilities.util import md5
 from persistence.models.param import Parameter
@@ -93,7 +92,7 @@ class ParameterMatcher():
 
 class AttackVector():
 
-    def __init__(self, id: str, path: str, matchers: list[ParameterMatcher], exploit_sequence: list[Exploit], bug_type: str,description:str=None) -> None:
+    def __init__(self, id: str, path: str, matchers: list[ParameterMatcher], exploit_sequence: list[Exploit], bug_type: str,technique:str,description:str=None) -> None:
         self.exploit_sequence = exploit_sequence
         self.bug_type = bug_type
         self.id = id
@@ -101,6 +100,7 @@ class AttackVector():
         self.tried_parameters = set()
         self.path = path
         self.description = description
+        self.technique = technique
 
     def match(self, p: Parameter):
         for matcher in self.matchers:
@@ -196,15 +196,17 @@ class AttackVector():
                     return False
         return True
     
-    def exploit(self,template_flow:ObHttpFlow,parameter:Parameter,lock:Lock,force:bool=False)->bool:
+    def exploit(self,template_flow:ObHttpFlow,parameter:Parameter,force:bool=False)->bool:
         #START
 
-        if not self.match(parameter) and not force:
-            return {"parameter_id" : parameter.id,
-                "bug_type" : self.bug_type,
-                "template_path" : self.path,
-                "is_vulnerable": None
-            }
+        if not self.match(parameter):
+            if not force or self.technique == "passive": # NOT Forced or Can't be forced
+                return {"parameter_id" : parameter.id,
+                    "bug_type" : self.bug_type,
+                    "template_path" : self.path,
+                    "is_vulnerable": None
+                }
+
             
         end_point =  parameter.endpoint
         headers: dict = template_flow.request_headers
@@ -220,6 +222,15 @@ class AttackVector():
         data = None
         
         pattern = template_flow.get_parameter_value(param=parameter.name)
+        
+        if pattern is None:
+            pattern = "example"
+            """logging.warning(f"attack parameter {parameter.name} with id {parameter.id} failed due to no example value")
+            return {"parameter_id" : parameter.id,
+                    "bug_type" : self.bug_type,
+                    "template_path" : self.path,
+                    "is_vulnerable": None
+                }"""
 
         exploit:Exploit
         for exploit in self.exploit_sequence:
@@ -229,6 +240,7 @@ class AttackVector():
             if payload is None:
                 continue
             rendered_payload = payload.render(pattern)
+
             payloads.append(rendered_payload)
             
             if part == "query":
@@ -242,10 +254,11 @@ class AttackVector():
             #SEND PAYLOADS TO THE TARGET
             tries = 0
             MAX_TRY = 1
+            enctype = parameter.body_data_type
             error = False
             while tries < MAX_TRY:
                 try:
-                    ret : dict = request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=120,javascript_enable=javascript_enable,proxy="http://127.0.0.1:8080")
+                    ret : dict = request(method=method,end_point=end_point,headers=headers,params=params,data=data,timeout=120,javascript_enable=javascript_enable,proxy="http://127.0.0.1:8080",enctype=enctype)
                     error = False
                 except Exception as e:
                     logging.warning(f"A network issue in AttackVector.exploit: {str(e)}:\n Headers: {headers}\nEndpoint: {end_point}\nParams: {params}\nData: {data}\nJavascript Enable: {javascript_enable}")

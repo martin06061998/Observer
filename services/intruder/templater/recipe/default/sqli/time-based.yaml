@@ -50,7 +50,7 @@ flows:
       - function: "has_similar_content_wordlist"
         args:
           body_content_1: "{{response_body_content!0}}"
-          body_content_2: "{{response_body_content!2}}"
+          body_content_2: "{{response_body_content!1}}"
           rate: 93
         expected-value: False
 

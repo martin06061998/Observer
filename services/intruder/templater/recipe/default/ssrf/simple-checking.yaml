@@ -1,5 +1,6 @@
 bug-name: "Server-Side Request Forgery"
 bug-type: "ssrf"
+technique: "passive"
 target-arguments:
   - type: "regex"
     target: "value"

@@ -1,6 +1,7 @@
 bug-name: "Debug"
 description: "Parameter is most often associated to debug,  access, or critical functionality in applications"
 bug-type: "debug"
+technique: "passive"
 target-arguments:
   - type: "word"
     target: "name"

@@ -1,5 +1,6 @@
 bug-name: "Open Redirect"
 bug-type: "open_redirect"
+technique: "passive"
 target-arguments:
   - type: "regex"
     target: "value"

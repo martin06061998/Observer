@@ -117,10 +117,20 @@ class ObHttpFlow(Base):
     
     @classmethod
     def new_flow(cls,http_method:str,url:str,request_body_content:bytes=None,response_body_content:bytes=None,body_data_type:str=None,query:dict[str:str]=None,body_parameters:dict[str:str]=None,request_headers:dict[str:str]=None,response_headers:dict[str:str]=None,status_code:int=None,timestamp:float=None,is_clone:bool=False):
-        flow = ObHttpFlow()
-        flow.id = md5(f"{http_method}{url}{str(time.time())}")
-        flow.host = urlparse(url).hostname
-        flow.port = urlparse(url).port
+        flow : ObHttpFlow = ObHttpFlow()
+        flow.id = md5(f"{http_method.lower()}{url.split('?')[0]}{str(time.time())}")
+        url_parsed = urlparse(url)
+        host = url_parsed.hostname
+        port = url_parsed.port
+        flow.host = host
+        flow.port = port
+        if flow.port is None:
+            scheme = url_parsed.scheme
+            if "https" in scheme:
+                flow.port = 443
+            else:
+                flow.port = 80
+                
         flow.http_method = http_method
         flow.url = url
         flow.request_body_content = request_body_content
@@ -212,6 +222,10 @@ class ObHttpFlow(Base):
         
         if self.query and param in self.query:
             return "query"
+    
+    @property
+    def no_path_url(self)->str:
+        return self.url.split("?")[0]
         
         
         """_type = type(param)

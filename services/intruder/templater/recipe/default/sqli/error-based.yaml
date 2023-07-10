@@ -1,5 +1,5 @@
 bug-name: "SQL Injection"
-description: "detect PostgreSQL SQLi based on the response body content"
+description: "detect SQLi based on time delay"
 bug-type: "sqli"
 target-arguments:
   - type: "word"
@@ -30,12 +30,11 @@ target-arguments:
       - "delete"
       - "string"
       - "number"
-      - "page"
       - "filter"
 
   - type: "regex"
     target: "name"
-    part: "all"
+    part: "query"
     regexes: 
       - "^.*(id|col|item|category|select|sort|row).*$"
 number-of-flow: 3
@@ -45,8 +44,7 @@ flows:
     payloads:
       - value: ""
         position: "replace"
-        tag: "PostgreSQL"
-
+        tag: "postgresql"
     endpoint: "{{base_url}}"
     verify:
       - function: "has_similar_content_wordlist"
@@ -55,18 +53,17 @@ flows:
           body_content_2: "{{response_body_content!1}}"
           rate: 93
         expected-value: False
-  
+
   flow_2:
     payloads:
-      - value: "'            ||              '"
-        position: "inject"
-        tag: "PostgreSQL"
-
+      - value: "'"
+        position: "append"
+        tag: "generic"
+                      
     endpoint: "{{base_url}}"
     verify:
-      - function: "has_similar_content_wordlist"
+      - function: "contain_any_patterns"
         args:
-          body_content_1: "{{response_body_content!0}}"
-          body_content_2: "{{response_body_content!2}}"
-          rate: 93
+          patterns:
+            - you have an error
         expected-value: True

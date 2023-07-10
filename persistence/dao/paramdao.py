@@ -58,18 +58,8 @@ class ParameterDao:
         return ret
 
     
-    async def add_param_flow(self, parameter_id: str, flow_id: str):
-        new_map = ParamFlowMap(parameter_id,flow_id)
+    async def insert_param_flow(self, group_id: str, flow_id: str):
+        new_map = ParamFlowMap(group_id,flow_id)
         await add(new_map)
 
     
-    async def get_last_param_flow(self,parameter_id:str)->ParamFlowMap:
-        async_session = await db_session()
-        ret = None
-        saved_flow = None
-        async with async_session() as session:
-            async with session.begin():
-                stmt = select(ParamFlowMap).where(ParamFlowMap.parameter_id == parameter_id).order_by(desc('created_date')).limit(1)
-                ret = await session.execute(stmt)
-                saved_flow = ret.scalars().one_or_none()
-        return saved_flow

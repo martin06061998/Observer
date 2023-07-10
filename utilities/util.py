@@ -54,16 +54,12 @@ def parsed_to_wordlist(content: str) -> set[str]:
 def dict_to_url_encoded(data:dict[str:str])->bytes:
     r = Request.make(method="post",url="http://example.com")
     r.urlencoded_form.update(data)
-    text = r.content.decode("utf-8","ignore")
-    return text
+    return r.content
 
 def dict_to_multipart_form(data:dict[bytes|str:bytes|str])->bytes:
     r = Request.make(method="post",url="http://example.com")
-    encoded_data = dict
-    
     r.multipart_form.update(data)
-    text = r.content.decode("utf-8","ignore")
-    return text
+    return r.content
 
 
 def base64_encode(value) -> str:
@@ -128,6 +124,14 @@ def find_all_forms(html:bytes):
                 form_dict["type_map"][tag_name] = "number"
             else:
                 form_dict["type_map"][tag_name] = "string"  
+        
+        textarea_tags = tag.find_all(name="textarea")
+        for t in textarea_tags:
+            tag_name = t.get("name")
+            tag_value = t.get("value","example")
+            parameters[tag_name] = "example"
+            form_dict["type_map"][tag_name] = "string" 
+           
 
 
         form_dict["parameters"] = parameters

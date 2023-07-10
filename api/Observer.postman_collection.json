@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "1c19b2d2-c749-4253-b693-d49ee2f624aa",
+		"name": "Observer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26057324"
+	},
+	"item": [
+		{
+			"name": "Parameter",
+			"item": [
+				{
+					"name": "Get Parameter By ID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"26a433e2f20f7ab341819474d9361580\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{INTRUDER}}/get-parameter-by-id",
+							"host": [
+								"{{INTRUDER}}"
+							],
+							"path": [
+								"get-parameter-by-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Parameter By Group ID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"ef8fb066aef9327605c394c81ea3f5ee\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{INTRUDER}}/get-parameters-by-group-id",
+							"host": [
+								"{{INTRUDER}}"
+							],
+							"path": [
+								"get-parameters-by-group-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Parameters",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"\",\r\n    \"enctype\": \"\",\r\n    \"endpoint\": \"\",\r\n    \"data_type\": \"\",\r\n    \"limit\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{INTRUDER}}/search-parameters",
+							"host": [
+								"{{INTRUDER}}"
+							],
+							"path": [
+								"search-parameters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Vulnerable Parameters By Bug Type",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"\",\r\n    \"bug_type\": \"\",\r\n    \"endpoint\": \"\",\r\n    \"template_path\": \"\",\r\n    \"is_vulnerable\": true,\r\n    \"is_tested\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{INTRUDER}}/get-vulnerable-parameters",
+							"host": [
+								"{{INTRUDER}}"
+							],
+							"path": [
+								"get-vulnerable-parameters"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flow",
+			"item": [
+				{
+					"name": "Export Raw Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"4eca2febad7b07070efa394260999cb5\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{INTRUDER}}/export-request-by-flow-id",
+							"host": [
+								"{{INTRUDER}}"
+							],
+							"path": [
+								"export-request-by-flow-id"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Exploit",
+			"item": [
+				{
+					"name": "Attack Single Parameter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"parameter_id\":\"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{INTRUDER}}/exploit",
+							"host": [
+								"{{INTRUDER}}"
+							],
+							"path": [
+								"exploit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "INTRUDER",
+			"value": "http://127.0.0.1:5555"
+		}
+	]
+}
