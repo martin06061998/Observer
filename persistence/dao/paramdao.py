@@ -1,11 +1,5 @@
-
-
-import logging
-
-from sqlalchemy import desc, update
 from persistence.models.param import Parameter, ParamFlowMap
-from persistence.models.flow import ObHttpFlow
-from persistence.database import db_session,add
+from persistence.database import db_session,add_or_do_nothing
 from sqlalchemy.future import select
 
 
@@ -16,7 +10,7 @@ class ParameterDao:
     async def insert_parameter(self, new_parameter: Parameter = None):
         if new_parameter is None:
             return
-        await add(new_parameter)
+        await add_or_do_nothing(new_parameter)
         return new_parameter
 
 
@@ -60,6 +54,6 @@ class ParameterDao:
     
     async def insert_param_flow(self, group_id: str, flow_id: str):
         new_map = ParamFlowMap(group_id,flow_id)
-        await add(new_map)
+        await add_or_do_nothing(new_map)
 
     

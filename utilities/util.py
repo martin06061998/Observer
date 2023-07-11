@@ -62,15 +62,17 @@ def dict_to_multipart_form(data:dict[bytes|str:bytes|str])->bytes:
     return r.content
 
 
-def base64_encode(value) -> str:
+def base64_encode(value:str|bytes) -> bytes:
     if type(value) is str:
         value=value.encode('utf-8', 'ignore')
         
-    return base64.b64encode(value).decode('utf-8', 'ignore')
+    return base64.b64encode(value)
 
 
-def base64_decode(value: str) -> str:
-    return base64.b64decode(value.encode('utf-8', 'ignore'))
+def base64_decode(value: str|bytes) -> bytes:
+    if type(value) is str:
+        value = value.encode()
+    return base64.b64decode(value)
 
 
 def find_all_forms(html:bytes):
@@ -89,7 +91,7 @@ def find_all_forms(html:bytes):
         
         form_dict["type_map"] = dict()
         parameters = dict()
-        input_tags = tag.find_all(name="input")
+        input_tags = tag.find_all(name="input",attrs={"name":True})
         for t in input_tags:
             tag_type = t.get("type")
             tag_name = t.get("name")
@@ -110,7 +112,7 @@ def find_all_forms(html:bytes):
                 elif tag_type == "file":
                     parameters[tag_name] = ""
                     form_dict["type_map"][tag_name] = "file" 
-                elif tag_type and tag_type != "submit":
+                elif tag_type and tag_type not in ["submit","button"]:
                     parameters[tag_name] = ""
             
             if tag_name not in form_dict["type_map"]:
@@ -119,7 +121,7 @@ def find_all_forms(html:bytes):
                 else:
                     form_dict["type_map"][tag_name] = "string"  
 
-        selection_tags = tag.find_all(name="select")
+        selection_tags = tag.find_all(name="select",attrs={"name":True})
         for t in selection_tags:
             tag_name = t.get("name")
             options_tag = t.find_all(name="option")
@@ -130,7 +132,7 @@ def find_all_forms(html:bytes):
             else:
                 form_dict["type_map"][tag_name] = "string"  
         
-        textarea_tags = tag.find_all(name="textarea")
+        textarea_tags = tag.find_all(name="textarea",attrs={"name":True})
         for t in textarea_tags:
             tag_name = t.get("name")
             tag_value = t.get("value","example")

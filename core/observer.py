@@ -46,6 +46,7 @@ class ParameterCollector():
                 enctype = form_dict["enctype"]
                 
                 for param_name in parameters.keys():
+                    
                     data_type=form_dict["type_map"][param_name]
                     new_parameter = Parameter(name=param_name,http_method=form_dict["method"],data_type=data_type,example_values=[parameters[param_name]],part=part,endpoint=endpoint,original_url=flow.url,group_id=group_id,body_data_type=enctype)
                     await self.DAL.insert_parameter(new_parameter)
@@ -83,22 +84,22 @@ class BugAnalyzer():
         for param in flow.get_all_parameter_names():
             parameter = Parameter(name=param,http_method=flow.http_method,example_values=[flow.get_parameter_value(param)],part=flow.get_parameter_part(param),group_id=group_id,original_url=flow.url,endpoint=flow.url,body_data_type=flow.body_data_type)
             parameter_id = parameter.id
-            if parameter_id in self.parameter_table:
-                continue
+
 
             # SAVING THE PARAMETER
-            saved_parameter : Parameter= await self.DAL.get_parameter_by_id(parameter_id)
-            if saved_parameter is None:
-                await self.DAL.insert_parameter( new_parameter=parameter)
-            else:
-                group_id = saved_parameter.group
-
-            self.parameter_table[parameter_id] = parameter
+            if parameter_id not in self.parameter_table:
+                saved_parameter : Parameter= await self.DAL.get_parameter_by_id(parameter_id)
+                if saved_parameter is None:
+                    await self.DAL.insert_parameter( new_parameter=parameter)
+                else:
+                    group_id = saved_parameter.group
+                self.parameter_table[parameter_id] = parameter
             
             await self.DAL.insert_param_flow(group_id=group_id, flow_id=flow.id)
 
             # START EXPLOITING
-            await self.try_exploit(parameter_id=parameter_id)
+            if parameter_id not in self.parameter_table:
+                await self.try_exploit(parameter_id=parameter_id)
 
 class Observer:
     def __init__(self) -> None:

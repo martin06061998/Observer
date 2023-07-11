@@ -1,7 +1,7 @@
 
 import asyncio
 from sqlalchemy import desc, exc, select
-from persistence.database import db_session,add
+from persistence.database import db_session,add_or_do_nothing
 from persistence.models.flow import ObHttpFlow
 from persistence.models.param import ParamFlowMap
 from sqlalchemy import exc
@@ -14,6 +14,7 @@ class FlowDAO():
         pass
 
     async def get_flow_by_id(self, id: str) -> ObHttpFlow:
+        
         async_session = await db_session()
         num_of_tried = 0
         saved_flow = None
@@ -38,7 +39,7 @@ class FlowDAO():
         return saved_flow
 
     async def insert_flow(self, flow: ObHttpFlow):
-        await add(flow)
+        await add_or_do_nothing(flow)
         return flow
     
     

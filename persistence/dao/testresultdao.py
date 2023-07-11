@@ -1,10 +1,5 @@
-
-import logging
-
-from sqlalchemy import desc, update
-from persistence.models.param import Parameter, ParamFlowMap
-from persistence.models.flow import ObHttpFlow
-from persistence.database import db_session,add
+from persistence.models.param import Parameter
+from persistence.database import db_session,add_or_update
 from sqlalchemy.future import select
 from persistence.models.testresult import TestResult
 
@@ -13,10 +8,10 @@ class TestResultDao:
     def __init__(self) -> None:
         pass
 
-    async def insert_test_result(self, test_result:TestResult):
+    async def insert_or_update_test_result(self, test_result:TestResult):
         if test_result is None or not isinstance(test_result,TestResult):
             return
-        await add(test_result)
+        await add_or_update(test_result,['payloads','is_vulnerable'])
         return test_result
     
     async def search_vulnerable_parameters_by_bug_type(self,name,endpoint,bug_type,is_vulnerable,is_tested,limit,template_path):

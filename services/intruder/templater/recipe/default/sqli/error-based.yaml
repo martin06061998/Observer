@@ -1,5 +1,5 @@
 bug-name: "SQL Injection"
-description: "detect SQLi based on time delay"
+description: "detect SQLi based error message"
 bug-type: "sqli"
 target-arguments:
   - type: "word"
@@ -44,7 +44,7 @@ flows:
     payloads:
       - value: ""
         position: "replace"
-        tag: "postgresql"
+        tag: "mysql"
     endpoint: "{{base_url}}"
     verify:
       - function: "has_similar_content_wordlist"
@@ -58,12 +58,12 @@ flows:
     payloads:
       - value: "'"
         position: "append"
-        tag: "generic"
+        tag: "mysql"
                       
     endpoint: "{{base_url}}"
     verify:
       - function: "contain_any_patterns"
         args:
           patterns:
-            - you have an error
+            - "you have an error"
         expected-value: True

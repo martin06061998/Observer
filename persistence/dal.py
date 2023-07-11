@@ -59,9 +59,9 @@ class DataAccessLayer():
     # END
     
     #TEST RESULT DAO
-    async def insert_test_result(self, test_result:TestResult):
+    async def insert_or_update_test_result(self, test_result:TestResult):
         service = self.db_services["testresults"]
-        ret: TestResult = await service.insert_test_result(test_result)
+        ret: TestResult = await service.insert_or_update_test_result(test_result)
         return ret
     
     async def search_vulnerable_parameters_by_bug_type(self,name,endpoint,bug_type,is_vulnerable,is_tested,limit,template_path):

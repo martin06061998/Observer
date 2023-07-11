@@ -88,7 +88,8 @@ async def parse_template(path: str) -> list[AttackVector]:
                 current_exploit_list: list[Exploit] = []
                 if yml_flow_name not in yml_flows:
                     if i == 0:
-                        exploits.append([None])
+                        default_exploit_list = [Exploit([],Payload("","default","append"))] 
+                        exploits.append(default_exploit_list)
                         continue
                     else:
                         return

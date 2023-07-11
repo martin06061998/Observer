@@ -12,7 +12,7 @@ VECTOR_LIST:list[AttackVector] = []
 
 async def try_exploit(content: dict[str, str]):
     # SUSPEND THIS TASK TO PREVENT QUART SERVER FROM BEING BLOCKED
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(0.1)
 
     # PREPARE DATA BEFORE ASSESSMENT
     dal = get_data_access_layer_instance()
@@ -35,18 +35,18 @@ async def try_exploit(content: dict[str, str]):
     TASKS = []
     force = content.get("force",False)
     loop = asyncio.get_event_loop()
-    semaphore = asyncio.BoundedSemaphore(5)
+    #semaphore = asyncio.BoundedSemaphore(10)
     
     for vector in VECTOR_LIST:
-        async with semaphore:
             TASKS.append(loop.run_in_executor(POOL, vector.exploit, saved_flow,saved_param,force))
+            await asyncio.sleep(0.6)
 
     
     await asyncio.gather(*TASKS)
     t:asyncio.Future
     for t in TASKS:
         test_result = TestResult(**t.result())
-        await dal.insert_test_result(test_result)
+        await dal.insert_or_update_test_result(test_result)
         
 
 async def get_parameter_by_id(id:str):

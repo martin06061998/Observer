@@ -143,10 +143,9 @@ class AttackVector():
             verify_functions = exploit.verify_functions
 
 
-            for func in verify_functions:
+            for func in verify_functions:                     
                 # This object will store all needed information to run
                 filled_func = copy.deepcopy(func)
-
                 verify = getattr(AsserterServiceAPI, func.function_name, None)
 
                 # START FUNCTION NAME CHECKING
@@ -202,46 +201,42 @@ class AttackVector():
         if not self.match(parameter):
             if not force or self.technique == "passive": # NOT Forced or Can't be forced
                 return {"parameter_id" : parameter.id,
+                    "vector_id": self.id,
                     "bug_type" : self.bug_type,
                     "template_path" : self.path,
                     "is_vulnerable": None
                 }
 
-            
+        
+        # PREPARE DATA TO SEND PAYLOADS
         end_point =  parameter.endpoint
         headers: dict = template_flow.request_headers
         headers["tag"] = self.bug_type
         headers.pop("content-length",None)
-        flow_sequence = [template_flow]
+        flow_sequence = []
+        if template_flow.response_body_content:
+            flow_sequence.append(template_flow)
         method = parameter.http_method
         payloads = []
-
-
         part = parameter.part
         params = None
         data = None
-        
         pattern = template_flow.get_parameter_value(param=parameter.name)
-        
         if pattern is None:
             pattern = "example"
-            """logging.warning(f"attack parameter {parameter.name} with id {parameter.id} failed due to no example value")
-            return {"parameter_id" : parameter.id,
-                    "bug_type" : self.bug_type,
-                    "template_path" : self.path,
-                    "is_vulnerable": None
-                }"""
+        #END
 
         exploit:Exploit
-        for exploit in self.exploit_sequence:
-            if exploit is None:
-                continue
+        for i,exploit in enumerate(self.exploit_sequence):
+            if i == 0 and template_flow.response_body_content: # We already have the first response
+                continue 
+            
             payload:Payload = exploit.payload
-            if payload is None:
-                continue
+        
             rendered_payload = payload.render(pattern)
 
-            payloads.append(rendered_payload)
+            if i > 0:
+                payloads.append(rendered_payload)
             
             if part == "query":
                 params = copy.deepcopy(template_flow.query)
@@ -270,19 +265,15 @@ class AttackVector():
                     tries = tries + 1
                 if not error:
                     break
-      
             if error:
                 logging.warning(f"attack vector {self.path} failed due to network issue")
                 break
             #END
-            
-
             ret["content"] =  base64_decode(ret["content"])
             new_flow : ObHttpFlow= ObHttpFlow.new_flow(http_method=method,url=end_point,response_body_content= ret["content"],timestamp=ret["elapsed"],response_headers=ret["response_headers"],status_code=ret["status_code"])
-
             flow_sequence.append(new_flow)
 
-
+        
         # VULNERABILITY ASSESSMENT
         if len(flow_sequence) != len(self.exploit_sequence):
             isVulnerable = None
@@ -291,6 +282,7 @@ class AttackVector():
 
         # REPORT BUG
         return {"parameter_id" : parameter.id,
+                "vector_id": self.id,
                 "bug_type" : self.bug_type,
                 "template_path" : self.path,
                 "payloads":payloads,

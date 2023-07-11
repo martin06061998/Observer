@@ -31,7 +31,7 @@ class Parameter(Base):
             raise ValueError(f"Can not calculate parameter id due to original_url is None")
         if part is None:
             raise ValueError(f"Can not calculate parameter id due to part is None")
-        ret =  md5(name+http_method.lower()+part.lower()+original_url.split("?")[0]+endpoint.split("?")[0])
+        ret =  md5(name+http_method.lower()+part.lower()+endpoint.split("?")[0])
         return ret
 
     def __init__(self, name: str, http_method: str, example_values: list[str|bytes], part: str,endpoint:str,original_url:str,group_id:str=None, data_type: str = "string",body_data_type:str="Unknown"):
