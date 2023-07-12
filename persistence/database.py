@@ -1,6 +1,7 @@
 
 import asyncio
 from asyncio.log import logger
+import random
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from definitions import ROOT_DIR
@@ -48,13 +49,15 @@ async def add_or_do_nothing(instance):
                 success = True
             except exc.IntegrityError as i:
                 logger.warning(f"IntegrityError of type {klass}: {str(i)}")
+                success = False
                 break
             except exc.OperationalError as o:
+                success = False
                 logger.warning(f"Database error {str(o)}")
             finally:
                 number_of_tried = number_of_tried + 1
                 if not success:
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(random.uniform(0.2, 1.2))
 
 
 async def add_or_update(instance,update_tale_names:list[str]):
@@ -77,14 +80,16 @@ async def add_or_update(instance,update_tale_names:list[str]):
                     await session.commit()
                 success = True
             except exc.IntegrityError as i:
+                success = False
                 logger.warning(f"IntegrityError of type {klass}: {str(i)}")
                 break
             except exc.OperationalError as o:
+                success = False
                 logger.warning(f"Database error {str(o)}")
             finally:
                 number_of_tried = number_of_tried + 1
                 if not success:
-                    await asyncio.sleep(2)
+                    await asyncio.sleep(random.uniform(0.2, 1.2))
 
 
             
